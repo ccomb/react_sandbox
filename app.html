@@ -10,19 +10,40 @@
     <script src="https://cdn.jsdelivr.net/react/0.14.5/react.js"></script>
     <script src="https://cdn.jsdelivr.net/react/0.14.5/react-dom.js"></script>
 <script>
+
+var contacts = [
+    {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+    {key: 2, name: "Jim", email: "jim@example.com"},
+    {key: 3, name: "Joe"},
+]
+
+var contactItem = React.createClass({
+    propTypes: {
+        name: React.PropTypes.string.isRequired,
+        email: React.PropTypes.string.isRequired,
+        description: React.PropTypes.string
+    },
+    render: function() {
+        return React.createElement('li', {className: 'Contact'},
+                React.createElement('h2', {className: 'Contact-name'}, this.props.name),
+                React.createElement('a', {href: this.props.email}, this.props.email),
+                React.createElement('div', {}, this.props.description)
+                );
+        
+    }
+});
+
+
 var rootElement = 
 React.createElement('div', {},
     React.createElement('h1', {}, "Contacts"),
-    React.createElement('ul', {},
-        React.createElement('li', {},
-            React.createElement('h2', {},"James Nelson"),
-                React.createElement('a', {href:'mailto:james@jamesknelson'}, 'james')
-            ),
-        React.createElement('li', {},
-            React.createElement('h2', {}, "Toto"),
-                React.createElement('a', {href: "toto"}, "toto")
-            )
-        ));
+    React.createElement.apply(this, ['ul', {}].concat(
+        [for (c of contacts)
+            React.createElement(contactItem, {
+                name: c.name,
+                email: c.email ? c.email : '',
+                description: c.description ? c.description : ''})]
+        )));
 
 
 ReactDOM.render(rootElement, document.getElementById('react-app'));
