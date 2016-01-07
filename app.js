@@ -1,10 +1,3 @@
-var contacts = [
-    {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
-    {key: 2, name: "Jim", email: "jim@example.com"},
-    {key: 3, name: "Joe"},
-];
-
-newContact = {name: undefined, email: undefined, description: undefined};
 
 var contactItem = React.createClass({
     displayName: 'contactItem',
@@ -30,17 +23,29 @@ var contactForm = React.createClass({
         contact: React.PropTypes.object,
         onChange: React.PropTypes.func
     },
+    onChange: function(e) {
+        newContact = Object.assign({}, this.props.state.newContact)
+        newState = Object.assign({}, this.props.state)
+        newContact[e.target.id] = e.target.value
+        newState.newContact = newContact
+        setState(newState)
+    },
+    onSubmit: function(e) {
+        e.preventDefault()
+        this.props.addContact(this.props.state.newContact)
+    },
     
     /*componentDidMount: function() {
         this.refs.button.onClick = this.props.onclick
         this.refs.root.forceUpdate();
     },*/
     render: function() {
+        contact = this.props.state.newContact
         return React.createElement('div', {},
-            React.createElement('input', {id: 'name', ref: 'name', type: 'text', placeholder: 'name', required: true, value: this.props.contact.name, onChange: this.props.onChange}),
-            React.createElement('input', {id: 'email', ref: 'email', type: 'text', placeholder: 'email', value: this.props.contact.email, onChange: this.props.onChange}),
-            React.createElement('input', {id: 'description', ref: 'description', type: 'textarea', placeholder: 'description', value: this.props.contact.description, onChange: this.props.onChange}),
-            React.createElement('button', {ref: 'button'}, 'Add contact')
+            React.createElement('input', {id: 'name', ref: 'name', type: 'text', placeholder: 'name', required: true, value: contact.name, onChange: this.onChange}),
+            React.createElement('input', {id: 'email', ref: 'email', type: 'text', placeholder: 'email', value: contact.email, onChange: this.onChange}),
+            React.createElement('input', {id: 'description', ref: 'description', type: 'textarea', placeholder: 'description', value: contact.description, onChange: this.onChange}),
+            React.createElement('button', {ref: 'button', onClick: this.onSubmit}, 'Add contact')
         )
     }
 })
@@ -48,27 +53,34 @@ var contactForm = React.createClass({
 
 var contactView = React.createClass({
     displayName: 'contactView',
-    onChange: function(e) {
-        newContact = Object.assign({}, newContact)
-        newContact[e.target.id] = e.target.value
-        console.log(newContact)
+    addContact: function(contact) {
+        var newState = Object.assign({}, this.props.state)
+        newState.contacts.push(newContact)
+        newState.newContact = {name: undefined}
+        setState(newState)
     },
     render: function(e) {
         return React.createElement('div', {},
             React.createElement('h1', {}, "Contacts"),
-            React.createElement('ul', {}, contactListElements),
-            React.createElement(contactForm, {contact: newContact, onChange: this.onChange})
+            React.createElement('ul', {}, [for (c of this.props.state.contacts) React.createElement(contactItem, c)]),
+            React.createElement(contactForm, {state: this.props.state, addContact: this.addContact, onChange: this.onChange})
         );
     }
-        })
+})
 
 
-contactListElements =
-        [for (c of contacts)
-            React.createElement(contactItem, c)]
 
+const setState = function(state) {
+    var rootElement = React.createElement(contactView, {state: state})
+    ReactDOM.render(rootElement, document.getElementById('react-app'));
+}
 
-var rootElement = React.createElement(contactView, {})
-
-
-ReactDOM.render(rootElement, document.getElementById('react-app'));
+// initial state
+setState({
+    contacts: [
+        {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+        {key: 2, name: "Jim", email: "jim@example.com"},
+        {key: 3, name: "Joe"},
+    ],
+    newContact: {name: undefined, email: undefined, description: undefined}
+})
