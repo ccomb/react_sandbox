@@ -24,11 +24,11 @@ var contactForm = React.createClass({
         onChange: React.PropTypes.func
     },
     onChange: function(e) {
-        newContact = Object.assign({}, this.props.state.newContact)
-        newState = Object.assign({}, this.props.state)
-        newContact[e.target.id] = e.target.value
-        newState.newContact = newContact
-        setState(newState)
+        contact = Object.assign({}, this.props.state.newContact)
+        state = Object.assign({}, this.props.state)
+        contact[e.target.id] = e.target.value
+        state.newContact = contact
+        setState(state)
     },
     onSubmit: function(e) {
         e.preventDefault()
@@ -54,10 +54,10 @@ var contactForm = React.createClass({
 var contactView = React.createClass({
     displayName: 'contactView',
     addContact: function(contact) {
-        var newState = Object.assign({}, this.props.state)
-        newState.contacts.push(newContact)
-        newState.newContact = {name: undefined}
-        setState(newState)
+        var state = Object.assign({}, this.props.state)
+        state.contacts.push(contact)
+        state.newContact = {name: undefined}
+        setState(state)
     },
     render: function(e) {
         return React.createElement('div', {},
