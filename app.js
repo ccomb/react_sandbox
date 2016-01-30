@@ -32,7 +32,9 @@ var contactForm = React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault()
-        this.props.addContact(this.props.state.newContact)
+        if (this.props.state.newContact.name) {
+            this.props.addContact(this.props.state.newContact);
+        }
     },
     
     /*componentDidMount: function() {
