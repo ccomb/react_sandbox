@@ -75,7 +75,7 @@ var contactView = React.createClass({
     render: function(e) {
         return React.createElement('div', {},
             React.createElement('h1', {}, "Contacts"),
-            React.createElement('ul', {}, [for (c in this.props.state.contacts) React.createElement(contactItem, c)]),
+            React.createElement('ul', {}, this.props.state.contacts.map(c => React.createElement(contactItem, c))),
             React.createElement(contactForm, {state: this.props.state, addContact: this.addContact, onChange: this.onChange})
         );
     }
