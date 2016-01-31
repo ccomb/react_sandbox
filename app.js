@@ -1,3 +1,5 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 var contactItem = React.createClass({
     displayName: 'contactItem',
@@ -24,8 +26,8 @@ var contactForm = React.createClass({
         onChange: React.PropTypes.func
     },
     onChange: function(e) {
-        contact = Object.assign({}, this.props.state.newContact)
-        state = Object.assign({}, this.props.state)
+        var contact = Object.assign({}, this.props.state.newContact)
+        const state = Object.assign({}, this.props.state)
         contact[e.target.id] = e.target.value
         state.newContact = contact
         render_state(state)
@@ -42,7 +44,7 @@ var contactForm = React.createClass({
         this.refs.root.forceUpdate();
     },*/
     render: function() {
-        contact = this.props.state.newContact
+        const contact = this.props.state.newContact
         return React.createElement('div', {},
             React.createElement('input', {id: 'name', ref: 'name', type: 'text', placeholder: 'name', required: true, value: contact.name, onChange: this.onChange}),
             React.createElement('input', {id: 'email', ref: 'email', type: 'text', placeholder: 'email', value: contact.email, onChange: this.onChange}),
@@ -73,7 +75,7 @@ var contactView = React.createClass({
     render: function(e) {
         return React.createElement('div', {},
             React.createElement('h1', {}, "Contacts"),
-            React.createElement('ul', {}, [for (c of this.props.state.contacts) React.createElement(contactItem, c)]),
+            React.createElement('ul', {}, [for (c in this.props.state.contacts) React.createElement(contactItem, c)]),
             React.createElement(contactForm, {state: this.props.state, addContact: this.addContact, onChange: this.onChange})
         );
     }
@@ -90,7 +92,7 @@ const render_state = function(state) {
 }
 
 // initial state
-initial_state= {
+const initial_state = {
     contacts: [
         {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
         {key: 2, name: "Jim", email: "jim@example.com"},
@@ -98,10 +100,10 @@ initial_state= {
     ],
     newContact: {name: undefined, email: undefined, description: undefined},
     path: '/'
-}
+};
 
-navigated = function(e) {
-    path = window.location.hash.split('/').slice(1);
+const navigated = function(e) {
+    let path = window.location.hash.split('/').slice(1);
     render_state(Object.assign(initial_state, {path: path}));
 }
 window.addEventListener('hashchange', navigated, false)
