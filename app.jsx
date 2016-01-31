@@ -1,26 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-var contactItem = React.createClass({
-    displayName: 'contactItem',
+var ContactItem = React.createClass({
+    displayName: 'ContactItem',
     propTypes: {
         name: React.PropTypes.string.isRequired,
         email: React.PropTypes.string,
         description: React.PropTypes.string
     },
     render: function() {
-        return React.createElement('li', {className: 'Contact'},
-                React.createElement('h2', {className: 'Contact-name'}, this.props.name),
-                React.createElement('a', {href: this.props.email}, this.props.email),
-                React.createElement('div', {}, this.props.description)
-                );
+        return (<li className='Contact'>
+                <h2 className='Contact-name'>{this.props.name}</h2>
+                <a href={this.props.email}>{this.props.email}</a>
+                <div>{this.props.description}</div></li>);
         
     }
 });
 
 
-var contactForm = React.createClass({
-    displayName: 'contactForm',
+var ContactForm = React.createClass({
+    displayName: 'ContactForm',
     propTypes: {
         contact: React.PropTypes.object,
         onChange: React.PropTypes.func
@@ -44,28 +43,29 @@ var contactForm = React.createClass({
         this.refs.root.forceUpdate();
     },*/
     render: function() {
-        const contact = this.props.state.newContact
-        return React.createElement('div', {},
-            React.createElement('input', {id: 'name', ref: 'name', type: 'text', placeholder: 'name', required: true, value: contact.name, onChange: this.onChange}),
-            React.createElement('input', {id: 'email', ref: 'email', type: 'text', placeholder: 'email', value: contact.email, onChange: this.onChange}),
-            React.createElement('input', {id: 'description', ref: 'description', type: 'textarea', placeholder: 'description', value: contact.description, onChange: this.onChange}),
-            React.createElement('button', {ref: 'button', onClick: this.onSubmit}, 'Add contact')
-        )
+        const contact = this.props.state.newContact;
+        return (<div>
+                    <input id='name' ref='name' type='text' placeholder='name'
+                           required={true} value={contact.name} onChange={this.onChange}/>
+                    <input id='email' ref='email' type='text' placeholder='email'
+                           required={false} value={contact.email} onChange={this.onChange}/>
+                    <input id='description' ref='description' type='text' placeholder='description'
+                           required={false} value={contact.description} onChange={this.onChange}/>
+                    <button ref='button' onClick={this.onSubmit}>Add contact</button>
+                </div>);
     }
-})
+});
 
 
-var notfound = React.createClass({
-    displayName: '404',
+var NotFound = React.createClass({
+    displayName: 'NotFound',
     render: function(e){
-        return React.createElement('p', {},
-            React.createElement('a', {href: '#/contacts'}, 'Contacts')
-        );
+        return (<p><a href='#/contacts'>Contacts</a></p>);
     }
 })
 
-var contactView = React.createClass({
-    displayName: 'contactView',
+var ContactView = React.createClass({
+    displayName: 'ContactView',
     addContact: function(contact) {
         var state = Object.assign({}, this.props.state)
         state.contacts.push(contact)
@@ -73,20 +73,24 @@ var contactView = React.createClass({
         render_state(state)
     },
     render: function(e) {
-        return React.createElement('div', {},
-            React.createElement('h1', {}, "Contacts"),
-            React.createElement('ul', {}, this.props.state.contacts.map(c => React.createElement(contactItem, c))),
-            React.createElement(contactForm, {state: this.props.state, addContact: this.addContact, onChange: this.onChange})
-        );
+        return (<div>
+                    <h1>Contacts</h1>
+                    <ul>
+                        {this.props.state.contacts.map(c => <ContactItem {...c}/>)}
+                    </ul>
+                    <ContactForm state={this.props.state}
+                                 addContact={this.addContact} 
+                                 onChange={this.onChange}/>
+                </div>);
     }
-})
+});
 
 
 const render_state = function(state) {
     if (state.path == 'contacts') {
-        var rootElement = React.createElement(contactView, {state: state});
+        var rootElement = <ContactView state={state}/>;
     } else {
-        var rootElement = React.createElement(notfound, {});
+        var rootElement = <NotFound/>;
     }
     ReactDOM.render(rootElement, document.getElementById('react-app'));
 }

@@ -1,6 +1,6 @@
 
 module.exports = {
-  entry: "./app",
+  entry: "./app.jsx",
   output: {
     path: __dirname + "/build",
     filename: "bundle.js",
@@ -10,9 +10,10 @@ module.exports = {
         loaders: [
             {
                 loader:'babel-loader',
+                test: /.jsx?$/,
                 exclude: /node_modules/,
                 query: {
-                    presets: ['es2015']
+                    presets: ['es2015', 'react']
                 }
             }
         ]
