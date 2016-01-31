@@ -28,7 +28,7 @@ var contactForm = React.createClass({
         state = Object.assign({}, this.props.state)
         contact[e.target.id] = e.target.value
         state.newContact = contact
-        setState(state)
+        render_state(state)
     },
     onSubmit: function(e) {
         e.preventDefault()
@@ -53,13 +53,22 @@ var contactForm = React.createClass({
 })
 
 
+var notfound = React.createClass({
+    displayName: '404',
+    render: function(e){
+        return React.createElement('p', {},
+            React.createElement('a', {href: '#/contacts'}, 'Contacts')
+        );
+    }
+})
+
 var contactView = React.createClass({
     displayName: 'contactView',
     addContact: function(contact) {
         var state = Object.assign({}, this.props.state)
         state.contacts.push(contact)
         state.newContact = {name: undefined}
-        setState(state)
+        render_state(state)
     },
     render: function(e) {
         return React.createElement('div', {},
@@ -71,18 +80,29 @@ var contactView = React.createClass({
 })
 
 
-
-const setState = function(state) {
-    var rootElement = React.createElement(contactView, {state: state})
+const render_state = function(state) {
+    if (state.path == 'contacts') {
+        var rootElement = React.createElement(contactView, {state: state});
+    } else {
+        var rootElement = React.createElement(notfound, {});
+    }
     ReactDOM.render(rootElement, document.getElementById('react-app'));
 }
 
 // initial state
-setState({
+initial_state= {
     contacts: [
         {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
         {key: 2, name: "Jim", email: "jim@example.com"},
         {key: 3, name: "Joe"},
     ],
-    newContact: {name: undefined, email: undefined, description: undefined}
-})
+    newContact: {name: undefined, email: undefined, description: undefined},
+    path: '/'
+}
+
+navigated = function(e) {
+    path = window.location.hash.split('/').slice(1);
+    render_state(Object.assign(initial_state, {path: path}));
+}
+window.addEventListener('hashchange', navigated, false)
+navigated()
