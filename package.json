@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node_modules/.bin/webpack-dev-server --config webpack.dev.js --hot --port=3000",
     "build": "node_modules/.bin/webpack --config webpack.dev.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers js:babel-core/register ./test.js"
   },
   "author": "ccomb",
   "license": "ISC",
@@ -18,9 +18,13 @@
     "babel-preset-react": "^6.3.13",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
+    "react-redux": "^4.2.0",
+    "redux": "^3.2.0",
     "webpack": "^1.12.12"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
     "webpack-dev-server": "^1.14.1"
   }
 }

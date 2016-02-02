@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {addContact, changeHash} from './actions';
+import {createStore} from 'redux';
+import {Provider, connect} from 'react-redux';
+import globalreducer from './reducers';
 
-var ContactItem = React.createClass({
+let store = createStore(globalreducer);
+
+let ContactItem = React.createClass({
     displayName: 'ContactItem',
     propTypes: {
         name: React.PropTypes.string.isRequired,
@@ -18,97 +24,74 @@ var ContactItem = React.createClass({
 });
 
 
-var ContactForm = React.createClass({
+let ContactForm = React.createClass({
     displayName: 'ContactForm',
     propTypes: {
         contact: React.PropTypes.object,
-        onChange: React.PropTypes.func
-    },
-    onChange: function(e) {
-        var contact = Object.assign({}, this.props.state.newContact)
-        const state = Object.assign({}, this.props.state)
-        contact[e.target.id] = e.target.value
-        state.newContact = contact
-        render_state(state)
+        onSubmit: React.PropTypes.func
     },
     onSubmit: function(e) {
         e.preventDefault()
-        if (this.props.state.newContact.name) {
-            this.props.addContact(this.props.state.newContact);
+        var contact = {
+            name: this.refs['name'].value,
+            email: this.refs['email'].value,
+            description: this.refs['description'].value
         }
+        this.props.dispatch(addContact(contact))
+        for (var field of ['name', 'email', 'description']) {
+            this.refs[field].value = '';}
     },
-    
-    /*componentDidMount: function() {
-        this.refs.button.onClick = this.props.onclick
-        this.refs.root.forceUpdate();
-    },*/
     render: function() {
-        const contact = this.props.state.newContact;
         return (<div>
                     <input id='name' ref='name' type='text' placeholder='name'
-                           required={true} value={contact.name} onChange={this.onChange}/>
+                           required={true}/>
                     <input id='email' ref='email' type='text' placeholder='email'
-                           required={false} value={contact.email} onChange={this.onChange}/>
+                           required={false}/>
                     <input id='description' ref='description' type='text' placeholder='description'
-                           required={false} value={contact.description} onChange={this.onChange}/>
+                           required={false}/>
                     <button ref='button' onClick={this.onSubmit}>Add contact</button>
                 </div>);
     }
 });
 
 
-var NotFound = React.createClass({
+let NotFound = React.createClass({
     displayName: 'NotFound',
     render: function(e){
         return (<p><a href='#/contacts'>Contacts</a></p>);
     }
 })
 
-var ContactView = React.createClass({
-    displayName: 'ContactView',
-    addContact: function(contact) {
-        var state = Object.assign({}, this.props.state)
-        state.contacts.push(contact)
-        state.newContact = {name: undefined}
-        render_state(state)
-    },
-    render: function(e) {
-        return (<div>
-                    <h1>Contacts</h1>
-                    <ul>
-                        {this.props.state.contacts.map(c => <ContactItem {...c}/>)}
-                    </ul>
-                    <ContactForm state={this.props.state}
-                                 addContact={this.addContact} 
-                                 onChange={this.onChange}/>
-                </div>);
+class ContactApp extends React.Component {
+    get displayName() {return 'ContactApp'}
+    render(e) {
+        const {state, dispatch} = this.props;
+        if (state.path == 'contacts') {
+            return (<div>
+                      <h1>Contacts</h1>
+                      <ul>
+                          {state.contacts.map(c => <ContactItem {...c}/>)}
+                      </ul>
+                      <ContactForm contacts={state.contacts} dispatch={dispatch}/>
+                    </div>);    
+        } else { return <NotFound/> }
     }
-});
-
-
-const render_state = function(state) {
-    if (state.path == 'contacts') {
-        var rootElement = <ContactView state={state}/>;
-    } else {
-        var rootElement = <NotFound/>;
-    }
-    ReactDOM.render(rootElement, document.getElementById('react-app'));
 }
 
-// initial state
-const initial_state = {
-    contacts: [
-        {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
-        {key: 2, name: "Jim", email: "jim@example.com"},
-        {key: 3, name: "Joe"},
-    ],
-    newContact: {name: undefined, email: undefined, description: undefined},
-    path: '/'
-};
-
-const navigated = function(e) {
-    let path = window.location.hash.split('/').slice(1);
-    render_state(Object.assign(initial_state, {path: path}));
+const select = function(state) {
+    return {state: state}
 }
-window.addEventListener('hashchange', navigated, false)
-navigated()
+
+var ReduxApp = connect(select)(ContactApp);
+
+window.addEventListener(
+    'hashchange',
+    function(e) {
+        store.dispatch(changeHash());
+    }, false)
+
+var rootElement = (<Provider store={store}>
+                     <ReduxApp/>
+                   </Provider>);
+ReactDOM.render(rootElement, document.getElementById('react-app'));
+store.dispatch(changeHash());
