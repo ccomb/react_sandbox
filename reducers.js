@@ -25,7 +25,7 @@ export function contacts(contacts, action) {
             return [...contacts.slice(0, -1), {...action.payload, status: 'unsaved'}];
         case 'add contact':
             console.log('reducing with add contact')
-            return [...contacts.slice(0, -1), {...action.payload, status: 'saving'}];
+            return [...contacts, {...action.payload, status: 'saving'}];
         default:
             return initial_state.contacts;
     }
