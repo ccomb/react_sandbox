@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {addContact, changeHash} from './actions';
-import {createStore} from 'redux';
+import {storeContact, changeHash} from './actions';
+import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
+import thunk from 'redux-thunk';
 
-let store = createStore(globalreducer);
+var store = createStore(globalreducer, applyMiddleware(thunk));
 
 let ContactItem = React.createClass({
     displayName: 'ContactItem',
@@ -15,10 +16,14 @@ let ContactItem = React.createClass({
         description: React.PropTypes.string
     },
     render: function() {
+        var status = this.props.status;
+        var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
         return (<li className='Contact'>
                 <h2 className='Contact-name'>{this.props.name}</h2>
                 <a href={this.props.email}>{this.props.email}</a>
-                <div>{this.props.description}</div></li>);
+                <div>{this.props.description}</div>
+                Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                </li>);
         
     }
 });
@@ -37,7 +42,7 @@ let ContactForm = React.createClass({
             email: this.refs['email'].value,
             description: this.refs['description'].value
         }
-        this.props.dispatch(addContact(contact))
+        this.props.dispatch(storeContact(contact))
         for (var field of ['name', 'email', 'description']) {
             this.refs[field].value = '';}
     },
@@ -67,10 +72,11 @@ class ContactApp extends React.Component {
     render(e) {
         const {state, dispatch} = this.props;
         if (state.path == 'contacts') {
+            var key = 0;
             return (<div>
                       <h1>Contacts</h1>
                       <ul>
-                          {state.contacts.map(c => <ContactItem {...c}/>)}
+                          {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
                       </ul>
                       <ContactForm contacts={state.contacts} dispatch={dispatch}/>
                     </div>);    
@@ -93,5 +99,16 @@ window.addEventListener(
 var rootElement = (<Provider store={store}>
                      <ReduxApp/>
                    </Provider>);
+console.log('First render and change hash dispatch')
 ReactDOM.render(rootElement, document.getElementById('react-app'));
 store.dispatch(changeHash());
+
+let request = window.indexedDB.open('tutodb3', 1);
+request.onupgradeneeded = function(e) {
+    console.log('Upgrading database...')
+    var db = e.target.result;
+    try { db.deleteObjectStore('contacts'); } catch(e) {}
+    let idbstore = db.createObjectStore('contacts', {keyPath: 'email'});
+    idbstore.createIndex("email", "email", { unique: true });
+    idbstore.createIndex("name", "name", { unique: false });
+};
