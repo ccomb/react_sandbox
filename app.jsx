@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {loadContacts, storeContact, changeHash} from './actions';
+import {deleteContact, loadContacts, storeContact, changeHash} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
@@ -8,25 +8,32 @@ import thunk from 'redux-thunk';
 
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
-let ContactItem = React.createClass({
+let ContactItem = connect(select)(React.createClass({
     displayName: 'ContactItem',
     propTypes: {
         name: React.PropTypes.string.isRequired,
         email: React.PropTypes.string,
         description: React.PropTypes.string
     },
+    onDelete: function() {
+        this.props.dispatch(deleteContact(this.props.email))
+    },
     render: function() {
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
         return (<li className='Contact'>
-                <h2 className='Contact-name'>{this.props.name}</h2>
+                <div className='Contact-name'>
+                    <button onClick={this.onDelete}>X</button>
+                    {this.props.name}
+                </div>
                 <a href={this.props.email}>{this.props.email}</a>
                 <div>{this.props.description}</div>
                 Status: <span style={{background: color, color: 'white'}}>{status}</span>
                 </li>);
         
     }
-});
+})
+)
 
 
 let ContactForm = React.createClass({
@@ -51,7 +58,7 @@ let ContactForm = React.createClass({
                     <input id='name' ref='name' type='text' placeholder='name'
                            required={true}/>
                     <input id='email' ref='email' type='text' placeholder='email'
-                           required={false}/>
+                           required={true}/>
                     <input id='description' ref='description' type='text' placeholder='description'
                            required={false}/>
                     <button ref='button' onClick={this.onSubmit}>Add contact</button>

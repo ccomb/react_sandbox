@@ -24,6 +24,8 @@ export function contacts(contacts, action) {
             return [...contacts, {...action.payload, status: action.meta.status || ''}];
         case 'clear contacts':
             return [];
+        case 'remove contact':
+            return contacts.filter((c)=>c.email!=action.payload ? true : false);
         default:
             return initial_state.contacts;
     }

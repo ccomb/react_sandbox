@@ -85,16 +85,16 @@ export function clearContacts() {
 export function loadContacts () {
     console.log('dispatching loadContacts')
     return (dispatch) => {
-        console.log('opening database')
+        console.log('opening database');
         let openrequest = window.indexedDB.open('tutodb', 3);
         openrequest.onsuccess = (e) => {
-            console.log('')
+            console.log('');
             dispatch(clearContacts());
             console.log('reading objectstore with cursor')
             let request = e.target.result.transaction('contacts', 'readonly')
                           .objectStore('contacts').openCursor()
             request.onsuccess = (e) => {
-                console.log('cursor open')
+                console.log('cursor open');
                 let cursor = e.target.result;
                 if (cursor) {
                     console.log('cursor not empty')
@@ -105,5 +105,31 @@ export function loadContacts () {
             request.onerror = (e) => { dispatch(contactAddFailed()); }
         }
         openrequest.onerror = (e) => { dispatch(contactAddFailed());  }
+    }
+}
+
+export function removeContact(email, status) {
+    return {
+        type: 'remove contact',
+        payload: email,
+        error: status=='error' ? true : false
+    }
+}
+
+export function deleteContact(email) {
+    console.log('dispatching delete contact');
+    return (dispatch) => {
+        console.log('opening database');
+        window.indexedDB.open('tutodb', 3).onsuccess = (e) => {
+            let req = e.target.result
+                .transaction('contacts', 'readwrite')
+                .objectStore('contacts').delete(email);
+            req.onsuccess = (e) => {
+                dispatch(removeContact(email));
+            }
+            req.onerror = (e) => {
+                dispatch(removeContact(email, 'error'))
+            }
+        }
     }
 }
