@@ -2,11 +2,7 @@ import {combineReducers} from 'redux';
 
 // initial state
 const initial_state = {
-    contacts: [
-        {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
-        {key: 2, name: "Jim", email: "jim@example.com"},
-        {key: 3, name: "Joe"},
-    ],
+    contacts: [],
     newContact: {name: undefined, email: undefined, description: undefined},
     path: '/'
 };
@@ -25,7 +21,9 @@ export function contacts(contacts, action) {
             return [...contacts.slice(0, -1), {...action.payload, status: 'unsaved'}];
         case 'add contact':
             console.log('reducing with add contact')
-            return [...contacts, {...action.payload, status: 'saving'}];
+            return [...contacts, {...action.payload, status: action.meta.status || ''}];
+        case 'clear contacts':
+            return [];
         default:
             return initial_state.contacts;
     }

@@ -1,9 +1,10 @@
 
-export function addContact(contact) {
+export function addContact(contact, status=undefined) {
     console.log('Dispatching addContact')
     return {
         type: 'add contact',
-        payload: contact
+        payload: contact,
+        meta: {status}
     }
 }
 
@@ -11,20 +12,28 @@ export function storeContact(contact) {
     console.log('Dispatching storeContact()')
     return (dispatch) => {
         console.log('Opening database')
-        let request = window.indexedDB.open('tutodb3', 1);
+        let request = window.indexedDB.open('tutodb', 3);
         request.onsuccess = function(e) {
             console.log('Creating DB transaction to store contact')
             let db = e.target.result;
             let transaction = db.transaction('contacts', 'readwrite');
-            transaction.onsuccess = (e) => { console.log('transaction success'); dispatch(contactAdded(contact)); }
-            transaction.oncomplete = (e) => { console.log('transaction complete');dispatch(contactAdded(contact)); }
-            transaction.onerror = (e) => { console.log(e); dispatch(contactAddFailed(contact)); }
+            transaction.onsuccess = (e) => {
+                console.log('transaction success');
+                dispatch(contactAdded(contact)); }
+            transaction.oncomplete = (e) => {
+                console.log('transaction complete');
+                dispatch(contactAdded(contact)); }
+            transaction.onerror = (e) => {
+                console.log(e);
+                dispatch(contactAddFailed(contact)); }
             var addrequest;
             try {
                 console.log('objectStore add')
                 addrequest = transaction.objectStore('contacts').add(contact);
-                addrequest.onerror = (e) => { console.log(e); dispatch(contactAddFailed(contact)); }
-                dispatch(addContact(contact));
+                addrequest.onerror = (e) => {
+                    console.log(e);
+                    dispatch(contactAddFailed(contact)); }
+                dispatch(addContact(contact, 'saving'));
             } catch(e) {
                 console.log(e);
             }
@@ -64,5 +73,37 @@ export function finishDbRequest () {
     return {
         type: 'finishrequest',
         payload: undefined
+    }
+}
+
+export function clearContacts() {
+    console.log('dispatching clearContacts')
+    return {
+        type: 'clear contacts',
+    }
+}
+export function loadContacts () {
+    console.log('dispatching loadContacts')
+    return (dispatch) => {
+        console.log('opening database')
+        let openrequest = window.indexedDB.open('tutodb', 3);
+        openrequest.onsuccess = (e) => {
+            console.log('')
+            dispatch(clearContacts());
+            console.log('reading objectstore with cursor')
+            let request = e.target.result.transaction('contacts', 'readonly')
+                          .objectStore('contacts').openCursor()
+            request.onsuccess = (e) => {
+                console.log('cursor open')
+                let cursor = e.target.result;
+                if (cursor) {
+                    console.log('cursor not empty')
+                    dispatch(addContact(cursor.value));
+                    cursor.continue();
+                }
+            }
+            request.onerror = (e) => { dispatch(contactAddFailed()); }
+        }
+        openrequest.onerror = (e) => { dispatch(contactAddFailed());  }
     }
 }

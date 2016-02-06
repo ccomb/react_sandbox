@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {storeContact, changeHash} from './actions';
+import {loadContacts, storeContact, changeHash} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
@@ -103,12 +103,17 @@ console.log('First render and change hash dispatch')
 ReactDOM.render(rootElement, document.getElementById('react-app'));
 store.dispatch(changeHash());
 
-let request = window.indexedDB.open('tutodb3', 1);
+let request = window.indexedDB.open('tutodb', 3);
 request.onupgradeneeded = function(e) {
     console.log('Upgrading database...')
     var db = e.target.result;
-    try { db.deleteObjectStore('contacts'); } catch(e) {}
+    try {
+        db.deleteObjectStore('contacts');
+        console.log('Deleted the old database!')
+    } catch(e) {}
     let idbstore = db.createObjectStore('contacts', {keyPath: 'email'});
     idbstore.createIndex("email", "email", { unique: true });
     idbstore.createIndex("name", "name", { unique: false });
+    console.log('Database upgraded')
 };
+store.dispatch(loadContacts());
