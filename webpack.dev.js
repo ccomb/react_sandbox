@@ -1,0 +1,29 @@
+var webpack = require("webpack");
+
+module.exports = {
+  entry: [
+    "webpack-dev-server/client?http://localhost:3000",
+    "webpack/hot/only-dev-server",
+    "./app.jsx",
+    ],
+  output: {
+    path: __dirname + "/build",
+    filename: "bundle.js",
+    publicPath: "build/"
+  },
+  module: {
+        loaders: [
+            {
+                loader:'babel-loader',
+                test: /.jsx?$/,
+                exclude: /node_modules/,
+                query: {
+                    presets: ['es2015', 'stage-0', 'react']
+                }
+            }
+        ]
+    },
+  plugins: [
+    new webpack.DefinePlugin({'process.env':{'NODE_ENV': JSON.stringify('production')}})]
+};
+

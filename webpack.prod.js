@@ -1,3 +1,4 @@
+var webpack = require("webpack");
 
 module.exports = {
   entry: "./app.jsx",
@@ -17,6 +18,7 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+  plugins: []
 };
 
