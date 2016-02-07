@@ -5,6 +5,8 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
 import thunk from 'redux-thunk';
+import AppBar from 'material-ui/lib/app-bar';
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin(); // remove as of react 1.0
 
@@ -76,12 +78,14 @@ let NotFound = React.createClass({
 
 class ContactApp extends React.Component {
     get displayName() {return 'ContactApp'}
+    _onLeftIconButtonTouchTap(e) { alert('menu'); }
     render(e) {
         const {state, dispatch} = this.props;
         if (state.path == 'contacts') {
             var key = 0;
             return (<div>
-                      <h1>Contacts</h1>
+                    <AppBar title="Contacts" className="row" style={{margin: 0}}
+                            onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
                       <table>
                           {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
                       <ContactForm contacts={state.contacts} dispatch={dispatch}/>

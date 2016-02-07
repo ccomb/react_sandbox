@@ -11,6 +11,7 @@
   "author": "ccomb",
   "license": "ISC",
   "dependencies": {
+    "flexboxgrid": "^6.3.0",
     "material-ui": "^0.14.4",
     "react": "*",
     "react-dom": "*",
