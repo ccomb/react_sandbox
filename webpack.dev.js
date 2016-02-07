@@ -7,23 +7,18 @@ module.exports = {
     "./app.jsx",
     ],
   output: {
-    path: __dirname + "/build",
     filename: "bundle.js",
     publicPath: "build/"
   },
   module: {
         loaders: [
             {
-                loader:'babel-loader',
+                loaders:['react-hot', 'babel-loader'],
                 test: /.jsx?$/,
                 exclude: /node_modules/,
-                query: {
-                    presets: ['es2015', 'stage-0', 'react']
-                }
             }
         ]
     },
-  plugins: [
-    new webpack.DefinePlugin({'process.env':{'NODE_ENV': JSON.stringify('production')}})]
+  plugins: [  new webpack.HotModuleReplacementPlugin(), ]
 };
 

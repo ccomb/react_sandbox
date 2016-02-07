@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "node_modules/.bin/webpack-dev-server --config webpack.dev.js --hot --port=3000",
+    "dev": "node_modules/.bin/webpack-dev-server --config webpack.dev.js --port=3000",
     "build": "node_modules/.bin/webpack --config webpack.prod.js -p",
     "test": "mocha --compilers js:babel-core/register ./test.js"
   },
