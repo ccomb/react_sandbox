@@ -5,6 +5,8 @@ import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
 import thunk from 'redux-thunk';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin(); // remove as of react 1.0
 
 var store = createStore(globalreducer, applyMiddleware(thunk));
 

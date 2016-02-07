@@ -11,9 +11,11 @@
   "author": "ccomb",
   "license": "ISC",
   "dependencies": {
+    "material-ui": "^0.14.4",
     "react": "*",
     "react-dom": "*",
     "react-redux": "*",
+    "react-tap-event-plugin": "^0.2.2",
     "redux": "*",
     "redux-thunk": "*"
   },
