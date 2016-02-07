@@ -21,15 +21,13 @@ let ContactItem = connect(select)(React.createClass({
     render: function() {
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
-        return (<li className='Contact'>
-                <div className='Contact-name'>
-                    <button onClick={this.onDelete}>X</button>
-                    {this.props.name}
-                </div>
-                <a href={this.props.email}>{this.props.email}</a>
-                <div>{this.props.description}</div>
-                Status: <span style={{background: color, color: 'white'}}>{status}</span>
-                </li>);
+        return (<tr className='Contact' style={{border: "1px"}}>
+                <td><button onClick={this.onDelete}>X</button></td>
+                <td className='Contact-name'>{this.props.name}</td>
+                <td><a href={this.props.email}>{this.props.email}</a></td>
+                <td>{this.props.description}</td>
+                <td>Status: <span style={{background: color, color: 'white'}}>{status}</span></td>
+                </tr>);
         
     }
 })
@@ -54,15 +52,15 @@ let ContactForm = React.createClass({
             this.refs[field].value = '';}
     },
     render: function() {
-        return (<div>
-                    <input id='name' ref='name' type='text' placeholder='name'
-                           required={true}/>
-                    <input id='email' ref='email' type='text' placeholder='email'
-                           required={true}/>
-                    <input id='description' ref='description' type='text' placeholder='description'
-                           required={false}/>
-                    <button ref='button' onClick={this.onSubmit}>Add contact</button>
-                </div>);
+        return (<tr><td/>
+                    <td><input id='name' ref='name' type='text' placeholder='name'
+                           required={true}/></td>
+                    <td><input id='email' ref='email' type='text' placeholder='email'
+                           required={true}/></td>
+                    <td><input id='description' ref='description' type='text' placeholder='description'
+                           required={false}/></td>
+                    <td><button ref='button' onClick={this.onSubmit}>Add contact</button></td>
+                </tr>);
     }
 });
 
@@ -82,10 +80,10 @@ class ContactApp extends React.Component {
             var key = 0;
             return (<div>
                       <h1>Contacts</h1>
-                      <ul>
+                      <table>
                           {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
-                      </ul>
                       <ContactForm contacts={state.contacts} dispatch={dispatch}/>
+                      </table>
                     </div>);    
         } else { return <NotFound/> }
     }
