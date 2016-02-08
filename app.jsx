@@ -20,6 +20,7 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
 import IconButton from 'material-ui/lib/icon-button';
 import Delete from 'material-ui/lib/svg-icons/action/delete'
+import Paper from 'material-ui/lib/paper';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -41,7 +42,7 @@ let ContactItem = connect(select)(React.createClass({
     render: function() {
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
-        return (<TableRow className='Contact' style={{border: "1px"}}>
+        return (<TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
                         Status: <span style={{background: color, color: 'white'}}>{status}</span>
                     </TableRowColumn>
@@ -84,7 +85,8 @@ let ContactForm = React.createClass({
             this.refs[field].setValue('');}
     },
     render: function() {
-        return (<TableRow><TableRowColumn/>
+        return (<TableRow>
+                    <TableRowColumn/>
                     <TableRowColumn>
                         <TextField id='name' ref='name'floatingLabelText='name' errorText='required'/>
                     </TableRowColumn>
@@ -95,7 +97,7 @@ let ContactForm = React.createClass({
                         <TextField id='description' ref='description' floatingLabelText='description'/>
                     </TableRowColumn>
                     <TableRowColumn>
-                        <FloatingActionButton ref='button' onClick={this.onSubmit} mini={true}>
+                        <FloatingActionButton ref='button' onClick={this.onSubmit} mini={true} zDepth="1">
                             <ContentAdd/>
                         </FloatingActionButton>
                     </TableRowColumn>
@@ -130,11 +132,19 @@ class ContactApp extends React.Component {
                       />
                     </SelectableList>
                     </LeftNav>
-
-                      <Table><TableBody>
-                          {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
-                      <ContactForm contacts={state.contacts} dispatch={dispatch}/>
-                      </TableBody></Table>
+                      <div className="row center-sm" style={{margin: '1%'}}>
+                        <div className="col-xs-12 col-sm-9 col-sm-offset-3
+                                        col-md-9 col-md-offset-3 col-lg-10 col-lg-offset-2">
+                          <Paper className="box" style={{padding: '3%'}}>
+                            <Table>
+                              <TableBody>
+                                {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
+                            <ContactForm contacts={state.contacts} dispatch={dispatch}/>
+                              </TableBody>
+                            </Table>
+                          </Paper>
+                        </div>
+                      </div>
                     </div>);    
         } else { return <NotFound/> }
     }
