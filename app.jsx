@@ -6,6 +6,16 @@ import {Provider, connect} from 'react-redux';
 import globalreducer from './reducers';
 import thunk from 'redux-thunk';
 import AppBar from 'material-ui/lib/app-bar';
+import LeftNav from 'material-ui/lib/left-nav';
+import List from 'material-ui/lib/lists/list';
+import ListItem from 'material-ui/lib/lists/list-item';
+import Table from 'material-ui/lib/table/table'
+import TableHeader from 'material-ui/lib/table/table-header'
+import TableBody from 'material-ui/lib/table/table-body'
+import TableRow from 'material-ui/lib/table/table-row'
+import TableRowColumn from 'material-ui/lib/table/table-row-column'
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+const SelectableList = SelectableContainerEnhance(List);
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin(); // remove as of react 1.0
@@ -25,13 +35,15 @@ let ContactItem = connect(select)(React.createClass({
     render: function() {
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
-        return (<tr className='Contact' style={{border: "1px"}}>
-                <td><button onClick={this.onDelete}>X</button></td>
-                <td className='Contact-name'>{this.props.name}</td>
-                <td><a href={this.props.email}>{this.props.email}</a></td>
-                <td>{this.props.description}</td>
-                <td>Status: <span style={{background: color, color: 'white'}}>{status}</span></td>
-                </tr>);
+        return (<TableRow className='Contact' style={{border: "1px"}}>
+                <TableRowColumn><button onClick={this.onDelete}>X</button></TableRowColumn>
+                <TableRowColumn className='Contact-name'>{this.props.name}</TableRowColumn>
+                <TableRowColumn><a href={this.props.email}>{this.props.email}</a></TableRowColumn>
+                <TableRowColumn>{this.props.description}</TableRowColumn>
+                <TableRowColumn>
+                    Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                    </TableRowColumn>
+                </TableRow>);
         
     }
 })
@@ -56,15 +68,15 @@ let ContactForm = React.createClass({
             this.refs[field].value = '';}
     },
     render: function() {
-        return (<tr><td/>
-                    <td><input id='name' ref='name' type='text' placeholder='name'
-                           required={true}/></td>
-                    <td><input id='email' ref='email' type='text' placeholder='email'
-                           required={true}/></td>
-                    <td><input id='description' ref='description' type='text' placeholder='description'
-                           required={false}/></td>
-                    <td><button ref='button' onClick={this.onSubmit}>Add contact</button></td>
-                </tr>);
+        return (<TableRow><TableRowColumn/>
+                    <TableRowColumn><input id='name' ref='name' type='text' placeholder='name'
+                           required={true}/></TableRowColumn>
+                    <TableRowColumn><input id='email' ref='email' type='text' placeholder='email'
+                           required={true}/></TableRowColumn>
+                    <TableRowColumn><input id='description' ref='description' type='text' placeholder='description'
+                           required={false}/></TableRowColumn>
+                    <TableRowColumn><button ref='button' onClick={this.onSubmit}>Add contact</button></TableRowColumn>
+                </TableRow>);
     }
 });
 
@@ -86,10 +98,20 @@ class ContactApp extends React.Component {
             return (<div>
                     <AppBar title="Contacts" className="row" style={{margin: 0}}
                             onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
-                      <table>
+                    <LeftNav ref="leftnav" open={false} docked={true}>
+                    <SelectableList
+                      subheader="Menu">
+                      <ListItem
+                        value="project/form"
+                        primaryText="Contacts"
+                      />
+                    </SelectableList>
+                    </LeftNav>
+
+                      <Table><TableBody>
                           {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
                       <ContactForm contacts={state.contacts} dispatch={dispatch}/>
-                      </table>
+                      </TableBody></Table>
                     </div>);    
         } else { return <NotFound/> }
     }
