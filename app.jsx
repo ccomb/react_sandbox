@@ -9,11 +9,12 @@ import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import Table from 'material-ui/lib/table/table'
-import TableHeader from 'material-ui/lib/table/table-header'
-import TableBody from 'material-ui/lib/table/table-body'
-import TableRow from 'material-ui/lib/table/table-row'
-import TableRowColumn from 'material-ui/lib/table/table-row-column'
+import Table from 'material-ui/lib/table/table';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableBody from 'material-ui/lib/table/table-body';
+import TableRow from 'material-ui/lib/table/table-row';
+import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import TextField from 'material-ui/lib/text-field';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -69,11 +70,11 @@ let ContactForm = React.createClass({
     },
     render: function() {
         return (<TableRow><TableRowColumn/>
-                    <TableRowColumn><input id='name' ref='name' type='text' placeholder='name'
+                    <TableRowColumn><TextField id='name' ref='name' floatingLabelText='name'
                            required={true}/></TableRowColumn>
-                    <TableRowColumn><input id='email' ref='email' type='text' placeholder='email'
+                    <TableRowColumn><TextField id='email' ref='email' floatingLabelText='email'
                            required={true}/></TableRowColumn>
-                    <TableRowColumn><input id='description' ref='description' type='text' placeholder='description'
+                    <TableRowColumn><TextField id='description' ref='description' floatingLabelText='description'
                            required={false}/></TableRowColumn>
                     <TableRowColumn><button ref='button' onClick={this.onSubmit}>Add contact</button></TableRowColumn>
                 </TableRow>);
