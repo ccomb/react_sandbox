@@ -15,6 +15,11 @@ import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TextField from 'material-ui/lib/text-field';
+import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import ContentAdd from 'material-ui/lib/svg-icons/content/add';
+import ContentRemove from 'material-ui/lib/svg-icons/content/remove';
+import IconButton from 'material-ui/lib/icon-button';
+import Delete from 'material-ui/lib/svg-icons/action/delete'
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -37,12 +42,22 @@ let ContactItem = connect(select)(React.createClass({
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
         return (<TableRow className='Contact' style={{border: "1px"}}>
-                <TableRowColumn><button onClick={this.onDelete}>X</button></TableRowColumn>
-                <TableRowColumn className='Contact-name'>{this.props.name}</TableRowColumn>
-                <TableRowColumn><a href={this.props.email}>{this.props.email}</a></TableRowColumn>
-                <TableRowColumn>{this.props.description}</TableRowColumn>
-                <TableRowColumn>
-                    Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                    <TableRowColumn>
+                        Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                    </TableRowColumn>
+                    <TableRowColumn className='Contact-name'>
+                        {this.props.name}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <a href={this.props.email}>{this.props.email}</a>
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {this.props.description}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <IconButton iconClassName='' onClick={this.onDelete}>
+                            <Delete/>
+                        </IconButton>
                     </TableRowColumn>
                 </TableRow>);
         
@@ -60,23 +75,30 @@ let ContactForm = React.createClass({
     onSubmit: function(e) {
         e.preventDefault()
         var contact = {
-            name: this.refs['name'].value,
-            email: this.refs['email'].value,
-            description: this.refs['description'].value
+            name: this.refs['name'].getValue(),
+            email: this.refs['email'].getValue(),
+            description: this.refs['description'].getValue()
         }
         this.props.dispatch(storeContact(contact))
         for (var field of ['name', 'email', 'description']) {
-            this.refs[field].value = '';}
+            this.refs[field].setValue('');}
     },
     render: function() {
         return (<TableRow><TableRowColumn/>
-                    <TableRowColumn><TextField id='name' ref='name' floatingLabelText='name'
-                           required={true}/></TableRowColumn>
-                    <TableRowColumn><TextField id='email' ref='email' floatingLabelText='email'
-                           required={true}/></TableRowColumn>
-                    <TableRowColumn><TextField id='description' ref='description' floatingLabelText='description'
-                           required={false}/></TableRowColumn>
-                    <TableRowColumn><button ref='button' onClick={this.onSubmit}>Add contact</button></TableRowColumn>
+                    <TableRowColumn>
+                        <TextField id='name' ref='name'floatingLabelText='name' errorText='required'/>
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <TextField id='email' ref='email' floatingLabelText='email' errorText='required'/>
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <TextField id='description' ref='description' floatingLabelText='description'/>
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <FloatingActionButton ref='button' onClick={this.onSubmit} mini={true}>
+                            <ContentAdd/>
+                        </FloatingActionButton>
+                    </TableRowColumn>
                 </TableRow>);
     }
 });
