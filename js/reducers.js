@@ -7,6 +7,7 @@ export const XS = () => 48*Number(getComputedStyle(document.body, "").fontSize.m
 const initial_state = {
     contacts: [],
     newContact: {
+        surname: undefined,
         name: undefined,
         email: undefined,
         description: undefined

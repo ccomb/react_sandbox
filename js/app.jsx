@@ -32,6 +32,7 @@ var store = createStore(globalreducer, applyMiddleware(thunk));
 let ContactItem = connect(select)(React.createClass({
     displayName: 'ContactItem',
     propTypes: {
+        surname: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,
         email: React.PropTypes.string,
         description: React.PropTypes.string
@@ -45,6 +46,9 @@ let ContactItem = connect(select)(React.createClass({
         return (<TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
                         Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                    </TableRowColumn>
+                    <TableRowColumn className='Contact-surname'>
+                        {this.props.surname}
                     </TableRowColumn>
                     <TableRowColumn className='Contact-name'>
                         {this.props.name}
@@ -76,6 +80,7 @@ let ContactForm = React.createClass({
     onSubmit: function(e) {
         e.preventDefault()
         var contact = {
+            surname: this.refs['surname'].getValue(),
             name: this.refs['name'].getValue(),
             email: this.refs['email'].getValue(),
             description: this.refs['description'].getValue()
@@ -87,6 +92,9 @@ let ContactForm = React.createClass({
     render: function() {
         return (<TableRow>
                     <TableRowColumn/>
+                    <TableRowColumn>
+                        <TextField id='surname' ref='surname'floatingLabelText='surname'/>
+                    </TableRowColumn>
                     <TableRowColumn>
                         <TextField id='name' ref='name'floatingLabelText='name' errorText='required'/>
                     </TableRowColumn>
