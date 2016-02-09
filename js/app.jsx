@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {deleteContact, loadContacts, storeContact, changeHash} from './actions';
+import {deleteContact, loadContacts, storeContact, changeHash, openMenu, closeMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
-import globalreducer from './reducers';
+import {XS, globalreducer} from './reducers';
 import thunk from 'redux-thunk';
 import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
@@ -107,15 +107,20 @@ let ContactForm = React.createClass({
 
 
 let NotFound = React.createClass({
+
     displayName: 'NotFound',
+
     render: function(e){
         return (<p><a href='#/contacts'>Contacts</a></p>);
     }
 })
 
+
 class ContactApp extends React.Component {
     get displayName() {return 'ContactApp'}
-    _onLeftIconButtonTouchTap(e) { alert('menu'); }
+
+    _onLeftIconButtonTouchTap(e) { alert('menu'); }    
+
     render(e) {
         const {state, dispatch} = this.props;
         if (state.path == 'contacts') {
@@ -123,7 +128,7 @@ class ContactApp extends React.Component {
             return (<div>
                     <AppBar title="Contacts" className="row" style={{margin: 0}}
                             onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
-                    <LeftNav ref="leftnav" open={false} docked={true}>
+                    <LeftNav ref="leftnav" open={this.props.state.menu.open} docked={true}>
                     <SelectableList
                       subheader="Menu">
                       <ListItem
@@ -133,8 +138,8 @@ class ContactApp extends React.Component {
                     </SelectableList>
                     </LeftNav>
                       <div className="row center-sm" style={{margin: '1%'}}>
-                        <div className="col-xs-12 col-sm-9 col-sm-offset-3
-                                        col-md-9 col-md-offset-3 col-lg-10 col-lg-offset-2">
+                        <div className="col-xs-12 col-sm-10 col-sm-offset-2
+                                        col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
                           <Paper className="box" style={{padding: '3%'}}>
                             <Table>
                               <TableBody>
@@ -156,9 +161,7 @@ const select = function(state) {
 
 var ReduxApp = connect(select)(ContactApp);
 
-window.addEventListener(
-    'hashchange',
-    function(e) {
+window.addEventListener('hashchange', function(e) {
         store.dispatch(changeHash());
     }, false)
 
@@ -167,8 +170,14 @@ var rootElement = (<Provider store={store}>
                    </Provider>);
 console.log('First render and change hash dispatch')
 ReactDOM.render(rootElement, document.getElementById('react-app'));
+
 store.dispatch(changeHash());
 
+window.addEventListener('resize', function(e) {
+    store.dispatch(window.innerWidth <= XS() ? closeMenu() : openMenu());
+}, false)
+
+/**** indexedDB ****/
 let request = window.indexedDB.open('tutodb', 3);
 request.onupgradeneeded = function(e) {
     console.log('Upgrading database...')
@@ -184,6 +193,7 @@ request.onupgradeneeded = function(e) {
 };
 store.dispatch(loadContacts());
 
+/**** Service Worker ****/
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', {'scope': '/'}).then(function(reg) {
         console.log('Service worker registration succeeded');
@@ -191,3 +201,4 @@ if ('serviceWorker' in navigator) {
         console.log('Service worker registration failed');
     });
 };
+

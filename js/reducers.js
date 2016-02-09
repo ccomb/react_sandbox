@@ -1,13 +1,23 @@
 import {combineReducers} from 'redux';
 
+// XS media width is 48 * 'em' size in pixels
+export const XS = () => 48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
+
 // initial state
 const initial_state = {
     contacts: [],
-    newContact: {name: undefined, email: undefined, description: undefined},
-    path: '/'
-};
+    newContact: {
+        name: undefined,
+        email: undefined,
+        description: undefined
+    },
+    path: '/',
+    menu: {
+        open: (()=> window.innerWidth <= XS() ? true : false)()
+    }
+}
 
-export function contacts(contacts, action) {
+function contacts(contacts, action) {
     switch(action.type){
         case 'contact added':
             console.log('reducing with contact added')
@@ -31,7 +41,7 @@ export function contacts(contacts, action) {
     }
 }
 
-export function path(path, action) {
+function path(path, action) {
     const oldpath = path;
     const newpath=action.payload;
     switch(action.type) {
@@ -46,5 +56,15 @@ export function path(path, action) {
     }
 }
 
-const globalreducer = combineReducers({contacts, path});
-export default globalreducer;
+function menu(menu, action) {
+    switch (action.type) {
+        case 'open menu':
+            return {...menu, open: true};
+        case 'close menu':
+            return {...menu, open: false};
+        default:
+            return window.screen.width <= XS() ? true : false;
+    }
+}
+
+export const globalreducer = combineReducers({contacts, path, menu});
