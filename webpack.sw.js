@@ -1,9 +1,5 @@
-var webpack = require("webpack");
-
 module.exports = {
   entry: [
-    "webpack-dev-server/client?http://localhost:3000",
-    "webpack/hot/only-dev-server",
     "./js/app.jsx",
     ],
   output: {
@@ -13,12 +9,11 @@ module.exports = {
   module: {
         loaders: [
             {
-                loaders:['react-hot', 'babel-loader'],
+                loaders:['babel-loader'],
                 test: /.jsx?$/,
                 exclude: /node_modules/,
             }
         ]
     },
-  plugins: [  new webpack.HotModuleReplacementPlugin(), ]
 };
 

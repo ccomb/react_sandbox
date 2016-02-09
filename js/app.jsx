@@ -183,3 +183,11 @@ request.onupgradeneeded = function(e) {
     console.log('Database upgraded')
 };
 store.dispatch(loadContacts());
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', {'scope': '/'}).then(function(reg) {
+        console.log('Service worker registration succeeded');
+    }).catch(function(reg) {
+        console.log('Service worker registration failed');
+    });
+};

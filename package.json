@@ -5,9 +5,10 @@
   "main": "app.js",
   "scripts": {
     "dev": "node_modules/.bin/webpack-dev-server --config webpack.dev.js --port=3000 --progress",
-    "build": "node_modules/.bin/webpack --config webpack.prod.js -p --progress",
-    "test": "mocha --compilers js:babel-core/register ./test.js",
-    "deploy": "ssh cody 'mkdir -p /srv/web/sandbox/build' && scp index.html cody:/srv/web/sandbox && scp build/bundle.js cody:/srv/web/sandbox/build"
+    "sw": "node_modules/.bin/webpack-dev-server --config webpack.sw.js --port=3000 --progress",
+    "build": "rm -rf ./build/* && cp js/sw.js css/* fonts/* build/ && node_modules/.bin/webpack --config webpack.prod.js -p --progress",
+    "test": "mocha --compilers js:babel-core/register ./js/test.js",
+    "deploy": "npm run build && ssh cody rm -r /srv/web/sandbox/build && rsync -r index.html build cody:/srv/web/sandbox/"
   },
   "author": "ccomb",
   "license": "ISC",
