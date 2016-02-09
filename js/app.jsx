@@ -126,9 +126,9 @@ class ContactApp extends React.Component {
         if (state.path == 'contacts') {
             var key = 0;
             return (<div>
-                    <AppBar title="Contacts" className="row" style={{margin: 0}}
+                    <AppBar title="Contacts" className="row" style={{margin: 0, zIndex: 2000}}
                             onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
-                    <LeftNav ref="leftnav" open={this.props.state.menu.open} docked={true}>
+                    <LeftNav ref="leftnav" open={this.props.state.menu.open} docked={true} style={{marginTop: '64px'}}>
                     <SelectableList
                       subheader="Menu">
                       <ListItem
