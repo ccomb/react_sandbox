@@ -136,3 +136,4 @@ export function deleteContact(email) {
 
 export function openMenu() { return { type: 'open menu' }; }
 export function closeMenu() { return { type: 'close menu' }; }
+export function toggleMenu() { return { type: 'toggle menu' }; }

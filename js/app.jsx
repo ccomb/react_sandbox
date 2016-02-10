@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {deleteContact, loadContacts, storeContact, changeHash, openMenu, closeMenu} from './actions';
+import {deleteContact, loadContacts, storeContact, changeHash, openMenu, closeMenu, toggleMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {XS, globalreducer} from './reducers';
@@ -127,7 +127,9 @@ let NotFound = React.createClass({
 class ContactApp extends React.Component {
     get displayName() {return 'ContactApp'}
 
-    _onLeftIconButtonTouchTap(e) { alert('menu'); }    
+    _onLeftIconButtonTouchTap(e) {
+        this.props.dispatch(toggleMenu());
+    }
 
     render(e) {
         const {state, dispatch} = this.props;

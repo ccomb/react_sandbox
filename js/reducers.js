@@ -63,6 +63,8 @@ function menu(menu, action) {
             return {...menu, open: true};
         case 'close menu':
             return {...menu, open: false};
+        case 'toggle menu':
+            return {...menu, open: !menu.open};
         default:
             return window.screen.width <= XS() ? true : false;
     }
