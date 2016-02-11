@@ -1,7 +1,5 @@
 import {combineReducers} from 'redux';
-
-// XS media width is 48 * 'em' size in pixels
-export const XS = () => 48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
+import XS from './actions';
 
 // initial state
 const initial_state = {
@@ -14,11 +12,12 @@ const initial_state = {
     },
     path: '/',
     menu: {
-        open: (()=> window.innerWidth <= XS() ? true : false)()
+        open: (()=> window.innerWidth <= XS ? false : true)(),
+        floating: (()=> window.innerWidth < XS ? true : false)()
     }
 }
 
-function contacts(contacts, action) {
+function contacts(contacts=initial_state.contacts, action) {
     switch(action.type){
         case 'contact added':
             console.log('reducing with contact added')
@@ -38,36 +37,37 @@ function contacts(contacts, action) {
         case 'remove contact':
             return contacts.filter((c)=>c.email!=action.payload ? true : false);
         default:
-            return initial_state.contacts;
+            return contacts;
     }
 }
 
-function path(path, action) {
-    const oldpath = path;
-    const newpath=action.payload;
+function path(path=initial_state.path, action) {
     switch(action.type) {
         case 'hashchange':
-            if (newpath) {
-                return newpath;    
+            if (action.payload) {
+                return action.payload;    
             } else {
                 return '/'
             }
         default:
-            return oldpath ? oldpath : '/';
+            return path;
     }
 }
 
-function menu(menu, action) {
+function menu(menu=initial_state.menu, action) {
     switch (action.type) {
         case 'open menu':
-            return {...menu, open: true};
+            return menu.open ? menu : {
+                ...menu,
+                open: true,
+                floating: action.payload.innerWidth<action.payload.xs};
         case 'close menu':
-            return {...menu, open: false};
+            return menu.open ? {...menu, open: false, floating: false} : menu;
         case 'toggle menu':
-            return {...menu, open: !menu.open};
+            return {...menu, open: !menu.open, floating: action.payload.innerWidth<action.payload.xs && !menu.open};
         default:
-            return window.screen.width <= XS() ? true : false;
+            return menu;
     }
 }
 
-export const globalreducer = combineReducers({contacts, path, menu});
+export const globalreducer = combineReducers({menu, contacts, path});

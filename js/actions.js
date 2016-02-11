@@ -1,3 +1,7 @@
+// XS media width is 48 * 'em' size in pixels
+export const XS = 48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
+export const MD = 62*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
+
 
 export function addContact(contact, status=undefined) {
     console.log('Dispatching addContact')
@@ -134,6 +138,30 @@ export function deleteContact(email) {
     }
 }
 
-export function openMenu() { return { type: 'open menu' }; }
-export function closeMenu() { return { type: 'close menu' }; }
-export function toggleMenu() { return { type: 'toggle menu' }; }
+export function openMenu() {
+    return {
+        type: 'open menu',
+        payload: {
+            innerWidth: window.innerWidth,
+            xs: XS
+        }
+    };
+}
+export function closeMenu() {
+    return {
+        type: 'close menu',
+        payload: {
+            innerWidth: window.innerWidth,
+            xs: XS
+        }
+    };
+}
+export function toggleMenu() {
+    return {
+        type: 'toggle menu',
+        payload: {
+            innerWidth: window.innerWidth,
+            xs: XS
+        }
+    };
+}
