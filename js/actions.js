@@ -142,8 +142,7 @@ export function openMenu() {
     return {
         type: 'open menu',
         payload: {
-            innerWidth: window.innerWidth,
-            xs: XS
+            innerWidth: window.innerWidth
         }
     };
 }
@@ -151,8 +150,7 @@ export function closeMenu() {
     return {
         type: 'close menu',
         payload: {
-            innerWidth: window.innerWidth,
-            xs: XS
+            innerWidth: window.innerWidth
         }
     };
 }
@@ -160,8 +158,7 @@ export function toggleMenu() {
     return {
         type: 'toggle menu',
         payload: {
-            innerWidth: window.innerWidth,
-            xs: XS
+            innerWidth: window.innerWidth
         }
     };
 }

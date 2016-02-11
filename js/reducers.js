@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import XS from './actions';
+import {XS, MD} from './actions';
 
 // initial state
 const initial_state = {
@@ -13,7 +13,7 @@ const initial_state = {
     path: '/',
     menu: {
         open: (()=> window.innerWidth <= XS ? false : true)(),
-        floating: (()=> window.innerWidth < XS ? true : false)()
+        floating: (()=> window.innerWidth < MD ? true : false)()
     }
 }
 
@@ -60,11 +60,11 @@ function menu(menu=initial_state.menu, action) {
             return menu.open ? menu : {
                 ...menu,
                 open: true,
-                floating: action.payload.innerWidth<action.payload.xs};
+                floating: action.payload.innerWidth<MD};
         case 'close menu':
             return menu.open ? {...menu, open: false, floating: false} : menu;
         case 'toggle menu':
-            return {...menu, open: !menu.open, floating: action.payload.innerWidth<action.payload.xs && !menu.open};
+            return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD && !menu.open};
         default:
             return menu;
     }
