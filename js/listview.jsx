@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import deleteContact from './actions';
+import {deleteContact} from './actions';
 import IconButton from 'material-ui/lib/icon-button';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
