@@ -35,19 +35,34 @@ class ContactApp extends React.Component {
     _onLeftIconButtonTouchTap(e) {
         this.props.dispatch(toggleMenu());
     }
+    _onRequestChange(e) {
+        this.props.dispatch(closeMenu());
+    }
 
     render(e) {
         const {state, dispatch} = this.props;
         if (state.path == 'contacts') {
-            const s = state.menu.floating ? '10' : '1'
-            const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`
+            const s = state.menu.floating ? '10' : '1';
+            const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
+            const floating = state.menu.floating;
             return (<div>
-                    <AppBar title="Contacts" className="row" style={{margin: 0, zIndex: 2000}} zDepth={0}
-                            onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
-                    <LeftNav ref="leftnav" open={state.menu.open}
-                             docked={true} style={{marginTop: '64px', boxShadow: menushadow}}>
+                    <AppBar
+                        title="Contacts"
+                        className="row"
+                        style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
+                        zDepth={0}
+                        onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
+                    <LeftNav
+                        ref="leftnav"
+                        open={state.menu.open}
+                        docked={floating?false:true}
+                        onRequestChange={this._onRequestChange.bind(this)}
+                        style={{
+                            marginTop: floating?0:'64px',
+                            boxShadow: menushadow,
+                            zIndex: floating?3000:0}}>
                         <SelectableList
-                          subheader="Menu">
+                          subheader="Logo">
                           <ListItem
                             value="project/form"
                             primaryText="Contacts"

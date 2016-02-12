@@ -11,16 +11,34 @@ export default class ViewWrapper extends React.Component {
     var key = 0;
     const {state, dispatch, leftoffset} = this.props;
     return (
-    <div>
-      <div className="row">
-      <Paper zDepth={0} className="box"
-             style={{padding: "1%", margin: "1%", background: "#EEE"}}>
-          header
-      </Paper>
-      </div>
-      <div className="row center-sm"
-           style={{margin: '1%', paddingLeft: leftoffset?'256px':'0',
-                   transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
+    <div
+        style={{
+            background: '#EEE',
+            paddingLeft: leftoffset?'256px':'0',
+            transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
+        <div
+            className="row between-sm"
+            style={{
+                margin: 0,
+                background: "#EEE",
+                width: '100%'}}>
+            <div className='col-sm-2 start-sm'>
+                <div className='box' style={{textAlign: 'center'}}>
+                    buttons
+                </div>
+            </div>
+            <div className='col-sm-2 center-sm'>
+                <div className='box' style={{textAlign: 'center'}}>
+                    actions
+                </div>
+            </div>
+            <div className='col-sm-2 end-md'>
+                <div className='box' style={{textAlign: 'center'}}>
+                    views
+                </div>
+            </div>
+        </div>
+      <div className="row center-sm" style={{margin: '1%'}}>
         <div>
           <Paper className="box" style={{padding: '3%'}}>
             <Table>
