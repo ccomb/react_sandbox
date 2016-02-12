@@ -12,7 +12,7 @@ const initial_state = {
     },
     path: '/',
     menu: {
-        open: (()=> window.innerWidth <= XS ? false : true)(),
+        open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
     }
 }
