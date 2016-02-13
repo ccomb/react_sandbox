@@ -70,7 +70,7 @@ export function changeHash(hash) {
     var path = window.location.hash.split('/').slice(1)[0]
     if (!path) {path = '/'}
     return {
-        type: 'hashchange',
+        type: 'CHANGE_HASH',
         payload: path
     }
 }

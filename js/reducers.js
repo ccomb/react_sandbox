@@ -42,13 +42,9 @@ function contacts(contacts=initial_state.contacts, action) {
 
 function path(path=initial_state.path, action) {
     switch(action.type) {
-        case 'hashchange':
+        case 'CHANGE_HASH':
             console.log('reducing with ' + action.type)
-            if (action.payload) {
-                return action.payload;    
-            } else {
-                return '/'
-            }
+            return path == action.payload ? path : action.payload;
         default:
             return path;
     }
