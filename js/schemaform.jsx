@@ -1,27 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TextWidget from 'material-ui/lib/text-field';
-import FlatButton from 'material-ui/lib/flat-button';
+import ReactGridLayout from 'react-grid-layout';
+import {onchangeField} from './actions';
+import {connect} from 'react-redux';
 
 
 const WIDGETS = {
     string: TextWidget
 }
 
-export var ObjectField = React.createClass({
+export var ObjectField = connect(state=>({state}))(React.createClass({
     displayName: 'ObjectField',
+    onChange: function(event) {
+        this.props.dispatch(onchangeField(event.target))
+    },
     render: function() {
         const {schema} = this.props;
-        var children = [];
-        Object.keys(schema.properties).map(function(name) {
-                children.push(
-                    React.createElement(WIDGETS[schema.properties[name].type] || ObjectField,
-                                        {schema: schema.properties[name]}))
-            }
+        const onChange = this.onChange;
+        var i = 0, self = this;
+        const children = Object.keys(schema.properties).map(function(name) {
+            return (<div key={name + i++}
+                         _grid={{x: 0, y: 2*i, w: 3, h: 1.5}}>
+                    {React.createElement(WIDGETS[schema.properties[name].type] || ObjectField,
+                                         {schema: schema.properties[name],
+                                          value: self.props.state.form[name],
+                                          onChange: onChange,
+                                          id: name,
+                                          floatingLabelText: name})}
+                    </div>
+            )
+        });
+        return (
+            <ReactGridLayout className="layout" cols={12} rowHeight={30} width={1500}>
+            {children}
+            </ReactGridLayout>
         )
-        return React.createElement('div', {}, ...children)
+                
     }
-})
+}));
 
 export var StringField = React.createClass({
     displayName: 'StringField',
@@ -45,11 +62,6 @@ export var SchemaForm = React.createClass({
     render: function() {
         const {schema} = this.props;
         const Field = FIELDS[schema.type];
-        return (
-            <form>
-                <Field schema={schema} />
-                <FlatButton label="Ok"/>
-            </form>
-        );
+        return <Field schema={schema} />;
     }
 })

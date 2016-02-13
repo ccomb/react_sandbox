@@ -13,12 +13,13 @@
   "author": "ccomb",
   "license": "ISC",
   "dependencies": {
-    "flexboxgrid": "^6.3.0",
-    "material-ui": "^0.14.4",
+    "flexboxgrid": "*",
+    "material-ui": "*",
     "react": "*",
     "react-dom": "*",
+    "react-grid-layout": "*",
     "react-redux": "*",
-    "react-tap-event-plugin": "^0.2.2",
+    "react-tap-event-plugin": "*",
     "redux": "*",
     "redux-thunk": "*"
   },

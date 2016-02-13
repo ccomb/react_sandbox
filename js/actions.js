@@ -23,10 +23,12 @@ export function storeContact(contact) {
             let transaction = db.transaction('contacts', 'readwrite');
             transaction.onsuccess = (e) => {
                 console.log('transaction success');
-                dispatch(contactAdded(contact)); }
+                dispatch(contactAdded(contact));
+                dispatch(clearForm()); }
             transaction.oncomplete = (e) => {
                 console.log('transaction complete');
-                dispatch(contactAdded(contact)); }
+                dispatch(contactAdded(contact));
+                dispatch(clearForm()); }
             transaction.onerror = (e) => {
                 console.log(e);
                 dispatch(contactAddFailed(contact)); }
@@ -86,13 +88,13 @@ export function clearContacts() {
         type: 'clear contacts',
     }
 }
+
 export function loadContacts () {
     console.log('dispatching loadContacts')
     return (dispatch) => {
         console.log('opening database');
         let openrequest = window.indexedDB.open('tutodb', 3);
         openrequest.onsuccess = (e) => {
-            console.log('');
             dispatch(clearContacts());
             console.log('reading objectstore with cursor')
             let request = e.target.result.transaction('contacts', 'readonly')
@@ -146,6 +148,7 @@ export function openMenu() {
         }
     };
 }
+
 export function closeMenu() {
     return {
         type: 'close menu',
@@ -154,6 +157,7 @@ export function closeMenu() {
         }
     };
 }
+
 export function toggleMenu() {
     return {
         type: 'toggle menu',
@@ -161,4 +165,20 @@ export function toggleMenu() {
             innerWidth: window.innerWidth
         }
     };
+}
+
+export function onchangeField(field) {
+    return {
+        type: 'ONCHANGE_FIELD',
+        payload: {
+            name: field.id,
+            value: field.value
+        }
+    }
+}
+
+export function clearForm() {
+    return {
+        type: 'CLEAR_FORM'
+    }
 }
