@@ -21,27 +21,28 @@ export function storeContact(contact) {
             console.log('Creating DB transaction to store contact')
             let db = e.target.result;
             let transaction = db.transaction('contacts', 'readwrite');
-            transaction.onsuccess = (e) => {
-                console.log('transaction success');
-                dispatch(contactAdded(contact));
-                dispatch(clearForm()); }
             transaction.oncomplete = (e) => {
-                console.log('transaction complete');
-                dispatch(contactAdded(contact));
-                dispatch(clearForm()); }
+                console.log('transaction completed');}
             transaction.onerror = (e) => {
                 console.log(e);
                 dispatch(contactAddFailed(contact)); }
             var addrequest;
             try {
-                console.log('objectStore add')
+                console.log('objectStore try to add')
+                dispatch(addContact(contact, 'saving'));
                 addrequest = transaction.objectStore('contacts').add(contact);
+                addrequest.onsuccess = (e) => {
+                    console.log(e);
+                    dispatch(contactAdded(contact));
+                    dispatch(clearForm()); }
                 addrequest.onerror = (e) => {
+                    console.log('addrequest onerror');
                     console.log(e);
                     dispatch(contactAddFailed(contact)); }
-                dispatch(addContact(contact, 'saving'));
             } catch(e) {
+                console.log('CATCHED EXCEPTION');
                 console.log(e);
+                dispatch(contactAddFailed(contact));
             }
         }
         request.onerror = (e) => { dispatch(contactAddFailed(contact)); }
