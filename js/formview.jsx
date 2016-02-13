@@ -7,6 +7,9 @@ import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import {connect} from 'react-redux';
 import {storeContact} from './actions';
+import {SchemaForm} from "./schemaform";
+import {schema} from "./schema";
+
 
 export var ContactForm = connect(state=>({state}))(React.createClass({
     displayName: 'ContactForm',
@@ -27,26 +30,33 @@ export var ContactForm = connect(state=>({state}))(React.createClass({
             this.refs[field].setValue('');}
     },
     render: function() {
-        return (<TableRow>
-                    <TableRowColumn/>
-                    <TableRowColumn>
-                        <TextField id='surname' ref='surname'floatingLabelText='surname'/>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <TextField id='name' ref='name'floatingLabelText='name' errorText='required'/>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <TextField id='email' ref='email' floatingLabelText='email' errorText='required'/>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <TextField id='description' ref='description' floatingLabelText='description'/>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <FloatingActionButton ref='button' onClick={this.onSubmit} mini={true} zDepth="1">
-                            <ContentAdd/>
-                        </FloatingActionButton>
-                    </TableRowColumn>
-                </TableRow>);
+        return (
+            <SchemaForm
+                schema={schema}
+                formData={{}}
+                onChange={console.log("changed")}
+                onSubmit={console.log("submitted")}
+                onError={console.log("errors")} />
+            /*<TableRow>
+                <TableRowColumn/>
+                <TableRowColumn>
+                    <TextField id='surname' ref='surname'floatingLabelText='surname'/>
+                </TableRowColumn>
+                <TableRowColumn>
+                    <TextField id='name' ref='name'floatingLabelText='name' errorText='required'/>
+                </TableRowColumn>
+                <TableRowColumn>
+                    <TextField id='email' ref='email' floatingLabelText='email' errorText='required'/>
+                </TableRowColumn>
+                <TableRowColumn>
+                    <TextField id='description' ref='description' floatingLabelText='description'/>
+                </TableRowColumn>
+                <TableRowColumn>
+                    <FloatingActionButton ref='button' onClick={this.onSubmit} mini={true} zDepth="1">
+                        <ContentAdd/>
+                    </FloatingActionButton>
+                </TableRowColumn>
+            </TableRow>*/);
     }
 }));
 

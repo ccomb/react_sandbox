@@ -39,14 +39,14 @@ export default class ViewWrapper extends React.Component {
             </div>
         </div>
       <div className="row center-sm" style={{margin: '1%'}}>
-        <div>
-          <Paper className="box" style={{padding: '3%'}}>
+        <div className="col-xs center">
+          <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <Table>
               <TableBody>
                 {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
-              <ContactForm contacts={state.contacts} dispatch={dispatch}/>
               </TableBody>
             </Table>
+            <ContactForm contacts={state.contacts} dispatch={dispatch}/>
           </Paper>
         </div>
       </div>
