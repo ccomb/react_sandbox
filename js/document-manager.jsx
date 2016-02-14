@@ -21,8 +21,7 @@ export var DocumentManager = connect(state=>({state}))(React.createClass({
     }
   },
   render: function() {
-    const {state, dispatch, leftoffset, route} = this.props;
-    var goto= this.route(route);
+    const {leftoffset, route} = this.props;
     return (
     <div
         style={{
@@ -51,7 +50,7 @@ export var DocumentManager = connect(state=>({state}))(React.createClass({
                 </div>
             </div>
         </div>
-        {goto}
+        {this.route(route)}
     </div>)
   }
 }));
