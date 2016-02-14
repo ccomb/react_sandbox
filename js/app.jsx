@@ -9,7 +9,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import {ViewWrapper} from './viewwrapper';
+import {DocumentManager} from './document-manager';
 import {NotFound} from './notfound';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
@@ -59,7 +59,7 @@ export var BackOffice = connect(state=>({state}))(React.createClass({
                       />
                     </SelectableList>
                 </LeftNav>
-                <ViewWrapper
+                <DocumentManager
                     leftoffset={window.innerWidth > MD && state.menu.open}
                     state={state}
                     route={route}/>

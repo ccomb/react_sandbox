@@ -3,7 +3,7 @@ import {ListView} from "./listview";
 import {FormView} from "./formview";
 import {connect} from 'react-redux';
 
-export var ViewWrapper = connect(state=>({state}))(React.createClass({
+export var DocumentManager = connect(state=>({state}))(React.createClass({
   route: function(segments) {
     const doctype = segments[0];
     const view = segments[1];
