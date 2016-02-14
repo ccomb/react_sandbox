@@ -46,6 +46,10 @@ function path(path=initial_state.path, action) {
         case 'CHANGE_HASH':
             console.log('reducing with ' + action.type);
             return path == action.payload ? path : action.payload;
+        case 'CHANGE_VIEW':
+            console.log('reducing with ' + action.type);
+            const {segments, current} = action.meta, view = action.payload;
+            return '#/' + [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/');
         default:
             return path;
     }

@@ -69,11 +69,20 @@ export function contactAddFailed(contact) {
 }
 
 export function changeRoute(hash) {
-    console.log('Dispatching changeRoute')
+    console.log('Dispatching changeRoute', hash)
     var path = window.location.hash
     return {
         type: 'CHANGE_HASH',
         payload: path
+    }
+}
+
+export function changeView(route, view) {
+    console.log('Dispatching changeView', route, view)
+    return {
+        type: 'CHANGE_VIEW',
+        payload: view,
+        meta: route
     }
 }
 

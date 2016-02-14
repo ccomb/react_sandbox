@@ -73,20 +73,21 @@ window.addEventListener('hashchange', function(e) {
 
 
 var RootComponent = connect(state=>({state}))(React.createClass({
-    route: function() { // routing methods could be moved to an adapter or hoc
-        const {state, route} = this.props;
+    component: function() { // routing methods could be moved to an adapter or hoc
+        const {state} = this.props;
         const path=state.path;
-        const first_segment = path.split("/").slice(1,2)[0]
-        const remaining = path.split("/").slice(2)
-        switch(first_segment) { // TODO make it pluggable
+        const segments = path.split("/").slice(1);
+        const current = 0;
+        const route = {segments, current:current+1};
+        switch(segments[current]) { // TODO make it pluggable
             case 'bo':
-                return (<BackOffice route={remaining}/>);
+                return (<BackOffice route={route}/>);
             default:
                 return (<NotFound/>);
          }
      },
     render: function() {
-        return this.route();
+        return this.component();
     }
 }));
 

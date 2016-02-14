@@ -4,53 +4,55 @@ import {FormView} from "./formview";
 import {connect} from 'react-redux';
 
 export var DocumentManager = connect(state=>({state}))(React.createClass({
-  route: function(segments) {
-    const doctype = segments[0];
-    const view = segments[1];
+  component: function(route) {
+    const {segments, current} = route;
+    const doctype = segments[current];
+    const view = segments[current+1];
+    const childroute = {...route, current: current+1};
     if (!doctype) {
         return (''); // TODO Dashboard
     } else {
         switch(view) { // TODO make it pluggable
             case 'list':
-                return (<ListView/>);
+                return (<ListView route={childroute}/>);
             case 'new':
-                return (<FormView/>);
+                return (<FormView route={childroute}/>);
             default:
-                return (<ListView/>);
+                return (<ListView route={childroute}/>);
          }
     }
   },
   render: function() {
     const {leftoffset, route} = this.props;
+    const background = route.segments[route.current] == 'new' ? '#EEE' : '#FFF';
     return (
     <div
         style={{
-            background: '#EEE',
-            paddingLeft: leftoffset?'256px':'0',
+            background,
+            paddingLeft: leftoffset ? '256px' : '0',
             transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
         <div
-            className="row between-sm"
+            className="row between-lg"
             style={{
                 margin: 0,
-                background: "#EEE",
                 width: '100%'}}>
-            <div className='col-sm-2 start-sm'>
+            <div className='col-sm-2'>
                 <div className='box' style={{textAlign: 'center'}}>
                     buttons
                 </div>
             </div>
-            <div className='col-sm-2 center-sm'>
+            <div className='col-sm-2'>
                 <div className='box' style={{textAlign: 'center'}}>
                     actions
                 </div>
             </div>
-            <div className='col-sm-2 end-md'>
+            <div className='col-sm-2'>
                 <div className='box' style={{textAlign: 'center'}}>
                     views
                 </div>
             </div>
         </div>
-        {this.route(route)}
+        {this.component(route)}
     </div>)
   }
 }));

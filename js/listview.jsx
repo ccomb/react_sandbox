@@ -7,24 +7,37 @@ import TableHeader from 'material-ui/lib/table/table-header';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import FlatButton from 'material-ui/lib/flat-button';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
 import {createStore, applyMiddleware} from 'redux';
 import {connect} from 'react-redux';
+import {changeView} from './actions';
 
 export var ListView = connect(state=>({state}))(React.createClass({
-    render() {
+    onCreate: function() {
+        const {route} = this.props;
+        this.props.dispatch(changeView(route, 'new'));
+    },
+    render: function() {
         const {state} = this.props;
-        var key = 0;
+        var key = 0; // FIXME
         return (
-          <div className="row center-sm" style={{margin: '1%'}}>
-            <div className="col-xs center">
-              <Table>
-                <TableBody>
-                  {state.contacts.map(c => {return <ListItem {...c} key={key++}/>})}
-                </TableBody>
-              </Table>
+        <div>
+            <div className="row start" style={{margin: 0}}>
+                <div className="col" style={{padding: 0}}>
+                    <FlatButton label="Create" onClick={this.onCreate} primary={true}/>
+                </div>
             </div>
-          </div>);
+            <div className="row" style={{margin: 0}}>
+                <div className="col" style={{padding: 0}}>
+                    <Table>
+                        <TableBody>
+                        {state.contacts.map(c => {return <ListItem {...c} key={key++}/>})}
+                        </TableBody>
+                    </Table>
+                </div>
+            </div>
+        </div>);
     }
 }));
 
@@ -42,7 +55,8 @@ export var ListItem = connect(state=>({state}))(React.createClass({
     render: function() {
         var status = this.props.status;
         var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
-        return (<TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
+        return (
+                <TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
                         Status: <span style={{background: color, color: 'white'}}>{status}</span>
                     </TableRowColumn>
