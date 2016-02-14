@@ -78,12 +78,9 @@ export function changeRoute(hash) {
 }
 
 export function changeView(route, view) {
-    console.log('Dispatching changeView', route, view)
-    return {
-        type: 'CHANGE_VIEW',
-        payload: view,
-        meta: route
-    }
+    console.log('changeView', route, view)
+    const {segments, current} = route;
+    window.location.hash = '#/' + [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/');
 }
 
 export function finishDbRequest () {

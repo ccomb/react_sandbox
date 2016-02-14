@@ -18,13 +18,13 @@ export var FormView = connect(state=>({state}))(React.createClass({
     },
     onCancel: function(e) {
         e.preventDefault()
-        this.props.dispatch(changeView(this.props.route, 'list'));
+        changeView(this.props.route, 'list');
     },
     onSubmit: function(e) {
         e.preventDefault()
         var contact = this.props.state.form;
         this.props.dispatch(storeContact(contact))
-        this.props.dispatch(changeView(this.props.route, 'list'));
+        changeView(this.props.route, 'list');
     },
     render: function() {
         return (
