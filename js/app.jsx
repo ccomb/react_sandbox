@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {XS, MD, loadContacts, changeHash, openMenu, closeMenu, toggleMenu} from './actions';
+import {XS, MD, loadContacts, changeRoute, openMenu, closeMenu, toggleMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
@@ -29,8 +29,8 @@ let NotFound = React.createClass({
 })
 
 
-class ContactApp extends React.Component {
-    get displayName() {return 'ContactApp'}
+class BackOffice extends React.Component {
+    get displayName() {return 'BackOffice'}
 
     _onLeftIconButtonTouchTap(e) {
         this.props.dispatch(toggleMenu());
@@ -42,7 +42,7 @@ class ContactApp extends React.Component {
     render(e) {
         const {state, dispatch} = this.props;
         console.log('state.path='+state.path);
-        if (['contacts', 'newcontact'].indexOf(state.path)>=0) {
+        if (['#/contacts', '#/newcontact'].indexOf(state.path)>=0) {
             const s = state.menu.floating ? '10' : '1';
             const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
             const floating = state.menu.floating;
@@ -76,10 +76,10 @@ class ContactApp extends React.Component {
     }
 }
 
-var ReduxApp = connect(state=>({state}))(ContactApp);
+var ReduxApp = connect(state=>({state}))(BackOffice);
 
 window.addEventListener('hashchange', function(e) {
-        store.dispatch(changeHash());
+        store.dispatch(changeRoute());
     }, false)
 
 var rootElement = (<Provider store={store}>
@@ -88,7 +88,7 @@ var rootElement = (<Provider store={store}>
 console.log('First render and change hash dispatch')
 ReactDOM.render(rootElement, document.getElementById('react-app'));
 
-store.dispatch(changeHash());
+store.dispatch(changeRoute());
 
 window.addEventListener('resize', function(e) {
     if (store.getState().menu.open && window.innerWidth <= MD) {

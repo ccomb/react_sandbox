@@ -1,6 +1,9 @@
-// XS media width is 48 * 'em' size in pixels
-export const XS = 48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
-export const MD = 62*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]);
+// XS media width is 48 * 'em' size in pixels // typeof is for mocha
+export const XS = typeof window !== 'undefined' ?
+    48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 768;
+export const MD = typeof window !== 'undefined' ?
+    62*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 992;
+
 
 
 export function addContact(contact, status=undefined) {
@@ -65,10 +68,9 @@ export function contactAddFailed(contact) {
     }
 }
 
-export function changeHash(hash) {
-    console.log('Dispatching changeHash')
-    var path = window.location.hash.split('/').slice(1)[0]
-    if (!path) {path = '/'}
+export function changeRoute(hash) {
+    console.log('Dispatching changeRoute')
+    var path = window.location.hash
     return {
         type: 'CHANGE_HASH',
         payload: path

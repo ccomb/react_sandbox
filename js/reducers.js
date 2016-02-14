@@ -43,7 +43,7 @@ function contacts(contacts=initial_state.contacts, action) {
 function path(path=initial_state.path, action) {
     switch(action.type) {
         case 'CHANGE_HASH':
-            console.log('reducing with ' + action.type)
+            console.log('reducing with ' + action.type);
             return path == action.payload ? path : action.payload;
         default:
             return path;
