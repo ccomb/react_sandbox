@@ -1,11 +1,31 @@
 import React from "react";
 import {ListView} from "./listview";
 import {FormView} from "./formview";
+import {connect} from 'react-redux';
 
-export default class ViewWrapper extends React.Component {
-  render() {
-    const {state, dispatch, leftoffset} = this.props;
-    console.log('state.path→'+state.path);
+export var ViewWrapper = connect(state=>({state}))(React.createClass({
+  route: function(path) {
+    const segments = path.split('/');
+    const doctype = segments[2];
+    const view = segments[3];
+    if (!doctype) {
+        return (''); // TODO Dashboard
+    } else {
+        switch(view) { // TODO make it pluggable
+            case 'list':
+                return (<ListView/>);
+            case 'new':
+                return (<FormView/>);
+            default:
+                return (<ListView/>);
+         }
+    }
+  },
+  render: function() {
+    const {state, dispatch, leftoffset, route} = this.props;
+    console.log('state.path = '+state.path);
+    console.log('this.props.route = '+route);
+    var goto= this.route(route);
     return (
     <div
         style={{
@@ -34,7 +54,7 @@ export default class ViewWrapper extends React.Component {
                 </div>
             </div>
         </div>
-        {state.path == '#/bo/contacts' ? <ListView/> : state.path == '#/bo/newcontact' ? <FormView/> : ''}
+        {goto}
     </div>)
   }
-}
+}));

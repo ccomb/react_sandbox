@@ -9,7 +9,8 @@ import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import ViewWrapper from './viewwrapper';
+import {ViewWrapper} from './viewwrapper';
+import {NotFound} from './notfound';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -19,29 +20,18 @@ injectTapEventPlugin(); // remove as of react 1.0
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
 
-let NotFound = React.createClass({
+export var BackOffice = connect(state=>({state}))(React.createClass({
+    displayName: 'BackOffice',
 
-    displayName: 'NotFound',
-
-    render: function(e){
-        return (<p><a href='#/bo/contacts'>Contacts</a></p>);
-    }
-})
-
-
-class BackOffice extends React.Component {
-    get displayName() {return 'BackOffice'}
-
-    _onLeftIconButtonTouchTap(e) {
+    _onLeftIconButtonTouchTap: function(e) {
         this.props.dispatch(toggleMenu());
-    }
-    _onRequestChange(e) {
+    },
+    _onRequestChange: function(e) {
         this.props.dispatch(closeMenu());
-    }
+    },
 
-    render(e) {
-        const {state, dispatch} = this.props;
-        console.log('state.path='+state.path);
+    render: function(e) {
+        const {state, dispatch, route} = this.props;
         const s = state.menu.floating ? '10' : '1';
         const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
         const floating = state.menu.floating;
@@ -51,12 +41,12 @@ class BackOffice extends React.Component {
                     className="row"
                     style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
                     zDepth={0}
-                    onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
+                    onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap} />
                 <LeftNav
                     ref="leftnav"
                     open={state.menu.open}
                     docked={floating?false:true}
-                    onRequestChange={this._onRequestChange.bind(this)}
+                    onRequestChange={this._onRequestChange}
                     style={{
                         marginTop: floating?0:'64px',
                         boxShadow: menushadow,
@@ -72,38 +62,36 @@ class BackOffice extends React.Component {
                 <ViewWrapper
                     leftoffset={window.innerWidth > MD && state.menu.open}
                     state={state}
-                    route={this.props.route}/>
-                </div>);    
+                    route={route}/>
+                </div>);
     }
-}
-
-var ReduxApp = connect(state=>({state}))(BackOffice);
+}));
 
 window.addEventListener('hashchange', function(e) {
         store.dispatch(changeRoute());
     }, false)
 
 
-var RootComponent = React.createClass({
-    route(path=store.getState().path) { // routing methods could be moved to an adapter or hoc
+var RootComponent = connect(state=>({state}))(React.createClass({
+    route: function() { // routing methods could be moved to an adapter or hoc
+        const {state, route} = this.props;
+        const path=state.path;
         const first_segment = path.split("/").slice(1,2)[0]
-        const remaining = path.split("/").slice(2)
         switch(first_segment) { // TODO make it pluggable
             case 'bo':
-                return (<ReduxApp route={remaining}/>);
+                return (<BackOffice route={path}/>);
             default:
                 return (<NotFound/>);
          }
      },
-    render() {
-        return (<Provider store={store}>
-                    {this.route()}
-                </Provider>);
+    render: function() {
+        return this.route();
     }
-})
+}));
+
 
 console.log('First render and change hash dispatch')
-ReactDOM.render(<RootComponent/>, document.getElementById('react-app'));
+ReactDOM.render(<Provider store={store}><RootComponent/></Provider>, document.getElementById('react-app'));
 
 store.dispatch(changeRoute());
 
