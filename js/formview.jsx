@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TableRow from 'material-ui/lib/table/table-row';
-import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import TextField from 'material-ui/lib/text-field';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FlatButton from 'material-ui/lib/flat-button';
@@ -9,10 +7,11 @@ import {connect} from 'react-redux';
 import {storeContact} from './actions';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
+import Paper from 'material-ui/lib/paper';
 
 
-export var ContactForm = connect(state=>({state}))(React.createClass({
-    displayName: 'ContactForm',
+export var FormView = connect(state=>({state}))(React.createClass({
+    displayName: 'FormView',
     propTypes: {
         contact: React.PropTypes.object,
         onSubmit: React.PropTypes.func
@@ -24,6 +23,9 @@ export var ContactForm = connect(state=>({state}))(React.createClass({
     },
     render: function() {
         return (
+      <div className="row center-sm" style={{margin: '1%'}}>
+        <div className="col-xs center">
+          <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
             <SchemaForm
                 schema={schema}
@@ -35,7 +37,10 @@ export var ContactForm = connect(state=>({state}))(React.createClass({
                     label="Save"
                     onClick={this.onSubmit}
                     primary={true}/>
-            </form>);
+            </form>
+          </Paper>
+        </div>
+      </div>);
     }
 }));
 

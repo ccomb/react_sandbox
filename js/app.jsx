@@ -41,7 +41,8 @@ class ContactApp extends React.Component {
 
     render(e) {
         const {state, dispatch} = this.props;
-        if (state.path == 'contacts') {
+        console.log('state.path='+state.path);
+        if (['contacts', 'newcontact'].indexOf(state.path)>=0) {
             const s = state.menu.floating ? '10' : '1';
             const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
             const floating = state.menu.floating;

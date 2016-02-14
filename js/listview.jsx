@@ -2,14 +2,34 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {deleteContact} from './actions';
 import IconButton from 'material-ui/lib/icon-button';
+import Table from 'material-ui/lib/table/table';
+import TableHeader from 'material-ui/lib/table/table-header';
+import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
 import {createStore, applyMiddleware} from 'redux';
 import {connect} from 'react-redux';
 
-export var ContactItem = connect(state=>({state}))(React.createClass({
-    displayName: 'ContactItem',
+export var ListView = connect(state=>({state}))(React.createClass({
+    render() {
+        const {state} = this.props;
+        var key = 0;
+        return (
+          <div className="row center-sm" style={{margin: '1%'}}>
+            <div className="col-xs center">
+              <Table>
+                <TableBody>
+                  {state.contacts.map(c => {return <ListItem {...c} key={key++}/>})}
+                </TableBody>
+              </Table>
+            </div>
+          </div>);
+    }
+}));
+
+export var ListItem = connect(state=>({state}))(React.createClass({
+    displayName: 'ListItem',
     propTypes: {
         surname: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,

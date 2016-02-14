@@ -1,15 +1,11 @@
 import React from "react";
-import Paper from 'material-ui/lib/paper';
-import Table from 'material-ui/lib/table/table';
-import TableHeader from 'material-ui/lib/table/table-header';
-import TableBody from 'material-ui/lib/table/table-body';
-import {ContactItem} from "./listview";
-import {ContactForm} from "./formview";
+import {ListView} from "./listview";
+import {FormView} from "./formview";
 
 export default class ViewWrapper extends React.Component {
   render() {
-    var key = 0;
     const {state, dispatch, leftoffset} = this.props;
+    console.log('state.path→'+state.path);
     return (
     <div
         style={{
@@ -38,18 +34,7 @@ export default class ViewWrapper extends React.Component {
                 </div>
             </div>
         </div>
-      <div className="row center-sm" style={{margin: '1%'}}>
-        <div className="col-xs center">
-          <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
-            <Table>
-              <TableBody>
-                {state.contacts.map(c => {return <ContactItem {...c} key={key++}/>})}
-              </TableBody>
-            </Table>
-            <ContactForm contacts={state.contacts} dispatch={dispatch}/>
-          </Paper>
-        </div>
-      </div>
+        {state.path == 'contacts' ? <ListView/> : <FormView/>}
     </div>)
   }
 }
