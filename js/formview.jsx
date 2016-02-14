@@ -4,7 +4,7 @@ import TextField from 'material-ui/lib/text-field';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FlatButton from 'material-ui/lib/flat-button';
 import {connect} from 'react-redux';
-import {storeContact} from './actions';
+import {changeView, storeContact} from './actions';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
@@ -16,10 +16,15 @@ export var FormView = connect(state=>({state}))(React.createClass({
         contact: React.PropTypes.object,
         onSubmit: React.PropTypes.func
     },
+    onCancel: function(e) {
+        e.preventDefault()
+        this.props.dispatch(changeView(this.props.route, 'list'));
+    },
     onSubmit: function(e) {
         e.preventDefault()
         var contact = this.props.state.form;
         this.props.dispatch(storeContact(contact))
+        this.props.dispatch(changeView(this.props.route, 'list'));
     },
     render: function() {
         return (
@@ -33,6 +38,10 @@ export var FormView = connect(state=>({state}))(React.createClass({
                 onChange={()=>console.log("changed")}
                 onSubmit={()=>console.log("submit")}
                 onError={()=>console.log("errors")} />
+                <FlatButton
+                    label="Cancel"
+                    onClick={this.onCancel}
+                    cancel={true}/>
                 <FlatButton
                     label="Save"
                     onClick={this.onSubmit}
