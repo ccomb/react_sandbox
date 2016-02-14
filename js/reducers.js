@@ -4,7 +4,8 @@ import {XS, MD} from './actions';
 // initial state
 const initial_state = {
     contacts: [],
-    path: '/',
+    path: function() {},
+    get path() { return window.location.hash;  },
     menu: {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()

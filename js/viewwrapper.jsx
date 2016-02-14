@@ -34,7 +34,7 @@ export default class ViewWrapper extends React.Component {
                 </div>
             </div>
         </div>
-        {state.path == '#/contacts' ? <ListView/> : <FormView/>}
+        {state.path == '#/bo/contacts' ? <ListView/> : state.path == '#/bo/newcontact' ? <FormView/> : ''}
     </div>)
   }
 }

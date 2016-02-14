@@ -24,7 +24,7 @@ let NotFound = React.createClass({
     displayName: 'NotFound',
 
     render: function(e){
-        return (<p><a href='#/contacts'>Contacts</a></p>);
+        return (<p><a href='#/bo/contacts'>Contacts</a></p>);
     }
 })
 
@@ -42,37 +42,38 @@ class BackOffice extends React.Component {
     render(e) {
         const {state, dispatch} = this.props;
         console.log('state.path='+state.path);
-        if (['#/contacts', '#/newcontact'].indexOf(state.path)>=0) {
-            const s = state.menu.floating ? '10' : '1';
-            const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
-            const floating = state.menu.floating;
-            return (<div>
-                    <AppBar
-                        title="Contacts"
-                        className="row"
-                        style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
-                        zDepth={0}
-                        onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
-                    <LeftNav
-                        ref="leftnav"
-                        open={state.menu.open}
-                        docked={floating?false:true}
-                        onRequestChange={this._onRequestChange.bind(this)}
-                        style={{
-                            marginTop: floating?0:'64px',
-                            boxShadow: menushadow,
-                            zIndex: floating?3000:0}}>
-                        <SelectableList
-                          subheader="Logo">
-                          <ListItem
-                            value="project/form"
-                            primaryText="Contacts"
-                          />
-                        </SelectableList>
-                    </LeftNav>
-                    <ViewWrapper leftoffset={window.innerWidth > MD && state.menu.open} state={state} />
-                    </div>);    
-        } else { return <NotFound/> }
+        const s = state.menu.floating ? '10' : '1';
+        const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
+        const floating = state.menu.floating;
+        return (<div>
+                <AppBar
+                    title="Contacts"
+                    className="row"
+                    style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
+                    zDepth={0}
+                    onLeftIconButtonTouchTap={this._onLeftIconButtonTouchTap.bind(this)} />
+                <LeftNav
+                    ref="leftnav"
+                    open={state.menu.open}
+                    docked={floating?false:true}
+                    onRequestChange={this._onRequestChange.bind(this)}
+                    style={{
+                        marginTop: floating?0:'64px',
+                        boxShadow: menushadow,
+                        zIndex: floating?3000:0}}>
+                    <SelectableList
+                      subheader="Logo">
+                      <ListItem
+                        value="project/form"
+                        primaryText="Contacts"
+                      />
+                    </SelectableList>
+                </LeftNav>
+                <ViewWrapper
+                    leftoffset={window.innerWidth > MD && state.menu.open}
+                    state={state}
+                    route={this.props.route}/>
+                </div>);    
     }
 }
 
@@ -82,11 +83,27 @@ window.addEventListener('hashchange', function(e) {
         store.dispatch(changeRoute());
     }, false)
 
-var rootElement = (<Provider store={store}>
-                     <ReduxApp/>
-                   </Provider>);
+
+var RootComponent = React.createClass({
+    route(path=store.getState().path) { // routing methods could be moved to an adapter or hoc
+        const first_segment = path.split("/").slice(1,2)[0]
+        const remaining = path.split("/").slice(2)
+        switch(first_segment) { // TODO make it pluggable
+            case 'bo':
+                return (<ReduxApp route={remaining}/>);
+            default:
+                return (<NotFound/>);
+         }
+     },
+    render() {
+        return (<Provider store={store}>
+                    {this.route()}
+                </Provider>);
+    }
+})
+
 console.log('First render and change hash dispatch')
-ReactDOM.render(rootElement, document.getElementById('react-app'));
+ReactDOM.render(<RootComponent/>, document.getElementById('react-app'));
 
 store.dispatch(changeRoute());
 
