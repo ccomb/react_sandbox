@@ -77,9 +77,10 @@ var RootComponent = connect(state=>({state}))(React.createClass({
         const {state, route} = this.props;
         const path=state.path;
         const first_segment = path.split("/").slice(1,2)[0]
+        const remaining = path.split("/").slice(2)
         switch(first_segment) { // TODO make it pluggable
             case 'bo':
-                return (<BackOffice route={path}/>);
+                return (<BackOffice route={remaining}/>);
             default:
                 return (<NotFound/>);
          }

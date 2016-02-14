@@ -4,10 +4,9 @@ import {FormView} from "./formview";
 import {connect} from 'react-redux';
 
 export var ViewWrapper = connect(state=>({state}))(React.createClass({
-  route: function(path) {
-    const segments = path.split('/');
-    const doctype = segments[2];
-    const view = segments[3];
+  route: function(segments) {
+    const doctype = segments[0];
+    const view = segments[1];
     if (!doctype) {
         return (''); // TODO Dashboard
     } else {
@@ -23,8 +22,6 @@ export var ViewWrapper = connect(state=>({state}))(React.createClass({
   },
   render: function() {
     const {state, dispatch, leftoffset, route} = this.props;
-    console.log('state.path = '+state.path);
-    console.log('this.props.route = '+route);
     var goto= this.route(route);
     return (
     <div
