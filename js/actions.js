@@ -6,65 +6,65 @@ export const MD = typeof window !== 'undefined' ?
 
 
 
-export function addContact(contact, status=undefined) {
-    console.log('Dispatching addContact')
+export function addDoc(doc, status=undefined) {
+    console.log('Dispatching addDoc')
     return {
-        type: 'add contact',
-        payload: contact,
+        type: 'add doc',
+        payload: doc,
         meta: {status}
     }
 }
 
-export function storeContact(contact) {
-    console.log('Dispatching storeContact()')
+export function storeDoc(doc) {
+    console.log('Dispatching storeDoc()')
     return (dispatch) => {
         console.log('Opening database')
-        let request = window.indexedDB.open('tutodb', 3);
+        let request = window.indexedDB.open('tutodb', 1);
         request.onsuccess = function(e) {
-            console.log('Creating DB transaction to store contact')
+            console.log('Creating DB transaction to store doc')
             let db = e.target.result;
-            let transaction = db.transaction('contacts', 'readwrite');
+            let transaction = db.transaction('docs', 'readwrite');
             transaction.oncomplete = (e) => {
                 console.log('transaction completed');}
             transaction.onerror = (e) => {
                 console.log(e);
-                dispatch(contactAddFailed(contact)); }
+                dispatch(docAddFailed(doc)); }
             var addrequest;
             try {
                 console.log('objectStore try to add')
-                dispatch(addContact(contact, 'saving'));
-                addrequest = transaction.objectStore('contacts').add(contact);
+                dispatch(addDoc(doc, 'saving'));
+                addrequest = transaction.objectStore('docs').add(doc);
                 addrequest.onsuccess = (e) => {
                     console.log(e);
-                    dispatch(contactAdded(contact));
+                    dispatch(docAdded(doc));
                     dispatch(clearForm()); }
                 addrequest.onerror = (e) => {
                     console.log('addrequest onerror');
                     console.log(e);
-                    dispatch(contactAddFailed(contact)); }
+                    dispatch(docAddFailed(doc)); }
             } catch(e) {
                 console.log('CATCHED EXCEPTION');
                 console.log(e);
-                dispatch(contactAddFailed(contact));
+                dispatch(docAddFailed(doc));
             }
         }
-        request.onerror = (e) => { dispatch(contactAddFailed(contact)); }
+        request.onerror = (e) => { dispatch(docAddFailed(doc)); }
     }
 }
 
-export function contactAdded(contact) {
-    console.log('Dispatching contactAdded')
+export function docAdded(doc) {
+    console.log('Dispatching docAdded')
     return {
-            type: 'contact added',
-            payload: contact
+            type: 'doc added',
+            payload: doc
     }
 }
 
-export function contactAddFailed(contact) {
-    console.log('Dispatching contactAddFailed')
+export function docAddFailed(doc) {
+    console.log('Dispatching docAddFailed')
     return {
-            type: 'contact add failed',
-            payload: contact
+            type: 'doc add failed',
+            payload: doc
     }
 }
 
@@ -97,59 +97,60 @@ export function finishDbRequest () {
     }
 }
 
-export function clearContacts() {
-    console.log('dispatching clearContacts')
+export function clearRecords() {
+    console.log('dispatching clearRecords')
     return {
-        type: 'clear contacts',
+        type: 'clear records',
+        payload: {model},
     }
 }
 
-export function loadContacts () {
-    console.log('dispatching loadContacts')
+export function loadRecords (model) {
+    console.log('dispatching loadRecords')
     return (dispatch) => {
         console.log('opening database');
-        let openrequest = window.indexedDB.open('tutodb', 3);
+        let openrequest = window.indexedDB.open('tutodb', 1);
         openrequest.onsuccess = (e) => {
-            dispatch(clearContacts());
+            dispatch(clearRecords(model));
             console.log('reading objectstore with cursor')
-            let request = e.target.result.transaction('contacts', 'readonly')
-                          .objectStore('contacts').openCursor()
+            let request = e.target.result.transaction('docs', 'readonly')
+                          .objectStore('docs').openCursor()
             request.onsuccess = (e) => {
                 console.log('cursor open');
                 let cursor = e.target.result;
                 if (cursor) {
                     console.log('cursor not empty')
-                    dispatch(addContact(cursor.value));
+                    dispatch(addDoc(cursor.value));
                     cursor.continue();
                 }
             }
-            request.onerror = (e) => { dispatch(contactAddFailed()); }
+            request.onerror = (e) => { dispatch(docAddFailed()); }
         }
-        openrequest.onerror = (e) => { dispatch(contactAddFailed());  }
+        openrequest.onerror = (e) => { dispatch(docAddFailed());  }
     }
 }
 
-export function removeContact(email, status) {
+export function removeDoc(email, status) {
     return {
-        type: 'remove contact',
+        type: 'remove doc',
         payload: email,
         error: status=='error' ? true : false
     }
 }
 
-export function deleteContact(email) {
-    console.log('dispatching delete contact');
+export function deleteDoc(email) {
+    console.log('dispatching delete doc');
     return (dispatch) => {
         console.log('opening database');
-        window.indexedDB.open('tutodb', 3).onsuccess = (e) => {
+        window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
             let req = e.target.result
-                .transaction('contacts', 'readwrite')
-                .objectStore('contacts').delete(email);
+                .transaction('docs', 'readwrite')
+                .objectStore('docs').delete(email);
             req.onsuccess = (e) => {
-                dispatch(removeContact(email));
+                dispatch(removeDoc(email));
             }
             req.onerror = (e) => {
-                dispatch(removeContact(email, 'error'))
+                dispatch(removeDoc(email, 'error'))
             }
         }
     }

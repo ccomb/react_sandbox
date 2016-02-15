@@ -4,7 +4,7 @@ import TextField from 'material-ui/lib/text-field';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FlatButton from 'material-ui/lib/flat-button';
 import {connect} from 'react-redux';
-import {changeView, storeContact} from './actions';
+import {changeView, storeDoc} from './actions';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
@@ -13,7 +13,7 @@ import Paper from 'material-ui/lib/paper';
 export const FormView = connect(state=>({state}))(React.createClass({
     displayName: 'FormView',
     propTypes: {
-        contact: React.PropTypes.object,
+        doc: React.PropTypes.object,
         onSubmit: React.PropTypes.func
     },
     onCancel: function(e) {
@@ -22,8 +22,8 @@ export const FormView = connect(state=>({state}))(React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault()
-        const contact = this.props.state.form;
-        this.props.dispatch(storeContact(contact))
+        const doc = this.props.state.form;
+        this.props.dispatch(storeDoc(doc))
         changeView(this.props.route, 'list');
     },
     render: function() {

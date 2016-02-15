@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {deleteContact} from './actions';
+import {deleteDoc} from './actions';
 import IconButton from 'material-ui/lib/icon-button';
 import Table from 'material-ui/lib/table/table';
 import TableHeader from 'material-ui/lib/table/table-header';
@@ -32,7 +32,7 @@ export const ListView = connect(state=>({state}))(React.createClass({
                 <div className="col" style={{padding: 0}}>
                     <Table>
                         <TableBody>
-                        {state.contacts.map(c => {return <ListItem {...c} key={key++}/>})}
+                        {state.docs.map(c => {return <ListItem {...c} key={key++}/>})}
                         </TableBody>
                     </Table>
                 </div>
@@ -50,7 +50,7 @@ export const ListItem = connect(state=>({state}))(React.createClass({
         description: React.PropTypes.string
     },
     onDelete: function() {
-        this.props.dispatch(deleteContact(this.props.email))
+        this.props.dispatch(deleteDoc(this.props.email))
     },
     render: function() {
         const status = this.props.status;

@@ -3,7 +3,7 @@ import {XS, MD} from './actions';
 
 // initial state
 const initial_state = {
-    contacts: [],
+    docs: [],
     path: function() {},
     get path() { return window.location.hash;  },
     menu: {
@@ -14,30 +14,30 @@ const initial_state = {
     }
 }
 
-function contacts(contacts=initial_state.contacts, action) {
+function docs(docs=initial_state.docs, action) {
     switch(action.type){
-        case 'contact added':
+        case 'doc added':
             console.log('reducing with ' + action.type)
-            const newcontact = {...action.payload, status: 'saved'};
-           if (newcontact){
-                return [...contacts.slice(0, -1), newcontact];
+            const newdoc = {...action.payload, status: 'saved'};
+           if (newdoc){
+                return [...docs.slice(0, -1), newdoc];
             } else {
-                return [...initial_state.contacts]
+                return [...initial_state.docs]
             }
-        case 'contact add failed':
+        case 'doc add failed':
             console.log('reducing with ' + action.type)
-            return [...contacts.slice(0, -1), {...action.payload, status: 'unsaved'}];
-        case 'add contact':
+            return [...docs.slice(0, -1), {...action.payload, status: 'unsaved'}];
+        case 'add doc':
             console.log('reducing with ' + action.type)
-            return [...contacts, {...action.payload, status: action.meta.status || ''}];
-        case 'clear contacts':
+            return [...docs, {...action.payload, status: action.meta.status || ''}];
+        case 'clear docs':
             console.log('reducing with ' + action.type)
-            return contacts && contacts.length ? [] : contacts;
-        case 'remove contact':
+            return docs && docs.length ? [] : docs;
+        case 'remove doc':
             console.log('reducing with ' + action.type)
-            return contacts.filter((c)=>c.email!=action.payload ? true : false);
+            return docs.filter((c)=>c.email!=action.payload ? true : false);
         default:
-            return contacts;
+            return docs;
     }
 }
 
@@ -84,4 +84,4 @@ function form(form=initial_state.form, action) {
 }
 
 
-export const globalreducer = combineReducers({form, menu, contacts, path});
+export const globalreducer = combineReducers({form, menu, docs, path});

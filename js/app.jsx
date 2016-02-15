@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {XS, MD, loadContacts, changeURLHash, openMenu, closeMenu, toggleMenu} from './actions';
+import {XS, MD, loadRecords, changeURLHash, openMenu, closeMenu, toggleMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
@@ -123,20 +123,20 @@ window.addEventListener('resize', function(e) {
 }, false)
 
 /**** indexedDB ****/
-let request = window.indexedDB.open('tutodb', 3);
+let request = window.indexedDB.open('tutodb', 1);
 request.onupgradeneeded = function(e) {
     console.log('Upgrading database...')
     var db = e.target.result;
     try {
-        db.deleteObjectStore('contacts');
+        db.deleteObjectStore('docs');
         console.log('Deleted the old database!')
     } catch(e) {}
-    let idbstore = db.createObjectStore('contacts', {keyPath: 'email'});
+    let idbstore = db.createObjectStore('docs', {keyPath: 'email'});
     idbstore.createIndex("email", "email", { unique: true });
     idbstore.createIndex("name", "name", { unique: false });
     console.log('Database upgraded')
 };
-store.dispatch(loadContacts());
+store.dispatch(loadRecords('contact'));
 
 /**** Service Worker ****/
 if ('serviceWorker' in navigator) {
