@@ -3,7 +3,7 @@ import {ListView} from "./listview";
 import {FormView} from "./formview";
 import {connect} from 'react-redux';
 
-export var DocumentManager = connect(state=>({state}))(React.createClass({
+export const DocumentManager = connect(state=>({state}))(React.createClass({
   component: function(route) {
     const {segments, current} = route;
     const doctype = segments[current];

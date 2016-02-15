@@ -13,10 +13,10 @@ import {createStore, applyMiddleware} from 'redux';
 import {connect} from 'react-redux';
 import {changeView} from './actions';
 
-export var ListView = connect(state=>({state}))(React.createClass({
+export const ListView = connect(state=>({state}))(React.createClass({
     onCreate: function() {
         const {route} = this.props;
-        this.props.dispatch(changeView(route, 'new'));
+        changeView(route, 'new');
     },
     render: function() {
         const {state} = this.props;
@@ -41,7 +41,7 @@ export var ListView = connect(state=>({state}))(React.createClass({
     }
 }));
 
-export var ListItem = connect(state=>({state}))(React.createClass({
+export const ListItem = connect(state=>({state}))(React.createClass({
     displayName: 'ListItem',
     propTypes: {
         surname: React.PropTypes.string,
@@ -53,8 +53,8 @@ export var ListItem = connect(state=>({state}))(React.createClass({
         this.props.dispatch(deleteContact(this.props.email))
     },
     render: function() {
-        var status = this.props.status;
-        var color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
+        const status = this.props.status;
+        const color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
         return (
                 <TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>

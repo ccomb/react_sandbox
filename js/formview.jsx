@@ -10,7 +10,7 @@ import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
 
 
-export var FormView = connect(state=>({state}))(React.createClass({
+export const FormView = connect(state=>({state}))(React.createClass({
     displayName: 'FormView',
     propTypes: {
         contact: React.PropTypes.object,
@@ -22,7 +22,7 @@ export var FormView = connect(state=>({state}))(React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault()
-        var contact = this.props.state.form;
+        const contact = this.props.state.form;
         this.props.dispatch(storeContact(contact))
         changeView(this.props.route, 'list');
     },

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {XS, MD, loadContacts, changeRoute, openMenu, closeMenu, toggleMenu} from './actions';
+import {XS, MD, loadContacts, changeURLHash, openMenu, closeMenu, toggleMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
@@ -20,18 +20,31 @@ injectTapEventPlugin(); // remove as of react 1.0
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
 
-export var BackOffice = connect(state=>({state}))(React.createClass({
+export const BackOffice = connect(state=>({state}))(React.createClass({
     displayName: 'BackOffice',
 
     _onLeftIconButtonTouchTap: function(e) {
         this.props.dispatch(toggleMenu());
     },
+
     _onRequestChange: function(e) {
         this.props.dispatch(closeMenu());
     },
 
+    handleRequestChangeList: function(event, value) {
+        changeURLHash(value);
+    },
+
+    _getSelectedIndex: function() {
+        return this.segments.slice(0, this.current+2).join('/');
+    },
+
     render: function(e) {
         const {state, dispatch, route} = this.props;
+        const {segments, current} = route;
+        this.segments = segments, this.current = current;
+        const doctype = segments[current+1];
+        const childroute = {...route, current: current+1};
         const s = state.menu.floating ? '10' : '1';
         const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
         const floating = state.menu.floating;
@@ -52,36 +65,40 @@ export var BackOffice = connect(state=>({state}))(React.createClass({
                         boxShadow: menushadow,
                         zIndex: floating?3000:0}}>
                     <SelectableList
-                      subheader="Logo">
-                      <ListItem
-                        value="project/form"
+                        subheader="Logo"
+                        valueLink={{
+                            value: this._getSelectedIndex(),
+                            requestChange: this.handleRequestChangeList,
+                        }}
+                    >
+                    <ListItem
+                        value="#/bo/contact"
                         primaryText="Contacts"
-                      />
+                    />
                     </SelectableList>
                 </LeftNav>
                 <DocumentManager
                     leftoffset={window.innerWidth > MD && state.menu.open}
                     state={state}
-                    route={route}/>
+                    route={childroute}/>
                 </div>);
     }
 }));
 
 window.addEventListener('hashchange', function(e) {
-        store.dispatch(changeRoute());
+        store.dispatch(changeURLHash());
     }, false)
 
 
-var RootComponent = connect(state=>({state}))(React.createClass({
+const RootComponent = connect(state=>({state}))(React.createClass({
     component: function() { // routing methods could be moved to an adapter or hoc
         const {state} = this.props;
-        const path=state.path;
-        const segments = path.split("/").slice(1);
-        const current = 0;
-        const route = {segments, current:current+1};
-        switch(segments[current]) { // TODO make it pluggable
+        const segments = state.path.split("/");
+        const current = 0; // we are the root
+        const childroute = {segments, current:current+1};
+        switch(segments[current+1]) { // TODO make it pluggable
             case 'bo':
-                return (<BackOffice route={route}/>);
+                return (<BackOffice route={childroute}/>);
             default:
                 return (<NotFound/>);
          }
@@ -95,7 +112,7 @@ var RootComponent = connect(state=>({state}))(React.createClass({
 console.log('First render and change hash dispatch')
 ReactDOM.render(<Provider store={store}><RootComponent/></Provider>, document.getElementById('react-app'));
 
-store.dispatch(changeRoute());
+store.dispatch(changeURLHash());
 
 window.addEventListener('resize', function(e) {
     if (store.getState().menu.open && window.innerWidth <= MD) {

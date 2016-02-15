@@ -68,19 +68,25 @@ export function contactAddFailed(contact) {
     }
 }
 
-export function changeRoute(hash) {
-    console.log('Dispatching changeRoute', hash)
-    var path = window.location.hash
+export function changeURLHash(hash) {
+    // if hash is provided, then just change the hash
+    // otherwise return a redux action
+    console.log('Dispatching changeURLHash', hash)
+    if (hash) {
+        window.location.hash = hash;
+        return
+    }
     return {
         type: 'CHANGE_HASH',
-        payload: path
+        payload: window.location.hash
     }
 }
 
 export function changeView(route, view) {
-    console.log('changeView', route, view)
+    // not a redux action, but the changeURLHash should then be triggered
     const {segments, current} = route;
-    window.location.hash = '#/' + [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/');
+    console.log('changeView', [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/'))
+    window.location.hash = [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/');
 }
 
 export function finishDbRequest () {
