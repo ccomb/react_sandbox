@@ -21,7 +21,8 @@
     "react-redux": "*",
     "react-tap-event-plugin": "*",
     "redux": "*",
-    "redux-thunk": "*"
+    "redux-thunk": "*",
+    "uuid": "*"
   },
   "devDependencies": {
     "babel": "*",

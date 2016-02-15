@@ -20,7 +20,6 @@ export const ListView = connect(state=>({state}))(React.createClass({
     },
     render: function() {
         const {state} = this.props;
-        var key = 0; // FIXME
         return (
         <div>
             <div className="row start" style={{margin: 0}}>
@@ -32,7 +31,7 @@ export const ListView = connect(state=>({state}))(React.createClass({
                 <div className="col" style={{padding: 0}}>
                     <Table>
                         <TableBody>
-                        {state.docs.map(c => {return <ListItem {...c} key={key++}/>})}
+                        {Object.keys(state.docs).map(key => {return <ListItem {...state.docs[key]} key={key}/>})}
                         </TableBody>
                     </Table>
                 </div>
@@ -44,13 +43,14 @@ export const ListView = connect(state=>({state}))(React.createClass({
 export const ListItem = connect(state=>({state}))(React.createClass({
     displayName: 'ListItem',
     propTypes: {
+        uuid: React.PropTypes.string,
         surname: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,
         email: React.PropTypes.string,
         description: React.PropTypes.string
     },
     onDelete: function() {
-        this.props.dispatch(deleteDoc(this.props.email))
+        this.props.dispatch(deleteDoc(this.props.uuid))
     },
     render: function() {
         const status = this.props.status;
@@ -67,7 +67,7 @@ export const ListItem = connect(state=>({state}))(React.createClass({
                         {this.props.name}
                     </TableRowColumn>
                     <TableRowColumn>
-                        <a href={this.props.email}>{this.props.email}</a>
+                        <a href={'mailto:' + this.props.email}>{this.props.email}</a>
                     </TableRowColumn>
                     <TableRowColumn>
                         {this.props.description}

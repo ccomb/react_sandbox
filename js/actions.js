@@ -1,3 +1,5 @@
+import {v4 as uuid} from 'uuid';
+
 // XS media width is 48 * 'em' size in pixels // typeof is for mocha
 export const XS = typeof window !== 'undefined' ?
     48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 768;
@@ -16,6 +18,7 @@ export function addDoc(doc, status=undefined) {
 }
 
 export function storeDoc(doc) {
+    doc.uuid = uuid();
     console.log('Dispatching storeDoc()')
     return (dispatch) => {
         console.log('Opening database')
@@ -101,7 +104,6 @@ export function clearRecords() {
     console.log('dispatching clearRecords')
     return {
         type: 'clear records',
-        payload: {model},
     }
 }
 
@@ -130,27 +132,27 @@ export function loadRecords (model) {
     }
 }
 
-export function removeDoc(email, status) {
+export function removeDoc(uuid, status) {
     return {
         type: 'remove doc',
-        payload: email,
+        payload: uuid,
         error: status=='error' ? true : false
     }
 }
 
-export function deleteDoc(email) {
+export function deleteDoc(uuid) {
     console.log('dispatching delete doc');
     return (dispatch) => {
         console.log('opening database');
         window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
             let req = e.target.result
                 .transaction('docs', 'readwrite')
-                .objectStore('docs').delete(email);
+                .objectStore('docs').delete(uuid);
             req.onsuccess = (e) => {
-                dispatch(removeDoc(email));
+                dispatch(removeDoc(uuid));
             }
             req.onerror = (e) => {
-                dispatch(removeDoc(email, 'error'))
+                dispatch(removeDoc(uuid, 'error'))
             }
         }
     }

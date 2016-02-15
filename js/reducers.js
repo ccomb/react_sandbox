@@ -3,7 +3,7 @@ import {XS, MD} from './actions';
 
 // initial state
 const initial_state = {
-    docs: [],
+    docs: {}, // The list of active docs indexed with their uuid
     path: function() {},
     get path() { return window.location.hash;  },
     menu: {
@@ -20,22 +20,24 @@ function docs(docs=initial_state.docs, action) {
             console.log('reducing with ' + action.type)
             const newdoc = {...action.payload, status: 'saved'};
            if (newdoc){
-                return [...docs.slice(0, -1), newdoc];
+                return {...docs, [newdoc.uuid]:newdoc};
             } else {
                 return [...initial_state.docs]
             }
         case 'doc add failed':
             console.log('reducing with ' + action.type)
-            return [...docs.slice(0, -1), {...action.payload, status: 'unsaved'}];
+            return {...docs, [action.payload.uuid]: {...action.payload, status: 'unsaved'}};
         case 'add doc':
             console.log('reducing with ' + action.type)
-            return [...docs, {...action.payload, status: action.meta.status || ''}];
+            return {...docs, [action.payload.uuid]: {...action.payload, status: action.meta.status || ''}};
         case 'clear docs':
             console.log('reducing with ' + action.type)
-            return docs && docs.length ? [] : docs;
+            return docs  ? {} : docs;
         case 'remove doc':
             console.log('reducing with ' + action.type)
-            return docs.filter((c)=>c.email!=action.payload ? true : false);
+            var newdocs = {...docs};
+            delete newdocs[action.payload];
+            return newdocs;
         default:
             return docs;
     }

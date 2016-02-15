@@ -131,9 +131,8 @@ request.onupgradeneeded = function(e) {
         db.deleteObjectStore('docs');
         console.log('Deleted the old database!')
     } catch(e) {}
-    let idbstore = db.createObjectStore('docs', {keyPath: 'email'});
-    idbstore.createIndex("email", "email", { unique: true });
-    idbstore.createIndex("name", "name", { unique: false });
+    let idbstore = db.createObjectStore('docs', {keyPath: 'uuid'});
+    idbstore.createIndex("uuid", "uuid", { unique: true });
     console.log('Database upgraded')
 };
 store.dispatch(loadRecords('contact'));
