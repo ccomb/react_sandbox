@@ -4,7 +4,7 @@ import TextField from 'material-ui/lib/text-field';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FlatButton from 'material-ui/lib/flat-button';
 import {connect} from 'react-redux';
-import {changeView, storeDoc} from './actions';
+import {changeView, storeDoc, focusField, changeField} from './actions';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
@@ -22,9 +22,25 @@ export const FormView = connect(state=>({state}))(React.createClass({
     },
     onSubmit: function(e) {
         e.preventDefault()
-        const doc = this.props.state.form;
+        const doc = this.props.state.form.data;
         this.props.dispatch(storeDoc(doc))
         changeView(this.props.route, 'list');
+    },
+    getInitialState: function() {
+        // antipattern power, we init state with props
+        return { shouldfocus: this.props.initialfocus }
+    },
+    onChangeField: function(event) {  // TODO remove
+        this.props.dispatch(changeField(event.target))
+    },
+    widgetDidMount: function(input) {
+        if (input != null && input.props.type == 'text'
+            && this.state.shouldfocus == input.props.id){
+          this.setState({shouldfocus: undefined})
+          input.focus()
+        }
+        if (input && this.props.state.form.data[input.props.id])
+            input.setValue(this.props.state.form.data[input.props.id]);
     },
     render: function() {
         return (
@@ -35,6 +51,8 @@ export const FormView = connect(state=>({state}))(React.createClass({
             <SchemaForm
                 schema={schema}
                 formData={{}}
+                widgetDidMount={this.widgetDidMount}
+                onChangeField={this.onChangeField}
                 onChange={()=>console.log("changed")}
                 onSubmit={()=>console.log("submit")}
                 onError={()=>console.log("errors")} />

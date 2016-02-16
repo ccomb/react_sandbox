@@ -185,13 +185,20 @@ export function toggleMenu() {
     };
 }
 
-export function onchangeField(field) {
+export function changeField(field) {
     return {
-        type: 'ONCHANGE_FIELD',
+        type: 'CHANGE_FIELD',
         payload: {
             name: field.id,
             value: field.value
         }
+    }
+}
+
+export function focusField(fieldname) {
+    return {
+        type: 'FOCUS_FIELD',
+        payload: fieldname
     }
 }
 

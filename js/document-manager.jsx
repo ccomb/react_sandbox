@@ -2,6 +2,7 @@ import React from "react";
 import {ListView} from "./listview";
 import {FormView} from "./formview";
 import {connect} from 'react-redux';
+import {loadRecords} from './actions';
 
 export const DocumentManager = connect(state=>({state}))(React.createClass({
   component: function(route) {
@@ -16,14 +17,17 @@ export const DocumentManager = connect(state=>({state}))(React.createClass({
             case 'list':
                 return (<ListView route={childroute}/>);
             case 'new':
-                return (<FormView route={childroute}/>);
+                return (<FormView route={childroute} initialfocus='surname'/>);
             default:
                 return (<ListView route={childroute}/>);
          }
     }
   },
   render: function() {
-    const {leftoffset, route} = this.props;
+    const {dispatch, state, leftoffset, route} = this.props;
+    if (!Object.keys(state.docs).length) {
+        dispatch(loadRecords('contact'));
+    }
     const background = route.segments[route.current] == 'new' ? '#EEE' : '#FFF';
     return (
     <div

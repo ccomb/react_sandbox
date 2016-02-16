@@ -135,7 +135,6 @@ request.onupgradeneeded = function(e) {
     idbstore.createIndex("uuid", "uuid", { unique: true });
     console.log('Database upgraded')
 };
-store.dispatch(loadRecords('contact'));
 
 /**** Service Worker ****/
 if ('serviceWorker' in navigator) {

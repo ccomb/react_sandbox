@@ -19,7 +19,7 @@ export const ListView = connect(state=>({state}))(React.createClass({
         changeView(route, 'new');
     },
     render: function() {
-        const {state} = this.props;
+        const {dispatch, state} = this.props;
         return (
         <div>
             <div className="row start" style={{margin: 0}}>

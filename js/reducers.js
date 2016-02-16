@@ -1,16 +1,23 @@
 import {combineReducers} from 'redux';
 import {XS, MD} from './actions';
 
-// initial state
+// Doc and initial value of the global redux state
 const initial_state = {
-    docs: {}, // The list of active docs indexed with their uuid
+    // The list of active docs indexed with their uuid
+    docs: {},
+    // the URL (starting at the hash)
     path: function() {},
+    // currently selected menu
     get path() { return window.location.hash;  },
     menu: {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
     },
     form: {
+        // data of the currently displayed object
+        data: {},
+        // layout of the fields and widgets
+        layout: {},
     }
 }
 
@@ -32,7 +39,7 @@ function docs(docs=initial_state.docs, action) {
             return {...docs, [action.payload.uuid]: {...action.payload, status: action.meta.status || ''}};
         case 'clear docs':
             console.log('reducing with ' + action.type)
-            return docs  ? {} : docs;
+            return Object.keys(docs).length  ? {} : docs;
         case 'remove doc':
             console.log('reducing with ' + action.type)
             var newdocs = {...docs};
@@ -74,12 +81,18 @@ function menu(menu=initial_state.menu, action) {
 
 function form(form=initial_state.form, action) {
     switch (action.type) {
-        case 'ONCHANGE_FIELD':
+        case 'CHANGE_FIELD':
             console.log('reducing with ' + action.type);
-            return {...form, [action.payload.name]: action.payload.value};
+            return {...form ,
+                    data:{...form.data,
+                    [action.payload.name]: action.payload.value}};
         case 'CLEAR_FORM':
             console.log('reducing with ' + action.type);
-            return form ? {} : form;
+            return Object.keys(form).length ? initial_state.form : form;
+        case 'FOCUS_FIELD':
+            console.log('reducing with ' + action.type);
+            return action.payload != form.focus ?
+                {...form, focus: action.payload} : form;
         default:
             return form;
     }
