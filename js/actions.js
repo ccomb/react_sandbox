@@ -22,8 +22,8 @@ export function storeDoc(doc) {
     console.log('Dispatching storeDoc()')
     return (dispatch) => {
         console.log('Opening database')
-        let request = window.indexedDB.open('tutodb', 1);
-        request.onsuccess = function(e) {
+        let openDB = window.indexedDB.open('tutodb', 1);
+        openDB.onsuccess = function(e) {
             console.log('Creating DB transaction to store doc')
             let db = e.target.result;
             let transaction = db.transaction('docs', 'readwrite');
@@ -51,7 +51,7 @@ export function storeDoc(doc) {
                 dispatch(docAddFailed(doc));
             }
         }
-        request.onerror = (e) => { dispatch(docAddFailed(doc)); }
+        openDB.onerror = (e) => { dispatch(docAddFailed(doc)); }
     }
 }
 
@@ -111,13 +111,13 @@ export function loadRecords (model) {
     console.log('dispatching loadRecords')
     return (dispatch) => {
         console.log('opening database');
-        let openrequest = window.indexedDB.open('tutodb', 1);
-        openrequest.onsuccess = (e) => {
+        let openDB = window.indexedDB.open('tutodb', 1);
+        openDB.onsuccess = (e) => {
             dispatch(clearRecords(model));
             console.log('reading objectstore with cursor')
-            let request = e.target.result.transaction('docs', 'readonly')
+            let openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').openCursor()
-            request.onsuccess = (e) => {
+            openCursor.onsuccess = (e) => {
                 console.log('cursor open');
                 let cursor = e.target.result;
                 if (cursor) {
@@ -126,9 +126,9 @@ export function loadRecords (model) {
                     cursor.continue();
                 }
             }
-            request.onerror = (e) => { dispatch(docAddFailed()); }
+            openCursor.onerror = (e) => { dispatch(docAddFailed({})); }
         }
-        openrequest.onerror = (e) => { dispatch(docAddFailed());  }
+        openDB.onerror = (e) => { dispatch(docAddFailed({}));  }
     }
 }
 
