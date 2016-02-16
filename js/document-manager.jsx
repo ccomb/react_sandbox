@@ -1,10 +1,8 @@
 import React from "react";
 import {ListView} from "./listview";
 import {FormView} from "./formview";
-import {connect} from 'react-redux';
-import {loadRecords} from './actions';
 
-export const DocumentManager = connect(state=>({state}))(React.createClass({
+export const DocumentManager = React.createClass({
   component: function(route) {
     const {segments, current} = route;
     const doctype = segments[current];
@@ -24,10 +22,7 @@ export const DocumentManager = connect(state=>({state}))(React.createClass({
     }
   },
   render: function() {
-    const {dispatch, state, leftoffset, route} = this.props;
-    if (!Object.keys(state.docs).length) {
-        dispatch(loadRecords('contact'));
-    }
+    const {state, leftoffset, route} = this.props;
     const background = route.segments[route.current] == 'new' ? '#EEE' : '#FFF';
     return (
     <div
@@ -59,4 +54,4 @@ export const DocumentManager = connect(state=>({state}))(React.createClass({
         {this.component(route)}
     </div>)
   }
-}));
+});

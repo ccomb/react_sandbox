@@ -12,6 +12,7 @@ import Delete from 'material-ui/lib/svg-icons/action/delete';
 import {createStore, applyMiddleware} from 'redux';
 import {connect} from 'react-redux';
 import {changeView} from './actions';
+import {loadRecords} from './actions';
 
 export const ListView = connect(state=>({state}))(React.createClass({
     onCreate: function() {
@@ -20,6 +21,9 @@ export const ListView = connect(state=>({state}))(React.createClass({
     },
     render: function() {
         const {dispatch, state} = this.props;
+        if (!Object.keys(state.docs).length) {
+            dispatch(loadRecords('contact'));
+        }
         return (
         <div>
             <div className="row start" style={{margin: 0}}>
