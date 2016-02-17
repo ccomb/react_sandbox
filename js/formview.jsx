@@ -57,13 +57,13 @@ export const FormView = connect(state=>({state}))(React.createClass({
                 onSubmit={()=>console.log("submit")}
                 onError={()=>console.log("errors")} />
                 <FlatButton
-                    label="Cancel"
-                    onClick={this.onCancel}
-                    cancel={true}/>
-                <FlatButton
                     label="Save"
                     onClick={this.onSubmit}
                     primary={true}/>
+                <FlatButton
+                    label="Cancel"
+                    onClick={this.onCancel}
+                    cancel={true}/>
             </form>
           </Paper>
         </div>

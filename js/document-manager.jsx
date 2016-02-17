@@ -34,7 +34,7 @@ export const DocumentManager = React.createClass({
         <div
             className="row between-lg"
             style={{
-                margin: 0,
+                margin: '1em',
                 width: '100%'}}>
             <div className='col-sm-2'>
                 <div className='box' style={{textAlign: 'center'}}>

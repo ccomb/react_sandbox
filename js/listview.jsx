@@ -60,14 +60,14 @@ export const ListItem = connect(state=>({state}))(React.createClass({
         const status = this.props.status;
         const color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
         return (
-                <TableRow className='Contact' style={{border: "solid 1px #EEE"}}>
+                <TableRow style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
                         Status: <span style={{background: color, color: 'white'}}>{status}</span>
                     </TableRowColumn>
-                    <TableRowColumn className='Contact-surname'>
+                    <TableRowColumn>
                         {this.props.surname}
                     </TableRowColumn>
-                    <TableRowColumn className='Contact-name'>
+                    <TableRowColumn>
                         {this.props.name}
                     </TableRowColumn>
                     <TableRowColumn>

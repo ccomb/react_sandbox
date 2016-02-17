@@ -1,5 +1,5 @@
 import {docs} from './reducers';
-import {addContact} from './actions';
+import {addRecord} from './actions';
 import {assert} from 'chai';
 
 var docs_before = [
@@ -7,7 +7,7 @@ var docs_before = [
     {name: 'bar', email: 'bar@test.com'}
 ]
 
-var newContact = {
+var newRecord = {
     name: 'baz',
     email: 'baz@test.com'
 }
@@ -19,9 +19,9 @@ var docs_after = [
 
 describe('docs', function(){
     it('should have added a doc', function(){
-        var nc= docs(docs_before, addContact(newContact))
+        var nc= docs(docs_before, addRecord(newRecord))
         assert.deepEqual(
-            docs(docs_before, addContact(newContact)),
+            docs(docs_before, addRecord(newRecord)),
             docs_after);
     })
 })
