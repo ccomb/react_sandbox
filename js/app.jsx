@@ -80,7 +80,8 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
                 <DocumentManager
                     leftoffset={window.innerWidth > MD && state.menu.open}
                     state={state}
-                    route={childroute}/>
+                    route={childroute}
+                    defaultview='list'/>
                 </div>);
     }
 }));
@@ -100,7 +101,7 @@ const RootComponent = connect(state=>({state}))(React.createClass({
             case 'bo':
                 return (<BackOffice route={childroute}/>);
             default:
-                return (<NotFound/>);
+                return (<NotFound />);
          }
      },
     render: function() {

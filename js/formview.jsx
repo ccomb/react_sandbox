@@ -45,7 +45,7 @@ export const FormView = connect(state=>({state}))(React.createClass({
     render: function() {
         return (
       <div className="row center-sm" style={{margin: '1%'}}>
-        <div className="col-xs center">
+        <div className="col-xs">
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
             <SchemaForm

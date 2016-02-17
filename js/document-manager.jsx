@@ -1,12 +1,13 @@
 import React from "react";
 import {ListView} from "./listview";
 import {FormView} from "./formview";
+import {NotFound} from './notfound';
 
 export const DocumentManager = React.createClass({
   component: function(route) {
     const {segments, current} = route;
     const doctype = segments[current];
-    const view = segments[current+1];
+    const view = segments[current+1] || this.props.defaultview;
     const childroute = {...route, current: current+1};
     if (!doctype) {
         return (''); // TODO Dashboard
@@ -17,7 +18,7 @@ export const DocumentManager = React.createClass({
             case 'new':
                 return (<FormView route={childroute} initialfocus='surname'/>);
             default:
-                return (<ListView route={childroute}/>);
+                return (<NotFound route={childroute}/>);
          }
     }
   },
