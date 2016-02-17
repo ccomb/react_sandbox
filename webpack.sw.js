@@ -16,7 +16,8 @@ module.exports = {
                 test: /.jsx?$/,
                 exclude: /node_modules/,
             }
-        ]
+        ],
+        noParse: /node_modules\/quill\/dist/
     },
 };
 

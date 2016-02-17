@@ -20,7 +20,8 @@ module.exports = {
                     presets: ['es2015', 'stage-0', 'react']
                 }
             }
-        ]
+        ],
+        noParse: /node_modules\/quill\/dist/
     },
   plugins: [
     new webpack.DefinePlugin({'process.env':{'NODE_ENV': JSON.stringify('production')}})]

@@ -50,6 +50,7 @@ export const ListItem = connect(state=>({state}))(React.createClass({
         uuid: React.PropTypes.string,
         surname: React.PropTypes.string,
         name: React.PropTypes.string.isRequired,
+        date: React.PropTypes.string,
         email: React.PropTypes.string,
         description: React.PropTypes.string
     },
@@ -69,6 +70,9 @@ export const ListItem = connect(state=>({state}))(React.createClass({
                     </TableRowColumn>
                     <TableRowColumn>
                         {this.props.name}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {this.props.date}
                     </TableRowColumn>
                     <TableRowColumn>
                         <a href={'mailto:' + this.props.email}>{this.props.email}</a>

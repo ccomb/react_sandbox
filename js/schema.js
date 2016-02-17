@@ -3,13 +3,24 @@ export const layout =  {
 };
 
 export const schema = {
-  title: "Ticket",
-  type: "object",
-  required: ["title"],
+  title: 'Contact',
+  type: 'object',
+  required: ['name'],
   properties: {
-    surname: {type: "string", title: "Surname", default: "Surname"},
-    name: {type: "string", title: "Name", default: "Name"},
-    email: {type: "string", title: "Email", default: "Email"},
-    description: {type: "string", title: "Description", default: "Description"},
+    // string types with different subtypes (used for widgets)
+    name:
+        {type: 'string', title: 'Name', default: 'Name'},
+    surname:
+        {type: 'string', subtype:'string', title: 'Surname', default: 'Name'},
+    comments:
+        {type: 'string', subtype:'text', title: 'Comments', default: 'Name'},
+    password:
+        {type: 'string', subtype:'password', title:'Password'},
+    date:
+        {type: 'string', subtype:'date', title:'Date'},
+    description:
+        {type: 'string', subtype:'html', title: 'Description', default: 'Description'},
+    customer:
+        {type: 'string', subtype: 'reference', title: 'Customer'}
   }
 };

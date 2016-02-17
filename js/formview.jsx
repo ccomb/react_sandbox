@@ -17,21 +17,21 @@ export const FormView = connect(state=>({state}))(React.createClass({
         onSubmit: React.PropTypes.func
     },
     onCancel: function(e) {
-        e.preventDefault()
+        e.preventDefault();
         changeView(this.props.route, 'list');
     },
     onSubmit: function(e) {
         e.preventDefault()
         const doc = this.props.state.form.data;
-        this.props.dispatch(storeDoc(doc))
+        this.props.dispatch(storeDoc(doc));
         changeView(this.props.route, 'list');
     },
     getInitialState: function() {
         // antipattern power, we init state with props
         return { shouldfocus: this.props.initialfocus }
     },
-    onChangeField: function(event) {  // TODO remove
-        this.props.dispatch(changeField(event.target))
+    onChangeField: function(e) {  // TODO remove ?
+        this.props.dispatch(changeField(e.target));
     },
     widgetDidMount: function(input) {
         if (input != null && input.props.type == 'text'
@@ -54,7 +54,7 @@ export const FormView = connect(state=>({state}))(React.createClass({
                 widgetDidMount={this.widgetDidMount}
                 onChangeField={this.onChangeField}
                 onChange={()=>console.log("changed")}
-                onSubmit={()=>console.log("submit")}
+                onSubmit={this.onSubmit}
                 onError={()=>console.log("errors")} />
                 <FlatButton
                     label="Save"

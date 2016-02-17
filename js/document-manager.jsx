@@ -16,7 +16,7 @@ export const DocumentManager = React.createClass({
             case 'list':
                 return (<ListView route={childroute}/>);
             case 'new':
-                return (<FormView route={childroute} initialfocus='surname'/>);
+                return (<FormView route={childroute} initialfocus='name'/>);
             default:
                 return (<NotFound route={childroute}/>);
          }
