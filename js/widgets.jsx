@@ -40,7 +40,7 @@ const DateWidget = React.createClass({
         this.props.onChangeField({
             target: {
                 name: this.props.name,
-                value: date.toJSON()
+                value: date
             }
         });
     },

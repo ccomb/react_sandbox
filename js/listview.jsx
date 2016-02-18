@@ -72,7 +72,7 @@ export const ListItem = connect(state=>({state}))(React.createClass({
                         {this.props.name}
                     </TableRowColumn>
                     <TableRowColumn>
-                        {this.props.date}
+                        {this.props.date.toLocaleString()}
                     </TableRowColumn>
                     <TableRowColumn>
                         <a href={'mailto:' + this.props.email}>{this.props.email}</a>
