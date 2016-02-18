@@ -30,7 +30,6 @@ export function storeDoc(doc) {
             transaction.oncomplete = (e) => {
                 console.log('transaction completed');}
             transaction.onerror = (e) => {
-                console.log(e);
                 dispatch(docAddFailed(doc)); }
             var addrequest;
             try {
@@ -38,16 +37,13 @@ export function storeDoc(doc) {
                 dispatch(addDoc(doc, 'saving'));
                 addrequest = transaction.objectStore('docs').add(doc);
                 addrequest.onsuccess = (e) => {
-                    console.log(e);
                     dispatch(docAdded(doc));
                     dispatch(clearForm()); }
                 addrequest.onerror = (e) => {
                     console.log('addrequest onerror');
-                    console.log(e);
                     dispatch(docAddFailed(doc)); }
             } catch(e) {
                 console.log('CATCHED EXCEPTION');
-                console.log(e);
                 dispatch(docAddFailed(doc));
             }
         }
@@ -189,7 +185,7 @@ export function changeField(field) {
     return {
         type: 'CHANGE_FIELD',
         payload: {
-            name: field.id,
+            name: field.name,
             value: field.value
         }
     }

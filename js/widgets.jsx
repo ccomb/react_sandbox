@@ -6,7 +6,7 @@ import DatePicker from 'material-ui/lib/date-picker/date-picker';
 const StringWidget = (props) => 
     <TextField
         {...props}
-        id={props.name}
+        name={props.name}
         ref={props.widgetDidMount}
         onEnterKeyDown={props.onSubmit}
         onChange={props.onChangeField}
@@ -34,12 +34,24 @@ const HTMLWidget = (props) => {
   );
 }
 
-const DateWidget = (props) =>
-    <DatePicker
-        id={props.name}
-        hintText={props.name}
-        onChange={props.onChangeField}
+const DateWidget = React.createClass({
+    onChange: function(e, date) {
+        // we simulate an event object
+        this.props.onChangeField({
+            target: {
+                name: this.props.name,
+                value: date.toJSON()
+            }
+        });
+    },
+    render: function() {
+    return  <DatePicker
+        id={this.props.name}
+        hintText={this.props.name}
+        onChange={this.onChange}
         mode="landscape" />
+    }
+});
 
 const WIDGETS = {
     string: StringWidget,

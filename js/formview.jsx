@@ -30,8 +30,8 @@ export const FormView = connect(state=>({state}))(React.createClass({
         // antipattern power, we init state with props
         return { shouldfocus: this.props.initialfocus }
     },
-    onChangeField: function(e) {  // TODO remove ?
-        this.props.dispatch(changeField(e.target));
+    onChangeField: function(event) {
+        this.props.dispatch(changeField(event.target));
     },
     widgetDidMount: function(input) {
         if (input != null && input.props.type == 'text'
