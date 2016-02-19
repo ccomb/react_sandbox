@@ -13,6 +13,9 @@ import {DocumentManager} from './document-manager';
 import {NotFound} from './notfound';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
+import Card from 'material-ui/lib/card/card';
+import CardTitle from 'material-ui/lib/card/card-title';
+import CardMedia from 'material-ui/lib/card/card-media';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin(); // remove as of react 1.0
@@ -105,14 +108,41 @@ const RootComponent = connect(state=>({state}))(React.createClass({
         const childroute = {segments, current:current+1};
         switch(segments[current+1]) { // TODO make it pluggable
             case undefined:
-                return (<div className='row center-xs' style={{margin: 0}}>
-                    <div className='col-xs-3'>
-                        <ul>Available apps
-                            <li><a href='#/bo/'>Back-office</a></li>
-                        </ul>
+                return (<div className='row center-xs around center-xs start-sm' style={{margin: 0, padding: '1em'}}>
+                    <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3' style={{marginBottom: '1em'}}>
+                        <a href='#/bo/' className="box">
+                            <Card>
+                                <CardMedia overlay={
+                                    <CardTitle title="Back Office" subtitle="Stunning offline-first and mobile-first back office" />
+                                }>
+                                <img src="http://lorempixel.com/g/320/198/abstract/1" />
+                                </CardMedia>
+                            </Card>
+                        </a>
+                    </div>
+                    <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3'>
+                        <a href='#/pos/' className="box">
+                            <Card>
+                                <CardMedia overlay={
+                                    <CardTitle title="Point of Sale" subtitle="Stunning offline-first and mobile-first point of sale" />
+                                }>
+                                <img src="http://lorempixel.com/g/320/198/abstract/2" />
+                                </CardMedia>
+                            </Card>
+                        </a>
+                    </div>
+                    <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3'>
+                        <a href='#/bi/' className="box">
+                            <Card>
+                                <CardMedia overlay={
+                                    <CardTitle title="Business Intelligence" subtitle="Stunning offline-first and mobile-first business intelligence" />
+                                }>
+                                <img src="http://lorempixel.com/g/320/198/abstract/3" />
+                                </CardMedia>
+                            </Card>
+                        </a>
                     </div>
                 </div>);
-                return <Root/>;
             case 'bo':
                 return <BackOffice route={childroute}/>;
             default:
