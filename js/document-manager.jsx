@@ -14,7 +14,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     propTypes: {
         route: React.PropTypes.object,
         state: React.PropTypes.object,
-        leftoffset: React.PropTypes.string,
+        leftoffset: React.PropTypes.bool,
         dispatch: React.PropTypes.func,
     },
     onDelete: function(doc) {
@@ -31,7 +31,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     changeView: function(view) {
         this.props.dispatch(changeView(this.props.route, view));
     },
-    child: function(state, route) {
+    child: function(state, route, status) {
         const {segments, current} = route;
         const doctype = segments[current];
         const view = segments[current+1] || initialState.view;
@@ -42,6 +42,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
             switch(view) { // TODO make it pluggable
                 case 'list':
                     return (<ListView
+                        status={status}
                         route={childroute}
                         docs={state.docs}
                         onDelete={this.onDelete}
@@ -69,6 +70,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     },
     render: function() {
         const {state, leftoffset, route} = this.props;
+        const status = state.status.list;
         const background = route.segments[route.current] == 'new' ? '#EEE' : '#FFF';
         return (
         <div
@@ -97,7 +99,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                     </div>
                 </div>
             </div>
-            {this.child(state, route)}
+            {this.child(state, route, status)}
         </div>)
     }
 }));

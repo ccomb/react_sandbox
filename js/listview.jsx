@@ -10,6 +10,7 @@ import Delete from 'material-ui/lib/svg-icons/action/delete';
 export const ListView = React.createClass({
     displayName: 'ListView',
     propTypes: {
+        status: React.PropTypes.string,
         route: React.PropTypes.object,
         docs: React.PropTypes.object,
         onDelete: React.PropTypes.func,
@@ -22,7 +23,7 @@ export const ListView = React.createClass({
         this.props.onDelete(doc);
     },
     render: function() {
-        const {docs} = this.props;
+        const {docs, status} = this.props;
         const self = this;
         return (
         <div>
@@ -35,10 +36,11 @@ export const ListView = React.createClass({
                 <div className="col" style={{padding: 0}}>
                     <Table>
                         <TableBody>
-                            {Object.keys(docs).map(uuid =>
+                            {status === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
+                            Object.keys(docs).map(uuid =>
                             <ListItem
-                                doc={docs[uuid]}
                                 key={uuid}
+                                doc={docs[uuid]}
                                 onDelete={self.onDelete}/>)}
                         </TableBody>
                     </Table>
@@ -58,18 +60,18 @@ export const ListItem = React.createClass({
         this.props.onDelete(this.props.doc);
     },
     render: function() {
-        const {status} = this.props.doc;
-        const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[status] || 'red';
+        const {doc} = this.props;
+        const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[doc.status] || 'red';
         return (
                 <TableRow style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
-                        Status: <span style={{background: color, color: 'white'}}>{status}</span>
+                        Status: <span style={{background: color, color: 'white'}}>{doc.status}</span>
                     </TableRowColumn>
                     <TableRowColumn>
-                        {this.props.doc.uuid}
+                        {doc.uuid}
                     </TableRowColumn>
                     <TableRowColumn>
-                        {this.props.doc.name}
+                        {doc.name}
                     </TableRowColumn>
                     <TableRowColumn>
                         <IconButton iconClassName='' onClick={this.onDelete}>

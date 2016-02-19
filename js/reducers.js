@@ -5,6 +5,9 @@ import {MD} from './actions';
 export const initialState = {
     // The list of active docs indexed with their uuid
     docs: {},
+    status: {
+        list: null,
+    },
     // the URL (starting at the hash)
     path: function() {},
     // currently selected menu
@@ -28,6 +31,9 @@ function docs(docs=initialState.docs, action) {
         case 'ADD_DOC':
             console.log('reduce: ' + action.type)
             return {...docs, [doc.uuid]: {...doc, status: action.meta.status}};
+        case 'ADD_DOCS':
+            console.log('reduce: ' + action.type);
+            return {...docs, ...doc};
         case 'DOC_STATUS':
            var newdoc = {...doc, status: action.meta.status};
            var res = {...docs, [newdoc.uuid]:newdoc};
@@ -100,4 +106,13 @@ function view(view=initialState.view, action) {
     }
 }
 
-export const globalreducer = combineReducers({form, menu, view, docs, path});
+function status(status=initialState.status, action) {
+    switch (action.type) {
+        case 'LIST_STATUS':
+            return action.payload === status.list ?
+                status : {...status, list: action.payload};
+        default:
+            return status;
+    }
+}
+export const globalreducer = combineReducers({form, menu, view, docs, path, status});

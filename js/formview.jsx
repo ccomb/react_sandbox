@@ -1,6 +1,5 @@
 import React from 'react';
 import FlatButton from 'material-ui/lib/flat-button';
-import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
 import FIELDS from './fields';
@@ -9,13 +8,12 @@ import FIELDS from './fields';
 export const FormView = React.createClass({
     displayName: 'FormView',
     propTypes: {
-        doc: React.PropTypes.object,
-        onSubmit: React.PropTypes.func,
+        route: React.PropTypes.object,
+        form: React.PropTypes.object,
         onStore: React.PropTypes.func,
+        initialfocus: React.PropTypes.string,
         onChangeField: React.PropTypes.func,
         changeView: React.PropTypes.func,
-        route: React.PropTypes.object,
-        initialfocus: React.PropTypes.string,
     },
     onCancel: function(e) {
         e.preventDefault();
@@ -38,20 +36,19 @@ export const FormView = React.createClass({
           input.focus()
         }
     },
-    getData: function() {
-    },
     render: function() {
         const Field = FIELDS[schema.type];
-        const data = this.getData();
+        const {data, layout} = this.props.form;
         return (
       <div className="row center-sm" style={{margin: '1%'}}>
         <div className="col-xs">
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
             <Field
-                {...this.props}
                 onSubmit={this.onSubmit}
                 schema={schema}
+                data={data}
+                layout={layout}
                 onChangeField={this.onChangeField}
                 widgetDidMount={this.widgetDidMount}
                 />

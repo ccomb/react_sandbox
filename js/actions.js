@@ -17,6 +17,14 @@ export function addDoc(doc, status=undefined) {
     }
 }
 
+export function addDocs(docs) {
+    console.log('action: ADD_DOCS');
+    return {
+        type: 'ADD_DOCS',
+        payload: docs
+    }
+}
+
 export function storeDoc(doc) {
     console.log('action: STORE_DOC');
     doc.uuid = uuid();
@@ -93,26 +101,61 @@ export function clearDocs() {
     }
 }
 
-export function loadRecords (model) {
-    console.log('async action: LOAD_RECORDS')
+export function loadRecord(uuid) {
+    console.log('async action: LOAD_RECORD');
     return (dispatch) => {
         console.log('indexedDB: opening database');
         var openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = (e) => {
             console.log('indexedDB: reading objectstore')
             let openCursor = e.target.result.transaction('docs', 'readonly')
-                          .objectStore('docs').openCursor()
+                          .objectStore('docs').get(uuid);
             openCursor.onsuccess = (e) => {
                 console.log('indexedDB: next cursor');
-                let cursor = e.target.result;
-                if (cursor) {
+                let doc = e.target.result;
+                if (doc) {
                     dispatch(addDoc(cursor.value));
-                    cursor.continue();
                 }
             }
             openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
         }
         openDB.onerror = () => { dispatch(docStatus({}, 'error'));  }
+    }
+}
+
+export function loadRecords(model) {
+    console.log('async action: LOAD_RECORDS');
+    return (dispatch) => {
+        console.log('indexedDB: opening database');
+        var openDB = window.indexedDB.open('tutodb', 1);
+        openDB.onsuccess = (e) => {
+            console.log('indexedDB: reading objectstore');
+            let openCursor = e.target.result.transaction('docs', 'readonly')
+                          .objectStore('docs').openCursor();
+            dispatch(listStatus('loading'));
+            var docs = {};
+            openCursor.onsuccess = (e) => {
+                console.log('indexedDB: next cursor');
+                let cursor = e.target.result;
+                if (cursor) {
+                    docs[cursor.value.uuid] = cursor.value;
+                    cursor.continue();
+                } else {
+                    dispatch(listStatus('loaded'));
+                    dispatch(addDocs(docs));
+                }
+            }
+            openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
+        }
+        openDB.onerror = () => { dispatch(docStatus({}, 'error'));  }
+    }
+}
+
+export function listStatus(status) {
+    console.log('async action: LIST_STATUS', status);
+    return {
+        type: 'LIST_STATUS',
+        payload: status
     }
 }
 
