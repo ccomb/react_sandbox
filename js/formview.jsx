@@ -3,6 +3,7 @@ import FlatButton from 'material-ui/lib/flat-button';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
+import FIELDS from './fields';
 
 
 export const FormView = React.createClass({
@@ -37,19 +38,23 @@ export const FormView = React.createClass({
           input.focus()
         }
     },
+    getData: function() {
+    },
     render: function() {
+        const Field = FIELDS[schema.type];
+        const data = this.getData();
         return (
       <div className="row center-sm" style={{margin: '1%'}}>
         <div className="col-xs">
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
-            <SchemaForm
-                schema={schema}
-                widgetDidMount={this.widgetDidMount}
-                onChangeField={this.onChangeField}
-                onChange={()=>console.log("changed")}
+            <Field
+                {...this.props}
                 onSubmit={this.onSubmit}
-                onError={()=>console.log("errors")} />
+                schema={schema}
+                onChangeField={this.onChangeField}
+                widgetDidMount={this.widgetDidMount}
+                />
                 <FlatButton
                     label="Save"
                     onClick={this.onSubmit}
