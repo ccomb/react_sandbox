@@ -2,7 +2,7 @@ import {docs} from './reducers';
 import {addRecord} from './actions';
 import {assert} from 'chai';
 
-var docs_before = [
+var docsBefore = [
     {name: 'foo'},
     {name: 'bar', email: 'bar@test.com'}
 ]
@@ -11,7 +11,7 @@ var newRecord = {
     name: 'baz',
     email: 'baz@test.com'
 }
-var docs_after = [
+var docsAfter = [
     {name: 'foo'},
     {name: 'bar', email: 'bar@test.com'},
     {name: 'baz', email: 'baz@test.com', status: 'saving'},
@@ -19,10 +19,9 @@ var docs_after = [
 
 describe('docs', function(){
     it('should have added a doc', function(){
-        var nc= docs(docs_before, addRecord(newRecord))
         assert.deepEqual(
-            docs(docs_before, addRecord(newRecord)),
-            docs_after);
+            docs(docsBefore, addRecord(newRecord)),
+            docsAfter);
     })
 })
 

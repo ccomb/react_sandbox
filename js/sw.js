@@ -1,5 +1,5 @@
 // put the assets in cache
-this.addEventListener('install', function(e) {
+this.addEventListener('install', function() {
     console.log('SW installed');
 });
 
@@ -22,7 +22,7 @@ this.addEventListener('fetch', function(e) {
                         console.log(error)
                     })
                     }
-                }).catch(function(error){
+                }).catch(function(){
                     console.log('SW fetch error');
                 })
         })

@@ -2,21 +2,66 @@ import React from "react";
 import {ListView} from "./listview";
 import {FormView} from "./formview";
 import {NotFound} from './notfound';
+import {connect} from 'react-redux';
+import {deleteDoc, changeView, storeDoc, changeField} from './actions';
+import {initialState} from './reducers';
 
-export const DocumentManager = React.createClass({
-  component: function(route) {
+const mapStateToProps = function(state) {
+    return state; // Here we can apply filters to the list if needed
+}
+
+export const DocumentManager = connect(mapStateToProps)(React.createClass({
+  propTypes: {
+    route: React.PropTypes.object,
+    state: React.PropTypes.object,
+    leftoffset: React.PropTypes.string,
+    dispatch: React.PropTypes.func,
+  },
+  onDelete: function(doc) {
+      this.props.dispatch(deleteDoc(doc))
+  },
+  onStore: function() {
+    const doc = this.props.state.form.data;
+    this.props.dispatch(storeDoc(doc));
+    this.changeView('list');
+  },
+  onChangeField(event) {
+    this.props.dispatch(changeField(event.target));
+  },
+  changeView: function(view) {
+    this.props.dispatch(changeView(this.props.route, view));
+  },
+  child: function(state, route) {
     const {segments, current} = route;
     const doctype = segments[current];
-    const view = segments[current+1] || this.props.defaultview;
+    const view = segments[current+1] || initialState.view;
     const childroute = {...route, current: current+1};
     if (!doctype) {
         return (''); // TODO Dashboard
     } else {
         switch(view) { // TODO make it pluggable
             case 'list':
-                return (<ListView route={childroute}/>);
+                return (<ListView
+                    route={childroute}
+                    docs={state.docs}
+                    onDelete={this.onDelete}
+                    changeView={this.changeView}/>);
             case 'new':
-                return (<FormView route={childroute} initialfocus='name'/>);
+                return (<FormView
+                    route={childroute}
+                    form={state.form}
+                    onStore={this.onStore}
+                    initialfocus='name'
+                    onChangeField={this.onChangeField}
+                    changeView={this.changeView}/>);
+            case 'view':
+                return (<FormView
+                    route={childroute}
+                    form={state.form}
+                    onStore={this.onStore}
+                    initialfocus='name'
+                    onChangeField={this.onChangeField}
+                    changeView={this.changeView}/>);
             default:
                 return (<NotFound route={childroute}/>);
          }
@@ -52,7 +97,7 @@ export const DocumentManager = React.createClass({
                 </div>
             </div>
         </div>
-        {this.component(route)}
+        {this.child(state, route)}
     </div>)
   }
-});
+}));

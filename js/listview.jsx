@@ -1,29 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {deleteDoc} from './actions';
 import IconButton from 'material-ui/lib/icon-button';
 import Table from 'material-ui/lib/table/table';
-import TableHeader from 'material-ui/lib/table/table-header';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import FlatButton from 'material-ui/lib/flat-button';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
-import {createStore, applyMiddleware} from 'redux';
-import {connect} from 'react-redux';
-import {changeView} from './actions';
-import {loadRecords} from './actions';
 
-export const ListView = connect(state=>({state}))(React.createClass({
+export const ListView = React.createClass({
+    displayName: 'ListView',
+    propTypes: {
+        route: React.PropTypes.object,
+        docs: React.PropTypes.object,
+        onDelete: React.PropTypes.func,
+        changeView: React.PropTypes.func
+    },
     onCreate: function() {
-        const {route} = this.props;
-        changeView(route, 'new');
+        this.props.changeView('new');
+    },
+    onDelete: function(doc) {
+        this.props.onDelete(doc);
     },
     render: function() {
-        const {dispatch, state} = this.props;
-        if (!Object.keys(state.docs).length) {
-            dispatch(loadRecords('contact'));
-        }
+        const {docs} = this.props;
+        const self = this;
         return (
         <div>
             <div className="row start" style={{margin: 0}}>
@@ -35,50 +35,41 @@ export const ListView = connect(state=>({state}))(React.createClass({
                 <div className="col" style={{padding: 0}}>
                     <Table>
                         <TableBody>
-                        {Object.keys(state.docs).map(key => {return <ListItem {...state.docs[key]} key={key}/>})}
+                            {Object.keys(docs).map(uuid =>
+                            <ListItem
+                                doc={docs[uuid]}
+                                key={uuid}
+                                onDelete={self.onDelete}/>)}
                         </TableBody>
                     </Table>
                 </div>
             </div>
         </div>);
     }
-}));
+});
 
-export const ListItem = connect(state=>({state}))(React.createClass({
+export const ListItem = React.createClass({
     displayName: 'ListItem',
     propTypes: {
-        uuid: React.PropTypes.string,
-        surname: React.PropTypes.string,
-        name: React.PropTypes.string.isRequired,
-        date: React.PropTypes.string,
-        email: React.PropTypes.string,
-        description: React.PropTypes.string
+        doc: React.PropTypes.object,
+        onDelete: React.PropTypes.func
     },
     onDelete: function() {
-        this.props.dispatch(deleteDoc(this.props.uuid))
+        this.props.onDelete(this.props.doc);
     },
     render: function() {
-        const status = this.props.status;
-        const color = status=='saving' ? 'orange' : status=='saved' ? 'green' : 'red';
+        const {status} = this.props.doc;
+        const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[status] || 'red';
         return (
                 <TableRow style={{border: "solid 1px #EEE"}}>
                     <TableRowColumn>
                         Status: <span style={{background: color, color: 'white'}}>{status}</span>
                     </TableRowColumn>
                     <TableRowColumn>
-                        {this.props.surname}
+                        {this.props.doc.uuid}
                     </TableRowColumn>
                     <TableRowColumn>
-                        {this.props.name}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        {this.props.date.toLocaleString()}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <a href={'mailto:' + this.props.email}>{this.props.email}</a>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        {this.props.description}
+                        {this.props.doc.name}
                     </TableRowColumn>
                     <TableRowColumn>
                         <IconButton iconClassName='' onClick={this.onDelete}>
@@ -89,6 +80,6 @@ export const ListItem = connect(state=>({state}))(React.createClass({
         
     }
 })
-)
+
 
 

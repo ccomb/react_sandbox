@@ -9,68 +9,62 @@ export const MD = typeof window !== 'undefined' ?
 
 
 export function addDoc(doc, status=undefined) {
-    console.log('Dispatching addDoc')
+    console.log('action: ADD_DOC', doc, status);
     return {
-        type: 'add doc',
+        type: 'ADD_DOC',
         payload: doc,
         meta: {status}
     }
 }
 
 export function storeDoc(doc) {
+    console.log('action: STORE_DOC');
     doc.uuid = uuid();
-    console.log('Dispatching storeDoc()')
+    console.log('async action: storing document')
     return (dispatch) => {
-        console.log('Opening database')
+        dispatch(addDoc(doc, 'saving'));
+        console.log('indedexDB: opening database')
         let openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = function(e) {
-            console.log('Creating DB transaction to store doc')
+            console.log('indexedDB: creating transaction to store doc')
             let db = e.target.result;
             let transaction = db.transaction('docs', 'readwrite');
-            transaction.oncomplete = (e) => {
-                console.log('transaction completed');}
-            transaction.onerror = (e) => {
-                dispatch(docAddFailed(doc)); }
+            transaction.oncomplete = () => {
+                console.log('indexedDB: transaction completed');}
+            transaction.onerror = () => {
+                dispatch(docStatus(doc, 'error')); }
             var addrequest;
             try {
-                console.log('objectStore try to add')
-                dispatch(addDoc(doc, 'saving'));
+                console.log('indexedDB: adding doc in objectStore')
                 addrequest = transaction.objectStore('docs').add(doc);
-                addrequest.onsuccess = (e) => {
-                    dispatch(docAdded(doc));
+                addrequest.onsuccess = () => {
+                    dispatch(docStatus(doc, 'stored'));
                     dispatch(clearForm()); }
-                addrequest.onerror = (e) => {
-                    console.log('addrequest onerror');
-                    dispatch(docAddFailed(doc)); }
+                addrequest.onerror = () => {
+                    console.log('indexedDB: error adding doc');
+                    dispatch(docStatus(doc, 'error')); }
             } catch(e) {
-                console.log('CATCHED EXCEPTION');
-                dispatch(docAddFailed(doc));
+                console.log('indexedDB: catched exception');
+                dispatch(docStatus(doc, 'error'));
             }
         }
-        openDB.onerror = (e) => { dispatch(docAddFailed(doc)); }
+        openDB.onerror = () => { dispatch(docStatus(doc, 'error')); }
     }
 }
 
-export function docAdded(doc) {
-    console.log('Dispatching docAdded')
+export function docStatus(doc, status) {
+    console.log('action: DOC_STATUS ' + status);
     return {
-            type: 'doc added',
-            payload: doc
-    }
-}
-
-export function docAddFailed(doc) {
-    console.log('Dispatching docAddFailed')
-    return {
-            type: 'doc add failed',
-            payload: doc
+            type: 'DOC_STATUS',
+            payload: doc,
+            meta: {status}
     }
 }
 
 export function changeURLHash(hash) {
     // if hash is provided, then just change the hash
     // otherwise return a redux action
-    console.log('Dispatching changeURLHash', hash)
+    console.log('action: CHANGE_HASH ' + hash);
     if (hash) {
         window.location.hash = hash;
         return
@@ -83,72 +77,67 @@ export function changeURLHash(hash) {
 
 export function changeView(route, view) {
     // not a redux action, but the changeURLHash should then be triggered
+    console.log('action: CHANGE_VIEW ' + view);
     const {segments, current} = route;
-    console.log('changeView', [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/'))
-    window.location.hash = [...segments.slice(0, current), view, ...segments.slice(current+1)].join('/');
-}
-
-export function finishDbRequest () {
-    console.log('Dispatching finishDbRequest')
+    window.location.hash = [...segments.slice(0, current+1), view, ...segments.slice(current+2)].join('/');
     return {
-        type: 'finishrequest',
-        payload: undefined
+        type: 'CHANGE_VIEW',
+        payload: view
     }
 }
 
-export function clearRecords() {
-    console.log('dispatching clearRecords')
+export function clearDocs() {
+    console.log('action: CLEAR_DOCS')
     return {
-        type: 'clear records',
+        type: 'CLEAR_DOCS',
     }
 }
 
 export function loadRecords (model) {
-    console.log('dispatching loadRecords')
+    console.log('async action: LOAD_RECORDS')
     return (dispatch) => {
-        console.log('opening database');
-        let openDB = window.indexedDB.open('tutodb', 1);
+        console.log('indexedDB: opening database');
+        var openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = (e) => {
-            dispatch(clearRecords(model));
-            console.log('reading objectstore with cursor')
+            console.log('indexedDB: reading objectstore')
             let openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').openCursor()
             openCursor.onsuccess = (e) => {
-                console.log('cursor open');
+                console.log('indexedDB: next cursor');
                 let cursor = e.target.result;
                 if (cursor) {
-                    console.log('cursor not empty')
                     dispatch(addDoc(cursor.value));
                     cursor.continue();
                 }
             }
-            openCursor.onerror = (e) => { dispatch(docAddFailed({})); }
+            openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
         }
-        openDB.onerror = (e) => { dispatch(docAddFailed({}));  }
+        openDB.onerror = () => { dispatch(docStatus({}, 'error'));  }
     }
 }
 
-export function removeDoc(uuid, status) {
+export function removeDoc(doc) {
+    console.log('action: REMOVE_DOC')
     return {
-        type: 'remove doc',
-        payload: uuid,
-        error: status=='error' ? true : false
+        type: 'REMOVE_DOC',
+        payload: doc
     }
 }
 
-export function deleteDoc(uuid) {
-    console.log('dispatching delete doc');
+export function deleteDoc(doc) {
+    console.log('async action: DELETE_DOC');
     return (dispatch) => {
-        console.log('opening database');
+        dispatch(docStatus(doc, 'deleting'));
+        console.log('indexedDB: opening database');
         window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
             let req = e.target.result
                 .transaction('docs', 'readwrite')
-                .objectStore('docs').delete(uuid);
-            req.onsuccess = (e) => {
-                dispatch(removeDoc(uuid));
+                .objectStore('docs').delete(doc.uuid);
+            req.onsuccess = () => {
+                dispatch(removeDoc(doc));
             }
-            req.onerror = (e) => {
-                dispatch(removeDoc(uuid, 'error'))
+            req.onerror = () => {
+                dispatch(docStatus(doc, 'error'))
             }
         }
     }
@@ -156,7 +145,7 @@ export function deleteDoc(uuid) {
 
 export function openMenu() {
     return {
-        type: 'open menu',
+        type: 'OPEN_MENU',
         payload: {
             innerWidth: window.innerWidth
         }
@@ -165,7 +154,7 @@ export function openMenu() {
 
 export function closeMenu() {
     return {
-        type: 'close menu',
+        type: 'CLOSE_MENU',
         payload: {
             innerWidth: window.innerWidth
         }
@@ -174,7 +163,7 @@ export function closeMenu() {
 
 export function toggleMenu() {
     return {
-        type: 'toggle menu',
+        type: 'TOGGLE_MENU',
         payload: {
             innerWidth: window.innerWidth
         }

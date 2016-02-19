@@ -5,6 +5,12 @@ import WIDGETS from './widgets';
 var ObjectField = React.createClass({
     displayName: 'ObjectField',
 
+    propTypes: {
+        name: React.PropTypes.string,
+        schema: React.PropTypes.object,
+        required: React.PropTypes.bool,
+    },
+
     render: function() {
         const {schema} = this.props;
         var i = 0, self = this;
@@ -31,6 +37,13 @@ var ObjectField = React.createClass({
 
 const StringField = React.createClass({
     displayName: 'StringField',
+
+    propTypes: {
+        name: React.PropTypes.string,
+        schema: React.PropTypes.object,
+        required: React.PropTypes.bool,
+    },
+
     render: function() {
         const {schema} = this.props;
         const Widget = WIDGETS[schema.subtype] || WIDGETS['string'];

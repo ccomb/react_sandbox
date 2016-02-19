@@ -1,46 +1,41 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import TextField from 'material-ui/lib/text-field';
-import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import FlatButton from 'material-ui/lib/flat-button';
-import {connect} from 'react-redux';
-import {changeView, storeDoc, focusField, changeField} from './actions';
 import {SchemaForm} from "./schemaform";
 import {schema} from "./schema";
 import Paper from 'material-ui/lib/paper';
 
 
-export const FormView = connect(state=>({state}))(React.createClass({
+export const FormView = React.createClass({
     displayName: 'FormView',
     propTypes: {
         doc: React.PropTypes.object,
-        onSubmit: React.PropTypes.func
+        onSubmit: React.PropTypes.func,
+        onStore: React.PropTypes.func,
+        onChangeField: React.PropTypes.func,
+        changeView: React.PropTypes.func,
+        route: React.PropTypes.object,
+        initialfocus: React.PropTypes.string,
     },
     onCancel: function(e) {
         e.preventDefault();
-        changeView(this.props.route, 'list');
+        this.props.changeView('list');
     },
     onSubmit: function(e) {
-        e.preventDefault()
-        const doc = this.props.state.form.data;
-        this.props.dispatch(storeDoc(doc));
-        changeView(this.props.route, 'list');
+        e.preventDefault();
+        this.props.onStore();
     },
     getInitialState: function() {
-        // antipattern power, we init state with props
         return { shouldfocus: this.props.initialfocus }
     },
     onChangeField: function(event) {
-        this.props.dispatch(changeField(event.target));
+        this.props.onChangeField(event);
     },
     widgetDidMount: function(input) {
-        if (input != null && input.props.type == 'text'
-            && this.state.shouldfocus == input.props.id){
+        if (input != null && ['text', 'password'].indexOf(input.props.type)+1
+            && this.state.shouldfocus == input.props.name){
           this.setState({shouldfocus: undefined})
           input.focus()
         }
-        if (input && this.props.state.form.data[input.props.id])
-            input.setValue(this.props.state.form.data[input.props.id]);
     },
     render: function() {
         return (
@@ -50,7 +45,6 @@ export const FormView = connect(state=>({state}))(React.createClass({
             <form>
             <SchemaForm
                 schema={schema}
-                formData={{}}
                 widgetDidMount={this.widgetDidMount}
                 onChangeField={this.onChangeField}
                 onChange={()=>console.log("changed")}
@@ -69,6 +63,6 @@ export const FormView = connect(state=>({state}))(React.createClass({
         </div>
       </div>);
     }
-}));
+});
 
 

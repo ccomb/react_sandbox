@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import {XS, MD} from './actions';
+import {MD} from './actions';
 
-// Doc and initial value of the global redux state
-const initial_state = {
+// Doc and initial value of the global redux state, which correspond to the working space in memory
+export const initialState = {
     // The list of active docs indexed with their uuid
     docs: {},
     // the URL (starting at the hash)
@@ -13,6 +13,7 @@ const initial_state = {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
     },
+    view: 'list',
     form: {
         // data of the currently displayed object
         data: {},
@@ -21,76 +22,68 @@ const initial_state = {
     }
 }
 
-function docs(docs=initial_state.docs, action) {
+function docs(docs=initialState.docs, action) {
+    const doc = action.payload;
     switch(action.type){
-        case 'doc added':
-            console.log('reducing with ' + action.type)
-            const newdoc = {...action.payload, status: 'saved'};
-           if (newdoc){
-                return {...docs, [newdoc.uuid]:newdoc};
-            } else {
-                return [...initial_state.docs]
-            }
-        case 'doc add failed':
-            console.log('reducing with ' + action.type)
-            return {...docs, [action.payload.uuid]: {...action.payload, status: 'unsaved'}};
-        case 'add doc':
-            console.log('reducing with ' + action.type)
-            return {...docs, [action.payload.uuid]: {...action.payload, status: action.meta.status || ''}};
-        case 'clear docs':
-            console.log('reducing with ' + action.type)
-            return Object.keys(docs).length  ? {} : docs;
-        case 'remove doc':
-            console.log('reducing with ' + action.type)
-            var newdocs = {...docs};
-            delete newdocs[action.payload];
-            return newdocs;
+        case 'ADD_DOC':
+            console.log('reduce: ' + action.type)
+            return {...docs, [doc.uuid]: {...doc, status: action.meta.status}};
+        case 'DOC_STATUS':
+           var newdoc = {...doc, status: action.meta.status};
+           var res = {...docs, [newdoc.uuid]:newdoc};
+            return res;
+        case 'CLEAR_DOCS':
+            return Object.keys(docs).length ? {...initialState.docs} : docs;
+        case 'REMOVE_DOC':
+            var others = {...docs};
+            delete others[doc.uuid];
+            return others;
         default:
             return docs;
     }
 }
 
-function path(path=initial_state.path, action) {
+function path(path=initialState.path, action) {
     switch(action.type) {
         case 'CHANGE_HASH':
-            console.log('reducing with ' + action.type);
+            console.log('reduce: ' + action.type);
             return path == action.payload ? path : action.payload;
         default:
             return path;
     }
 }
 
-function menu(menu=initial_state.menu, action) {
+function menu(menu=initialState.menu, action) {
     switch (action.type) {
-        case 'open menu':
-            console.log('reducing with ' + action.type)
+        case 'OPEN_MENU':
+            console.log('reduce: ' + action.type)
             return menu.open ? menu : {
                 ...menu,
                 open: true,
                 floating: action.payload.innerWidth<MD};
-        case 'close menu':
-            console.log('reducing with ' + action.type)
+        case 'CLOSE_MENU':
+            console.log('reduce: ' + action.type)
             return menu.open ? {...menu, open: false, floating: false} : menu;
-        case 'toggle menu':
-            console.log('reducing with ' + action.type)
+        case 'TOGGLE_MENU':
+            console.log('reduce: ' + action.type)
             return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD && !menu.open};
         default:
             return menu;
     }
 }
 
-function form(form=initial_state.form, action) {
+function form(form=initialState.form, action) {
     switch (action.type) {
         case 'CHANGE_FIELD':
-            console.log('reducing with ' + action.type);
+            console.log('reduce: ' + action.type)
             return {...form ,
                     data:{...form.data,
                     [action.payload.name]: action.payload.value}};
         case 'CLEAR_FORM':
-            console.log('reducing with ' + action.type);
-            return Object.keys(form).length ? initial_state.form : form;
+            console.log('reduce: ' + action.type)
+            return Object.keys(form).length ? {...initialState.form} : form;
         case 'FOCUS_FIELD':
-            console.log('reducing with ' + action.type);
+            console.log('reduce: ' + action.type)
             return action.payload != form.focus ?
                 {...form, focus: action.payload} : form;
         default:
@@ -98,5 +91,13 @@ function form(form=initial_state.form, action) {
     }
 }
 
+function view(view=initialState.view, action) {
+    switch (action.type) {
+        case 'CHANGE_VIEW':
+            return action.payload === view ? view : action.payload
+        default:
+            return view;
+    }
+}
 
-export const globalreducer = combineReducers({form, menu, docs, path});
+export const globalreducer = combineReducers({form, menu, view, docs, path});
