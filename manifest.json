@@ -1,0 +1,19 @@
+{
+  "short_name": "Truc en js",
+  "name": "Truc en js",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "lang": "en",
+  "background_color": "#CCCCCC",
+  "icons": [{
+    "src": "/img/icon.png",
+    "sizes": "48x48",
+    "type": "image/svg"
+  }],
+  "icons": [{
+    "src": "/img/splash.svg",
+    "sizes": "320x240",
+    "type": "image/svg"
+  }]
+}
