@@ -19,12 +19,11 @@ export const ListView = React.createClass({
     onCreate: function() {
         this.props.changeView('new');
     },
-    onDelete: function(doc) {
-        this.props.onDelete(doc);
-    },
+    onDelete: function(uuid) { const self = this; return function() {
+        self.props.onDelete(uuid);
+    }},
     render: function() {
         const {docs, status} = this.props;
-        const self = this;
         return (
         <div>
             <div className="row start" style={{margin: 0}}>
@@ -37,11 +36,25 @@ export const ListView = React.createClass({
                     <Table>
                         <TableBody>
                             {status === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
-                            Object.keys(docs).map(uuid =>
-                            <ListItem
-                                key={uuid}
-                                doc={docs[uuid]}
-                                onDelete={self.onDelete}/>)}
+                            Object.keys(docs).map(uuid =>{
+                            const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docs[uuid].status] || 'red';
+                            return (<TableRow style={{border: "solid 1px #EEE"}}>
+                                        <TableRowColumn>
+                                            Status: <span style={{background: color, color: 'white'}}>{docs[uuid].status}</span>
+                                        </TableRowColumn>
+                                        <TableRowColumn>
+                                            {uuid}
+                                        </TableRowColumn>
+                                        <TableRowColumn>
+                                            {docs[uuid].name}
+                                        </TableRowColumn>
+                                        <TableRowColumn>
+                                            <IconButton iconClassName='' onClick={this.onDelete(docs[uuid])}>
+                                                <Delete/>
+                                            </IconButton>
+                                        </TableRowColumn>
+                                    </TableRow>);
+                            })}
                         </TableBody>
                     </Table>
                 </div>
@@ -49,39 +62,3 @@ export const ListView = React.createClass({
         </div>);
     }
 });
-
-export const ListItem = React.createClass({
-    displayName: 'ListItem',
-    propTypes: {
-        doc: React.PropTypes.object,
-        onDelete: React.PropTypes.func
-    },
-    onDelete: function() {
-        this.props.onDelete(this.props.doc);
-    },
-    render: function() {
-        const {doc} = this.props;
-        const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[doc.status] || 'red';
-        return (
-                <TableRow style={{border: "solid 1px #EEE"}}>
-                    <TableRowColumn>
-                        Status: <span style={{background: color, color: 'white'}}>{doc.status}</span>
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        {doc.uuid}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        {doc.name}
-                    </TableRowColumn>
-                    <TableRowColumn>
-                        <IconButton iconClassName='' onClick={this.onDelete}>
-                            <Delete/>
-                        </IconButton>
-                    </TableRowColumn>
-                </TableRow>);
-        
-    }
-})
-
-
-
