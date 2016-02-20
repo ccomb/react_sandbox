@@ -7,21 +7,28 @@ import {deleteDoc, changeView, storeDoc, changeField} from './actions';
 import {initialState} from './reducers';
 
 const mapStateToProps = function(state) {
-    return state; // Here we can apply filters to the list if needed
+    // Here we can apply filters to the list if needed
+    return {
+        form: state.form,
+        docs: state.docs,
+        status: state.status,
+    }
 }
 
 export const DocumentManager = connect(mapStateToProps)(React.createClass({
     propTypes: {
         route: React.PropTypes.object,
-        state: React.PropTypes.object,
         leftoffset: React.PropTypes.bool,
+        form: React.PropTypes.object,
+        docs: React.PropTypes.object,
+        status: React.PropTypes.object,
         dispatch: React.PropTypes.func,
     },
     onDelete: function(doc) {
         this.props.dispatch(deleteDoc(doc))
     },
     onStore: function() {
-        const doc = this.props.state.form.data;
+        const doc = this.props.form.data;
         this.props.dispatch(storeDoc(doc));
         this.changeView('list');
     },
@@ -31,7 +38,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     changeView: function(view) {
         this.props.dispatch(changeView(this.props.route, view));
     },
-    child: function(state, route, status) {
+    child: function(form, docs, route, status) {
         const {segments, current} = route;
         const doctype = segments[current];
         const view = segments[current+1] || initialState.view;
@@ -44,13 +51,13 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                     return (<ListView
                         status={status}
                         route={childroute}
-                        docs={state.docs}
+                        docs={docs}
                         onDelete={this.onDelete}
                         changeView={this.changeView}/>);
                 case 'new':
                     return (<FormView
                         route={childroute}
-                        form={state.form}
+                        form={form}
                         onStore={this.onStore}
                         initialfocus='name'
                         onChangeField={this.onChangeField}
@@ -58,7 +65,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 case 'view':
                     return (<FormView
                         route={childroute}
-                        form={state.form}
+                        form={form}
                         onStore={this.onStore}
                         initialfocus='name'
                         onChangeField={this.onChangeField}
@@ -69,8 +76,8 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         }
     },
     render: function() {
-        const {state, leftoffset, route} = this.props;
-        const status = state.status.list;
+        console.log('render: DocumentManager');
+        const {form, docs, status, leftoffset, route} = this.props;
         const background = route.segments[route.current] == 'new' ? '#EEE' : '#FFF';
         return (
         <div
@@ -99,7 +106,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                     </div>
                 </div>
             </div>
-            {this.child(state, route, status)}
+            {this.child(form, docs, route, status.list)}
         </div>)
     }
 }));

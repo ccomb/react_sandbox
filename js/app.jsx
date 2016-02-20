@@ -22,11 +22,11 @@ injectTapEventPlugin(); // remove as of react 1.0
 
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
-export const BackOffice = connect(state=>({state}))(React.createClass({
+export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass({
     displayName: 'BackOffice',
     propTypes: {
       route: React.PropTypes.object,
-      state: React.PropTypes.object,
+      menu: React.PropTypes.object,
       dispatch: React.PropTypes.func,
     },
 
@@ -42,7 +42,7 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
         changeURLHash(value);
     },
     onMenuItemClick() {
-        if (this.props.state.menu.open && window.innerWidth < MD)
+        if (this.props.menu.open && window.innerWidth < MD)
             this.props.dispatch(closeMenu());
     },
 
@@ -50,13 +50,14 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
         return this.segments.slice(0, this.current+2).join('/');
     },
     render: function() {
-        const {state, route} = this.props;
+        console.log('render: BackOffice');
+        const {menu, route} = this.props;
         const {segments, current} = route;
         this.segments = segments, this.current = current;
         const childroute = {...route, current: current+1};
-        const s = state.menu.floating ? '10' : '1';
+        const s = menu.floating ? '10' : '1';
         const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
-        const floating = state.menu.floating;
+        const floating = menu.floating;
         return (<div>
                 <AppBar
                     title="Contacts"
@@ -66,7 +67,7 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
                     onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap} />
                 <LeftNav
                     ref="leftnav"
-                    open={state.menu.open}
+                    open={menu.open}
                     docked={floating?false:true}
                     onRequestChange={this.onRequestChange}
                     style={{
@@ -88,8 +89,7 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
                     </SelectableList>
                 </LeftNav>
                 <DocumentManager
-                    leftoffset={window.innerWidth > MD && state.menu.open}
-                    state={state}
+                    leftoffset={window.innerWidth > MD && menu.open}
                     route={childroute}/>
                 </div>);
     }
@@ -104,6 +104,7 @@ const RootComponent = connect(state=>({path: state.path}))(React.createClass({
     displayName: 'RootComponent',
     propTypes: {
       state: React.PropTypes.object,
+      path: React.PropTypes.string,
     },
     component: function() { // routing methods could be moved to an adapter or hoc
         const {path} = this.props;
@@ -137,6 +138,7 @@ const RootComponent = connect(state=>({path: state.path}))(React.createClass({
          }
      },
     render: function() {
+        console.log('render: RootComponent');
         return this.component();
     }
 }));

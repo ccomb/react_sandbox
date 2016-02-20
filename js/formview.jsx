@@ -37,6 +37,7 @@ export const FormView = React.createClass({
         }
     },
     render: function() {
+        console.log('render: FormView');
         const Field = FIELDS[schema.type];
         const {data, layout} = this.props.form;
         return (
