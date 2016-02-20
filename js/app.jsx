@@ -108,7 +108,7 @@ const RootComponent = connect(state=>({state}))(React.createClass({
         const childroute = {segments, current:current+1};
         switch(segments[current+1]) { // TODO make it pluggable
             case undefined:
-                return (<div className='row center-xs center-xs start-sm' style={{margin: 0, padding: '1em'}}>
+                return (<div className='row center-xs around center-xs start-sm' style={{margin: 0, padding: '1em'}}>
                     <div className='col-xs-12 col-sm-6 col-md-3' style={{marginBottom: '1em'}}>
                         <a href='#/bo/' className="box">
                             <Card>
