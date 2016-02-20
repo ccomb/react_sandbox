@@ -41,6 +41,10 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
     handleRequestChangeList: function(event, value) {
         changeURLHash(value);
     },
+    onMenuItemClick() {
+        if (this.props.state.menu.open && window.innerWidth < MD)
+            this.props.dispatch(closeMenu());
+    },
 
     getSelectedIndex: function() {
         return this.segments.slice(0, this.current+2).join('/');
@@ -66,7 +70,7 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
                     docked={floating?false:true}
                     onRequestChange={this.onRequestChange}
                     style={{
-                        marginTop: floating?0:'64px',
+                        marginTop: '64px',
                         boxShadow: menushadow,
                         zIndex: floating?3000:0}}>
                     <SelectableList
@@ -79,6 +83,7 @@ export const BackOffice = connect(state=>({state}))(React.createClass({
                     <ListItem
                         value="#/bo/contact"
                         primaryText="Contacts"
+                        onClick={this.onMenuItemClick}
                     />
                     </SelectableList>
                 </LeftNav>
