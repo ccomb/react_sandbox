@@ -152,7 +152,7 @@ export function loadRecords(model) {
 }
 
 export function listStatus(status) {
-    console.log('async action: LIST_STATUS', status);
+    console.log('action: LIST_STATUS', status);
     return {
         type: 'LIST_STATUS',
         payload: status
