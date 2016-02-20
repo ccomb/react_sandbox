@@ -38,7 +38,7 @@ export const ListView = React.createClass({
                             {status === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             Object.keys(docs).map(uuid =>{
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docs[uuid].status] || 'red';
-                            return (<TableRow style={{border: "solid 1px #EEE"}}>
+                            return (<TableRow style={{border: "solid 1px #EEE"}} key={uuid}>
                                         <TableRowColumn>
                                             Status: <span style={{background: color, color: 'white'}}>{docs[uuid].status}</span>
                                         </TableRowColumn>
