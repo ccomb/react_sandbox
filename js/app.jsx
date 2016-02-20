@@ -143,10 +143,9 @@ const RootComponent = connect(state=>({state}))(React.createClass({
 }));
 
 
-console.log('First render and change hash dispatch')
+console.log('First render')
 ReactDOM.render(<Provider store={store}><RootComponent/></Provider>, document.getElementById('react-app'));
 
-store.dispatch(changeURLHash());
 
 window.addEventListener('resize', function() {
     if (store.getState().menu.open && window.innerWidth <= MD) {
