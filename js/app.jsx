@@ -100,15 +100,14 @@ window.addEventListener('hashchange', function() {
     }, false)
 
 
-const RootComponent = connect(state=>({state}))(React.createClass({
+const RootComponent = connect(state=>({path: state.path}))(React.createClass({
     displayName: 'RootComponent',
     propTypes: {
-      route: React.PropTypes.object,
       state: React.PropTypes.object,
     },
     component: function() { // routing methods could be moved to an adapter or hoc
-        const {state} = this.props;
-        const segments = state.path.split("/");
+        const {path} = this.props;
+        const segments = path.split("/");
         const current = 0; // we are the root
         const childroute = {segments, current:current+1};
         switch(segments[current+1]) { // TODO make it pluggable
@@ -144,6 +143,7 @@ const RootComponent = connect(state=>({state}))(React.createClass({
 
 
 console.log('First render')
+store.dispatch(loadRecords('docs'));
 ReactDOM.render(<Provider store={store}><RootComponent/></Provider>, document.getElementById('react-app'));
 
 
@@ -168,7 +168,6 @@ request.onupgradeneeded = function(e) {
     idbstore.createIndex('uuid', 'uuid', { unique: true });
     console.log('Database upgraded')
 };
-store.dispatch(loadRecords('docs'));
 
 /**** Service Worker ****/
 if ('serviceWorker' in navigator) {
