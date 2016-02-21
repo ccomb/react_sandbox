@@ -20,6 +20,8 @@
     "react-grid-layout": "*",
     "react-quill": "*",
     "react-redux": "*",
+    "react-router": "*",
+    "react-router-redux": "*",
     "react-tap-event-plugin": "*",
     "redux": "*",
     "redux-thunk": "*",
