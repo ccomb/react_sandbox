@@ -7,6 +7,7 @@ const StringWidget = (props) =>
     <TextField
         {...props}
         name={props.name}
+        value={props.data[props.name]}
         ref={props.widgetDidMount}
         onEnterKeyDown={props.onSubmit}
         onChange={props.onChangeField}

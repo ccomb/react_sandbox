@@ -8,6 +8,7 @@ var ObjectField = React.createClass({
     propTypes: {
         name: React.PropTypes.string,
         schema: React.PropTypes.object,
+        data: React.PropTypes.object,
         layouts: React.PropTypes.object,
         required: React.PropTypes.bool,
     },
@@ -22,7 +23,7 @@ var ObjectField = React.createClass({
                         {...self.props}
                         name={name}
                         schema={schema.properties[name]}
-                        required={schema.required ? schema.required.indexOf(name)+1 : false}/>
+                        required={schema.required.indexOf(name)+1 ? true : false}/>
                     </div>
             )
         });
@@ -40,6 +41,7 @@ const StringField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
+        data: React.PropTypes.object,
         schema: React.PropTypes.object,
         required: React.PropTypes.bool,
     },
