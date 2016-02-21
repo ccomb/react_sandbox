@@ -5,7 +5,7 @@ export const layout =  {
 export const schema = {
   title: 'Contact',
   type: 'object',
-  required: ['name'],
+  required: ['surname'],
   properties: {
     // string types with different subtypes (used for widgets)
     name:

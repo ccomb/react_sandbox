@@ -6,7 +6,6 @@ import FIELDS from './fields';
 
 
 export const FormView = React.createClass({
-    displayName: 'FormView',
     propTypes: {
         route: React.PropTypes.object,
         form: React.PropTypes.object,

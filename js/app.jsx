@@ -23,7 +23,6 @@ injectTapEventPlugin(); // remove as of react 1.0
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
 export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass({
-    displayName: 'BackOffice',
     propTypes: {
       route: React.PropTypes.object,
       menu: React.PropTypes.object,
@@ -101,7 +100,6 @@ window.addEventListener('hashchange', function() {
 
 
 const RootComponent = connect(state=>({path: state.path}))(React.createClass({
-    displayName: 'RootComponent',
     propTypes: {
       state: React.PropTypes.object,
       path: React.PropTypes.string,

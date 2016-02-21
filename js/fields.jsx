@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactGridLayout from 'react-grid-layout';
+import {Responsive as ResponsiveReactGridLayout} from 'react-grid-layout';
 import WIDGETS from './widgets';
+import {EM} from './actions';
 
 var ObjectField = React.createClass({
-    displayName: 'ObjectField',
 
     propTypes: {
         name: React.PropTypes.string,
@@ -13,11 +13,10 @@ var ObjectField = React.createClass({
 
     render: function() {
         const {schema} = this.props;
-        var i = 0, self = this;
+        var self = this;
         const children = Object.keys(schema.properties).map((name) => {
             const Field = FIELDS[schema.properties[name].type];
-            return (<div key={name + i++}
-                         _grid={{x: 0, y: 2*i, w: 3, h: 1.5}}>
+            return (<div key={name} style={{background: '#EEE'}}>
                     <Field
                         {...self.props}
                         name={name}
@@ -27,16 +26,16 @@ var ObjectField = React.createClass({
             )
         });
         return (
-            <ReactGridLayout className="layout" cols={12} rowHeight={30} width={1500}>
+            <ResponsiveReactGridLayout className="layout" rowHeight={4.5*EM} width={1500} margin={[0,0]}
+                                       cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}}>
             {children}
-            </ReactGridLayout>
+            </ResponsiveReactGridLayout>
         )
                 
     }
 });
 
 const StringField = React.createClass({
-    displayName: 'StringField',
 
     propTypes: {
         name: React.PropTypes.string,
@@ -48,7 +47,7 @@ const StringField = React.createClass({
         const {schema} = this.props;
         const Widget = WIDGETS[schema.subtype] || WIDGETS['string'];
         return (
-            <Widget {...this.props} />
+            <Widget {...this.props} required={this.props.required}/>
         )
     }
 })

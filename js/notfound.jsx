@@ -3,7 +3,6 @@ import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back';
 import Home from 'material-ui/lib/svg-icons/action/home';
 
 export var NotFound = React.createClass({
-    displayName: 'NotFound',
 
     propTypes: {
         route: React.PropTypes.object,

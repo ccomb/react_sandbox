@@ -1,10 +1,10 @@
 import {v4 as uuid} from 'uuid';
 
 // XS media width is 48 * 'em' size in pixels // typeof is for mocha
-export const XS = typeof window !== 'undefined' ?
-    48*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 768;
-export const MD = typeof window !== 'undefined' ?
-    62*Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 992;
+export const EM = typeof window !== 'undefined' ? 
+    Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 768;
+export const XS = 48*EM;
+export const MD = 62*EM;
 
 
 

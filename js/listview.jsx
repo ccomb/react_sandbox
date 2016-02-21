@@ -8,7 +8,6 @@ import FlatButton from 'material-ui/lib/flat-button';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
 
 export const ListView = React.createClass({
-    displayName: 'ListView',
     propTypes: {
         status: React.PropTypes.string,
         route: React.PropTypes.object,
