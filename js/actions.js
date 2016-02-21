@@ -76,8 +76,8 @@ export function clearDocs() {
     }
 }
 
-export function loadRecord(uuid) {
-    console.log('async action: LOAD_RECORD');
+export function loadDoc(uuid) {
+    console.log('async action: LOAD_DOC');
     return (dispatch) => {
         console.log('indexedDB: opening database');
         var openDB = window.indexedDB.open('tutodb', 1);
@@ -98,8 +98,8 @@ export function loadRecord(uuid) {
     }
 }
 
-export function loadRecords(model) {
-    console.log('async action: LOAD_RECORDS');
+export function loadDocs(model) {
+    console.log('async action: LOAD_DOCS');
     return (dispatch) => {
         console.log('indexedDB: opening database');
         var openDB = window.indexedDB.open('tutodb', 1);

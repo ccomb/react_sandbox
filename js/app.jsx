@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {MD, loadRecords, openMenu, closeMenu} from './actions';
+import {MD, loadDocs, openMenu, closeMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
@@ -51,7 +51,7 @@ const Home = connect(state=>({path: state.path}))(React.createClass({
                             <CardMedia overlay={
                                 <CardTitle title={`${app.title}`} subtitle={`${app.desc}`} />
                             }>
-                            <div style={{background: 'linear-gradient(45deg, #d8e0de 0%,#aebfbc 22%,#99afab 33%,#8ea6a2 50%,#829d98 60%,#4e5c5a 82%,#0e0e0e 100%)', height: '14.5em'}}/>
+                            <div style={{background: 'linear-gradient(45deg, #DDD 0%,#000 100%)', height: '14.5em'}}/>
                             </CardMedia>
                         </Card>
                     </a>
@@ -63,7 +63,7 @@ const Home = connect(state=>({path: state.path}))(React.createClass({
 const Root = connect(state=>(state))((props)=>props.children);
 
 console.log('First render')
-store.dispatch(loadRecords('docs')); //FIXME REMOVE
+store.dispatch(loadDocs('docs')); //FIXME REMOVE
 ReactDOM.render(
     <Provider store={store}>
         <Router history={hashHistory}>
