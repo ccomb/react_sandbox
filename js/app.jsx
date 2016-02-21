@@ -1,98 +1,21 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {MD, loadRecords, changeURLHash, openMenu, closeMenu, toggleMenu} from './actions';
+import {MD, loadRecords, changeURLHash, openMenu, closeMenu} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
 import thunk from 'redux-thunk';
-import AppBar from 'material-ui/lib/app-bar';
-import LeftNav from 'material-ui/lib/left-nav';
-import List from 'material-ui/lib/lists/list';
-import ListItem from 'material-ui/lib/lists/list-item';
-import {DocumentManager} from './document-manager';
 import {NotFound} from './notfound';
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
-const SelectableList = SelectableContainerEnhance(List);
 import Card from 'material-ui/lib/card/card';
 import CardTitle from 'material-ui/lib/card/card-title';
 import CardMedia from 'material-ui/lib/card/card-media';
+import {BackOffice} from './backoffice';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
-injectTapEventPlugin(); // remove as of react 1.0
+injectTapEventPlugin(); // remove as of react 15.0.0 ??
 
 var store = createStore(globalreducer, applyMiddleware(thunk));
 
-export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass({
-    propTypes: {
-      route: React.PropTypes.object,
-      menu: React.PropTypes.object,
-      dispatch: React.PropTypes.func,
-    },
-
-    onLeftIconButtonTouchTap: function() {
-        this.props.dispatch(toggleMenu());
-    },
-
-    onRequestChange: function() {
-        this.props.dispatch(closeMenu());
-    },
-
-    handleRequestChangeList: function(event, value) {
-        changeURLHash(value);
-    },
-    onMenuItemClick() {
-        if (this.props.menu.open && window.innerWidth < MD)
-            this.props.dispatch(closeMenu());
-    },
-
-    getSelectedIndex: function() {
-        return this.segments.slice(0, this.current+2).join('/');
-    },
-    render: function() {
-        console.log('render: BackOffice');
-        const {menu, route} = this.props;
-        const {segments, current} = route;
-        this.segments = segments, this.current = current;
-        const childroute = {...route, current: current+1};
-        const s = menu.floating ? '10' : '1';
-        const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
-        const floating = menu.floating;
-        return (<div>
-                <AppBar
-                    title="Contacts"
-                    className="row"
-                    style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
-                    zDepth={0}
-                    onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap} />
-                <LeftNav
-                    ref="leftnav"
-                    open={menu.open}
-                    docked={floating?false:true}
-                    onRequestChange={this.onRequestChange}
-                    style={{
-                        marginTop: '64px',
-                        boxShadow: menushadow,
-                        zIndex: floating?3000:0}}>
-                    <SelectableList
-                        subheader="Logo"
-                        valueLink={{
-                            value: this.getSelectedIndex(),
-                            requestChange: this.handleRequestChangeList,
-                        }}
-                    >
-                    <ListItem
-                        value="#/bo/contact"
-                        primaryText="Contacts"
-                        onClick={this.onMenuItemClick}
-                    />
-                    </SelectableList>
-                </LeftNav>
-                <DocumentManager
-                    leftoffset={window.innerWidth > MD && menu.open}
-                    route={childroute}/>
-                </div>);
-    }
-}));
 
 window.addEventListener('hashchange', function() {
         store.dispatch(changeURLHash());
@@ -100,11 +23,13 @@ window.addEventListener('hashchange', function() {
 
 
 const RootComponent = connect(state=>({path: state.path}))(React.createClass({
+    displayName: 'RootComponent',
     propTypes: {
       state: React.PropTypes.object,
       path: React.PropTypes.string,
     },
-    component: function() { // routing methods could be moved to an adapter or hoc
+    render: function() { // routing methods could be moved to an adapter or hoc
+        console.log('render: RootComponent');
         const {path} = this.props;
         const segments = path.split("/");
         const current = 0; // we are the root
@@ -135,10 +60,6 @@ const RootComponent = connect(state=>({path: state.path}))(React.createClass({
                 return <NotFound route={childroute}/>;
          }
      },
-    render: function() {
-        console.log('render: RootComponent');
-        return this.component();
-    }
 }));
 
 
