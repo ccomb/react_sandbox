@@ -16,10 +16,10 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
       children: React.PropTypes.object,
       dispatch: React.PropTypes.func,
     },
-    onLeftIconButtonTouchTap: function() {
+    onLeftIconButtonTouchTap() {
         this.props.dispatch(toggleMenu());
     },
-    onRequestChange: function() {
+    onRequestChange() {
         this.props.dispatch(closeMenu());
     },
     handleRequestChangeList: function(event, value) {
@@ -32,7 +32,7 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
     onClick() {
         this.props.dispatch(routeActions.push('/bo/contact/list'));
     },
-    render: function() {
+    render() {
         console.log('render: BackOffice');
         const {menu} = this.props;
         const s = menu.floating ? '10' : '1';

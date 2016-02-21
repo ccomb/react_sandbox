@@ -13,7 +13,7 @@ var ObjectField = React.createClass({
         required: React.PropTypes.bool,
     },
 
-    render: function() {
+    render() {
         const {schema} = this.props;
         var self = this;
         const children = Object.keys(schema.properties).map((name) => {
@@ -46,7 +46,7 @@ const StringField = React.createClass({
         required: React.PropTypes.bool,
     },
 
-    render: function() {
+    render() {
         const {schema} = this.props;
         const Widget = WIDGETS[schema.subtype] || WIDGETS['string'];
         return (

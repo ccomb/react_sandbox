@@ -13,24 +13,24 @@ export const FormView = React.createClass({
         initialfocus: React.PropTypes.string,
         onChangeField: React.PropTypes.func,
     },
-    onSubmit: function(e) {
+    onSubmit(e) {
         e.preventDefault();
         this.props.onStore();
     },
-    getInitialState: function() {
+    getInitialState() {
         return { shouldfocus: this.props.initialfocus }
     },
-    onChangeField: function(event) {
+    onChangeField(event) {
         this.props.onChangeField(event);
     },
-    widgetDidMount: function(input) {
+    widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)+1
             && this.state.shouldfocus == input.props.name){
           this.setState({shouldfocus: undefined})
           input.focus()
         }
     },
-    render: function() {
+    render() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
         const {form, params} = this.props;

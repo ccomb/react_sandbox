@@ -40,7 +40,7 @@ const HTMLWidget = (props) => {
 }
 
 const DateWidget = React.createClass({
-    onChange: function(e, date) {
+    onChange(e, date) {
         // we simulate an event object
         this.props.onChangeField({
             target: {
@@ -49,7 +49,7 @@ const DateWidget = React.createClass({
             }
         });
     },
-    render: function() {
+    render() {
     return  <DatePicker
         id={this.props.name}
         hintText={this.props.name}

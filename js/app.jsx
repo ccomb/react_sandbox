@@ -40,7 +40,7 @@ const Home = connect(state=>({path: state.path}))(React.createClass({
       state: React.PropTypes.object,
       path: React.PropTypes.string,
     },
-    render: function() {
+    render() {
         console.log('render: Home');
         return (
             <div className='row center-xs around center-xs start-sm' style={{margin: 0, padding: '1em'}}>

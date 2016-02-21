@@ -22,10 +22,10 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         params: React.PropTypes.object,
         dispatch: React.PropTypes.func,
     },
-    onDelete: function(doc) {
+    onDelete(doc) {
         this.props.dispatch(deleteDoc(doc))
     },
-    onStore: function() {
+    onStore() {
         const doc = this.props.form.data;
         this.props.dispatch(storeDoc(doc));
         const model = this.props.params.model
@@ -34,7 +34,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     onChangeField(event) {
         this.props.dispatch(changeField(event.target));
     },
-    render: function() {
+    render() {
         console.log('render: DocumentManager');
         const {form, docs, status, leftoffset} = this.props;
         return (

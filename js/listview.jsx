@@ -16,10 +16,10 @@ export const ListView = React.createClass({
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
     },
-    onDelete: function(uuid) { const self = this; return function() {
+    onDelete(uuid) { const self = this; return function() {
         self.props.onDelete(uuid);
     }},
-    render: function() {
+    render() {
         const {docs, status, params} = this.props;
         const model = params.model
         return (
