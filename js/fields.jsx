@@ -8,6 +8,7 @@ var ObjectField = React.createClass({
     propTypes: {
         name: React.PropTypes.string,
         schema: React.PropTypes.object,
+        layouts: React.PropTypes.object,
         required: React.PropTypes.bool,
     },
 
@@ -26,12 +27,12 @@ var ObjectField = React.createClass({
             )
         });
         return (
-            <ResponsiveReactGridLayout className="layout" rowHeight={4.5*EM} width={1500} margin={[0,0]}
+            <ResponsiveReactGridLayout className="layout" rowHeight={4.5*EM} width={1500} margin={[10,0]}
+                                       layouts={this.props.layouts}
                                        cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}}>
             {children}
             </ResponsiveReactGridLayout>
         )
-                
     }
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import FlatButton from 'material-ui/lib/flat-button';
-import {schema} from "./schema";
+import {schema, layouts} from "./schema";
 import Paper from 'material-ui/lib/paper';
 import FIELDS from './fields';
 
@@ -35,12 +35,13 @@ export const FormView = React.createClass({
           input.focus()
         }
     },
+    
     render: function() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {data, layout} = this.props.form;
+        const {data} = this.props.form;
         return (
-      <div className="row center-sm" style={{margin: '1%'}}>
+      <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
@@ -48,7 +49,7 @@ export const FormView = React.createClass({
                 onSubmit={this.onSubmit}
                 schema={schema}
                 data={data}
-                layout={layout}
+                layouts={layouts}
                 onChangeField={this.onChangeField}
                 widgetDidMount={this.widgetDidMount}
                 />
