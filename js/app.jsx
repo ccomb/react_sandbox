@@ -16,7 +16,7 @@ import {ListView} from './listview';
 import Router from 'react-router/lib/Router';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
-import Redirect from 'react-router/lib/Redirect';
+import IndexRedirect from 'react-router/lib/IndexRedirect';
 import hashHistory from 'react-router/lib/hashHistory';
 import {syncHistory} from 'react-router-redux';
 
@@ -70,8 +70,8 @@ ReactDOM.render(
             <Route path='/' component={Root}>
                 <IndexRoute component={Home}/>
                 <Route path='bo' component={BackOffice}>
-                    <Redirect from=':model' to=':model/list'/>
                     <Route path=':model' component={DocumentManager}>
+                        <IndexRedirect to='list'/>
                         <Route path='list' component={ListView}/>
                         <Route path='new' component={FormView}/>
                         <Route path='form/:uuid' component={FormView}/>
