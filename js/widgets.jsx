@@ -26,7 +26,7 @@ const PasswordWidget = (props) =>
 
 const HTMLWidget = (props) => {
   return (
-    <div>
+    <div style={{border: 'solid 1px red', height: '100%'}}>
       <label>{props.name}</label>
       <ReactQuill
         theme="snow"
@@ -52,6 +52,8 @@ const DateWidget = React.createClass({
         id={this.props.name}
         hintText={this.props.name}
         onChange={this.onChange}
+        style={{border: 'solid 1px red', height: '100%'}}
+        textFieldStyle={{width: '100%'}}
         mode="landscape" />
     }
 });
