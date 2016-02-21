@@ -113,8 +113,8 @@ export function loadRecord(uuid) {
             openCursor.onsuccess = (e) => {
                 console.log('indexedDB: next cursor');
                 let doc = e.target.result;
-                if (doc) {
-                    dispatch(addDoc(cursor.value));
+                if (Object.keys(doc).length) {
+                    dispatch(addDoc(doc));
                 }
             }
             openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
