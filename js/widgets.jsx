@@ -12,7 +12,8 @@ const StringWidget = (props) =>
         onEnterKeyDown={props.onSubmit}
         onChange={props.onChangeField}
         floatingLabelText={props.name}
-        required={props.required}
+        underlineStyle={{borderColor: props.required ? 'red' : undefined}}
+        underlineFocusStyle={{borderColor: props.required ? 'red' : undefined}}
         style={{border: 'solid 1px red', height: '100%'}}
         fullWidth={true}
         />;
