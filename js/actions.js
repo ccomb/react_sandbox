@@ -9,7 +9,7 @@ export const MD = 62*EM;
 
 
 export function addDoc(doc, status=undefined) {
-    console.log('action: ADD_DOC', doc, status);
+    console.log('action: ADD_DOC');
     return {
         type: 'ADD_DOC',
         payload: doc,
@@ -66,31 +66,6 @@ export function docStatus(doc, status) {
             type: 'DOC_STATUS',
             payload: doc,
             meta: {status}
-    }
-}
-
-export function changeURLHash(hash) {
-    // if hash is provided, then just change the hash
-    // otherwise return a redux action
-    console.log('action: CHANGE_HASH ' + hash);
-    if (hash) {
-        window.location.hash = hash;
-        return
-    }
-    return {
-        type: 'CHANGE_HASH',
-        payload: window.location.hash
-    }
-}
-
-export function changeView(route, view) {
-    // not a redux action, but the changeURLHash should then be triggered
-    console.log('action: CHANGE_VIEW ' + view);
-    const {segments, current} = route;
-    window.location.hash = [...segments.slice(0, current+1), view, ...segments.slice(current+2)].join('/');
-    return {
-        type: 'CHANGE_VIEW',
-        payload: view
     }
 }
 

@@ -3,20 +3,15 @@ import FlatButton from 'material-ui/lib/flat-button';
 import {schema, layouts} from "./schema";
 import Paper from 'material-ui/lib/paper';
 import FIELDS from './fields';
-
+import Link from 'react-router/lib/Link';
 
 export const FormView = React.createClass({
     propTypes: {
-        route: React.PropTypes.object,
         form: React.PropTypes.object,
+        params: React.PropTypes.object,
         onStore: React.PropTypes.func,
         initialfocus: React.PropTypes.string,
         onChangeField: React.PropTypes.func,
-        changeView: React.PropTypes.func,
-    },
-    onCancel: function(e) {
-        e.preventDefault();
-        this.props.changeView('list');
     },
     onSubmit: function(e) {
         e.preventDefault();
@@ -35,11 +30,10 @@ export const FormView = React.createClass({
           input.focus()
         }
     },
-    
     render: function() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {data} = this.props.form;
+        const {form, params} = this.props;
         return (
       <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
@@ -48,7 +42,7 @@ export const FormView = React.createClass({
             <Field
                 onSubmit={this.onSubmit}
                 schema={schema}
-                data={data}
+                data={form.data}
                 layouts={layouts}
                 onChangeField={this.onChangeField}
                 widgetDidMount={this.widgetDidMount}
@@ -57,15 +51,13 @@ export const FormView = React.createClass({
                     label="Save"
                     onClick={this.onSubmit}
                     primary={true}/>
-                <FlatButton
+                <Link to={`/bo/${params.model}/list`}><FlatButton
                     label="Cancel"
-                    onClick={this.onCancel}
                     cancel={true}/>
+                </Link>
             </form>
           </Paper>
         </div>
       </div>);
     }
 });
-
-

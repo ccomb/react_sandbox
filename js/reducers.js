@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux';
+import {routeReducer} from 'react-router-redux';
 import {MD} from './actions';
 
 // Doc and initial value of the global redux state, which correspond to the working space in memory
@@ -8,10 +9,6 @@ export const initialState = {
     status: {
         list: null,
     },
-    // the URL (starting at the hash)
-    path: function() {},
-    // currently selected menu
-    get path() { return window.location.hash;  },
     menu: {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
@@ -46,16 +43,6 @@ function docs(docs=initialState.docs, action) {
             return others;
         default:
             return docs;
-    }
-}
-
-function path(path=initialState.path, action) {
-    switch(action.type) {
-        case 'CHANGE_HASH':
-            console.log('reduce: ' + action.type);
-            return path == action.payload ? path : action.payload;
-        default:
-            return path;
     }
 }
 
@@ -115,4 +102,5 @@ function status(status=initialState.status, action) {
             return status;
     }
 }
-export const globalreducer = combineReducers({form, menu, view, docs, path, status});
+export const globalreducer = combineReducers(
+    {routing: routeReducer, form, menu, view, docs, status});
