@@ -5,7 +5,7 @@ import {MD} from './actions';
 // Doc and initial value of the global redux state, which correspond to the working space in memory
 export const initialState = {
     // The list of active docs indexed with their uuid
-    docs: {},
+    docs: [],
     status: {
         list: null,
     },
@@ -27,20 +27,17 @@ function docs(docs=initialState.docs, action) {
     switch(action.type){
         case 'ADD_DOC':
             console.log('reduce: ' + action.type);
-            return {...docs, [doc.uuid]: {...doc, status: action.meta.status}};
+            return [...docs, {...doc, status: action.meta.status}];
         case 'ADD_DOCS':
             console.log('reduce: ' + action.type);
-            return {...docs, ...doc};
+            return [...docs, ...doc];
         case 'DOC_STATUS':
-           var newdoc = {...doc, status: action.meta.status};
-           var res = {...docs, [newdoc.uuid]:newdoc};
-            return res;
+           const newdoc = {...doc, status: action.meta.status};
+           return [...docs.map((d) => d.uuid===newdoc.uuid ? newdoc : d)];
         case 'CLEAR_DOCS':
-            return Object.keys(docs).length ? {...initialState.docs} : docs;
+            return docs.length ? [...initialState.docs] : docs;
         case 'REMOVE_DOC':
-            var others = {...docs};
-            delete others[doc.uuid];
-            return others;
+            return [...docs.filter((d) => d.uuid!==doc.uuid)];
         default:
             return docs;
     }

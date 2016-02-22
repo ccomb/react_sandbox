@@ -19,8 +19,8 @@ export const ListView = React.createClass({
     onDelete(e) {
         this.props.onDelete(this.props.docs[e.target.id.slice(3)]);
     },
-    onRowClick(e) {
-        alert('tutu')
+    onRowClick(row, col) {
+alert(row, col);
     },
     render() {
         const {docs, status, params} = this.props;
@@ -34,26 +34,26 @@ export const ListView = React.createClass({
             </div>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
-                    <Table onCellClick={this.onRowClick}>
+                    <Table onRowClick={this.onRowClick}>
                         <TableBody>
                             {status.list === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
-                            Object.keys(docs).map(uuid =>{
-                            const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docs[uuid].status] || 'red';
-                            return (<TableRow style={{border: "solid 1px #EEE"}} key={uuid}>
+                            docs.map((doc, i) =>{
+                            const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[doc.status] || 'red';
+                            return (<TableRow style={{border: "solid 1px #EEE"}} key={doc.uuid}>
                                         <TableRowColumn>
-                                            Status: <span style={{background: color, color: 'white'}}>{docs[uuid].status}</span>
+                                            Status: <span style={{background: color, color: 'white'}}>{doc.status}</span>
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            {uuid}
+                                            {doc.uuid}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            {docs[uuid].name}
+                                            {doc.name}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            {docs[uuid].surname}
+                                            {doc.surname}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            <IconButton iconClassName='' onClick={this.onDelete} id={'del' + uuid}>
+                                            <IconButton iconClassName='' onClick={this.onDelete} id={'del' + i}>
                                                 <Delete/>
                                             </IconButton>
                                         </TableRowColumn>

@@ -111,12 +111,12 @@ export function loadDocs(model) {
             let openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').openCursor();
             dispatch(listStatus('loading'));
-            var docs = {};
+            var docs = [];
             openCursor.onsuccess = (e) => {
                 console.log('indexedDB: next cursor');
                 let cursor = e.target.result;
                 if (cursor) {
-                    docs[cursor.value.uuid] = cursor.value;
+                    docs.push(cursor.value);
                     cursor.continue();
                 } else {
                     dispatch(listStatus('loaded'));
@@ -146,7 +146,7 @@ export function removeDoc(doc) {
 }
 
 export function deleteDoc(doc) {
-    console.log('async action: DELETE_DOC');
+    console.log('async action: DELETE_DOC', doc);
     return (dispatch) => {
         dispatch(docStatus(doc, 'deleting'));
         console.log('indexedDB: opening database');
