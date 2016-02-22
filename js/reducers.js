@@ -26,7 +26,7 @@ function docs(docs=initialState.docs, action) {
     const doc = action.payload;
     switch(action.type){
         case 'ADD_DOC':
-            console.log('reduce: ' + action.type)
+            console.log('reduce: ' + action.type);
             return {...docs, [doc.uuid]: {...doc, status: action.meta.status}};
         case 'ADD_DOCS':
             console.log('reduce: ' + action.type);
@@ -58,7 +58,7 @@ function menu(menu=initialState.menu, action) {
             console.log('reduce: ' + action.type)
             return menu.open ? {...menu, open: false, floating: false} : menu;
         case 'TOGGLE_MENU':
-            console.log('reduce: ' + action.type)
+            console.log('reduce: ' + action.type);
             return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD && !menu.open};
         default:
             return menu;
@@ -68,15 +68,18 @@ function menu(menu=initialState.menu, action) {
 function form(form=initialState.form, action) {
     switch (action.type) {
         case 'CHANGE_FIELD':
-            console.log('reduce: ' + action.type)
+            console.log('reduce: ' + action.type);
             return {...form ,
                     data:{...form.data,
                     [action.payload.name]: action.payload.value}};
+        case 'SET_FORM_DATA':
+            console.log('reduce: ' + action.type);
+            return action.payload !== form.data ? {...form , data: action.payload} : form;
         case 'CLEAR_FORM':
-            console.log('reduce: ' + action.type)
+            console.log('reduce: ' + action.type);
             return Object.keys(form).length ? {...initialState.form} : form;
         case 'FOCUS_FIELD':
-            console.log('reduce: ' + action.type)
+            console.log('reduce: ' + action.type);
             return action.payload != form.focus ?
                 {...form, focus: action.payload} : form;
         default:
@@ -87,7 +90,7 @@ function form(form=initialState.form, action) {
 function view(view=initialState.view, action) {
     switch (action.type) {
         case 'CHANGE_VIEW':
-            return action.payload === view ? view : action.payload
+            return action.payload === view ? view : action.payload;
         default:
             return view;
     }

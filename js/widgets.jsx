@@ -3,11 +3,11 @@ import ReactQuill from 'react-quill';
 import TextField from 'material-ui/lib/text-field';
 import DatePicker from 'material-ui/lib/date-picker/date-picker';
 
-const StringWidget = (props) => 
-    <TextField
+const StringWidget = (props) => {
+    return <TextField
         {...props}
         name={props.name}
-        defaultValue={props.data[props.name]}
+        value={props.form.data[props.name]}
         ref={props.widgetDidMount}
         onEnterKeyDown={props.onSubmit}
         onChange={props.onChangeField}
@@ -16,7 +16,7 @@ const StringWidget = (props) =>
         underlineFocusStyle={{borderColor: props.required ? 'red' : undefined}}
         style={{border: 'solid 1px red', height: '100%'}}
         fullWidth={true}
-        />;
+        />;}
 
 const TextWidget = (props) => {
     const {onSubmit, ...other} = props;

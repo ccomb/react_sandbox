@@ -10,18 +10,21 @@ import Link from 'react-router/lib/Link';
 
 export const ListView = React.createClass({
     propTypes: {
-        status: React.PropTypes.string,
+        status: React.PropTypes.object,
         route: React.PropTypes.object,
         docs: React.PropTypes.object,
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
     },
-    onDelete(uuid) { const self = this; return function() {
-        self.props.onDelete(uuid);
-    }},
+    onDelete(e) {
+        this.props.onDelete(this.props.docs[e.target.id.slice(3)]);
+    },
+    onRowClick(e) {
+        alert('tutu')
+    },
     render() {
         const {docs, status, params} = this.props;
-        const model = params.model
+        const model = params.model;
         return (
         <div>
             <div className="row start" style={{margin: 0}}>
@@ -31,7 +34,7 @@ export const ListView = React.createClass({
             </div>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
-                    <Table>
+                    <Table onCellClick={this.onRowClick}>
                         <TableBody>
                             {status.list === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             Object.keys(docs).map(uuid =>{
@@ -47,7 +50,10 @@ export const ListView = React.createClass({
                                             {docs[uuid].name}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            <IconButton iconClassName='' onClick={this.onDelete(docs[uuid])}>
+                                            {docs[uuid].surname}
+                                        </TableRowColumn>
+                                        <TableRowColumn>
+                                            <IconButton iconClassName='' onClick={this.onDelete} id={'del' + uuid}>
                                                 <Delete/>
                                             </IconButton>
                                         </TableRowColumn>

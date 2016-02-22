@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {deleteDoc, storeDoc, changeField} from './actions';
+import {deleteDoc, loadDoc, storeDoc, changeField} from './actions';
 import {routeActions} from 'react-router-redux';
 
 const mapStateToProps = function(state) {
@@ -33,6 +33,13 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     },
     onChangeField(event) {
         this.props.dispatch(changeField(event.target));
+    },
+    componentDidMount() {
+        console.log('componentDidMount');
+        const uuid = this.props.params.uuid;
+        if (uuid) {
+            this.props.dispatch(loadDoc(uuid));
+        }
     },
     render() {
         console.log('render: DocumentManager');

@@ -42,7 +42,7 @@ export const FormView = React.createClass({
             <Field
                 onSubmit={this.onSubmit}
                 schema={schema}
-                data={form.data}
+                form={form}
                 layouts={layouts}
                 onChangeField={this.onChangeField}
                 widgetDidMount={this.widgetDidMount}

@@ -9,7 +9,7 @@ export const MD = 62*EM;
 
 
 export function addDoc(doc, status=undefined) {
-    console.log('action: ADD_DOC');
+    console.log('action: ADD_DOC', doc);
     return {
         type: 'ADD_DOC',
         payload: doc,
@@ -27,7 +27,8 @@ export function addDocs(docs) {
 
 export function storeDoc(doc) {
     console.log('action: STORE_DOC');
-    doc.uuid = uuid();
+    const mode = doc.uuid ? 'put' : 'add';
+    if (mode == 'add') doc.uuid = uuid();
     console.log('async action: storing document')
     return (dispatch) => {
         dispatch(addDoc(doc, 'saving'));
@@ -44,7 +45,8 @@ export function storeDoc(doc) {
             var addrequest;
             try {
                 console.log('indexedDB: adding doc in objectStore')
-                addrequest = transaction.objectStore('docs').add(doc);
+                addrequest = mode=='add' ? transaction.objectStore('docs').add(doc)
+                                         : transaction.objectStore('docs').put(doc);
                 addrequest.onsuccess = () => {
                     dispatch(docStatus(doc, 'stored'));
                     dispatch(clearForm()); }
@@ -89,6 +91,7 @@ export function loadDoc(uuid) {
                 console.log('indexedDB: next cursor');
                 let doc = e.target.result;
                 if (Object.keys(doc).length) {
+                    dispatch(setFormData(doc));
                     dispatch(addDoc(doc));
                 }
             }
@@ -210,3 +213,12 @@ export function clearForm() {
         type: 'CLEAR_FORM'
     }
 }
+
+export function setFormData(doc) {
+    console.log('action: SET_FORM_DATA', doc);
+    return {
+        type: 'SET_FORM_DATA',
+        payload: doc,
+    }
+}
+
