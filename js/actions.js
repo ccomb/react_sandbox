@@ -17,14 +17,6 @@ export function addDoc(doc, status=undefined) {
     }
 }
 
-export function addDocs(docs) {
-    console.log('action: ADD_DOCS');
-    return {
-        type: 'ADD_DOCS',
-        payload: docs
-    }
-}
-
 export function storeDoc(doc) {
     console.log('action: STORE_DOC');
     const mode = doc.uuid ? 'put' : 'add';
@@ -100,7 +92,7 @@ export function loadDoc(uuid) {
 }
 
 export function loadDocs(model) {
-    console.log('async action: LOAD_DOCS');
+    console.log('async action: LOAD_DOCS', model);
     return (dispatch) => {
         console.log('indexedDB: opening database');
         const openDB = window.indexedDB.open('tutodb', 1);
@@ -118,7 +110,10 @@ export function loadDocs(model) {
                     cursor.continue();
                 } else {
                     dispatch(listStatus('loaded'));
-                    dispatch(addDocs(docs));
+                    dispatch({
+                        type: 'LOAD_DOCS',
+                        payload: docs
+                    })
                 }
             }
             openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }

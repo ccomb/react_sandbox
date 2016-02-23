@@ -15,7 +15,7 @@ export const ListView = React.createClass({
         docs: React.PropTypes.array,
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
-        onRead: React.PropTypes.func,
+        onChangeView: React.PropTypes.func,
         onSearch: React.PropTypes.func,
     },
     onDelete(e) {
@@ -25,7 +25,9 @@ export const ListView = React.createClass({
         this.props.onSearch();
     },
     onRowClick(row) {
-        this.props.onRead(this.props.docs[row].uuid)
+        this.props.onChangeView(this.props.params.model,
+                                'form',
+                                this.props.docs[row].uuid);
     },
     render() {
         console.log('render: ListView');

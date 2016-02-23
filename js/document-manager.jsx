@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {setFormData, loadDoc, loadDocs, deleteDoc, storeDoc, changeField} from './actions';
+import {loadDoc, loadDocs, deleteDoc, storeDoc, changeField} from './actions';
 import {routeActions} from 'react-router-redux';
 
 const mapStateToProps = function(state) {
@@ -25,10 +25,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     onDelete(doc) {
         this.props.dispatch(deleteDoc(doc));
     },
+    onChangeView(model, view, uuid='') {
+        this.props.dispatch(routeActions.push(`/bo/${model}/${view}/${uuid}`));
+    },
     onRead(uuid) {
-        const model = this.props.params.model;
         this.props.dispatch(loadDoc(uuid));
-        this.props.dispatch(routeActions.push(`/bo/${model}/form/${uuid}`));
     },
     onStore() {
         const doc = this.props.form.data;
@@ -37,9 +38,9 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         this.props.dispatch(routeActions.push(`/bo/${model}/list`));
     },
     onSearch() {
-        this.props.dispatch(loadDocs('docs'));
+        if (!this.props.docs.length) this.props.dispatch(loadDocs('docs'));
     },
-    onChange(event) {
+    onChangeField(event) {
         this.props.dispatch(changeField(event.target));
     },
     render() {
@@ -75,11 +76,12 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 form,
                 docs,
                 status,
-                onChange: this.onChange,
+                onChangeField: this.onChangeField,
                 initialfocus: 'name',
                 onStore: this.onStore,
                 onDelete: this.onDelete,
                 onRead: this.onRead,
+                onChangeView: this.onChangeView,
                 onSearch: this.onSearch,
                 })}
         </div>)

@@ -27,9 +27,9 @@ function docs(docs=initialState.docs, action) {
         case 'ADD_DOC':
             console.log('reduce: ' + action.type);
             return [...docs, {...doc, status: action.meta.status}];
-        case 'ADD_DOCS':
+        case 'LOAD_DOCS':
             console.log('reduce: ' + action.type);
-            return [...docs, ...doc];
+            return action.payload !== docs ? [...action.payload] : docs;
         case 'DOC_STATUS':
            const newdoc = {...doc, status: action.meta.status};
            return [...docs.map((d) => d.uuid===newdoc.uuid ? newdoc : d)];
