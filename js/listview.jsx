@@ -12,16 +12,20 @@ export const ListView = React.createClass({
     propTypes: {
         status: React.PropTypes.object,
         route: React.PropTypes.object,
-        docs: React.PropTypes.object,
+        docs: React.PropTypes.array,
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
         onRead: React.PropTypes.func,
+        onSearch: React.PropTypes.func,
     },
     onDelete(e) {
         this.props.onDelete(this.props.docs[e.target.id.slice(1)]);
     },
+    componentDidMount() {
+        this.props.onSearch();
+    },
     onRowClick(row) {
-        this.props.onRead(this.props.docs[row])
+        this.props.onRead(this.props.docs[row].uuid)
     },
     render() {
         console.log('render: ListView');

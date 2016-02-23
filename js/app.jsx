@@ -63,7 +63,6 @@ const Home = connect(state=>({path: state.path}))(React.createClass({
 const Root = connect(state=>(state))((props)=>props.children);
 
 console.log('First render')
-store.dispatch(loadDocs('docs')); //FIXME REMOVE
 ReactDOM.render(
     <Provider store={store}>
         <Router history={hashHistory}>

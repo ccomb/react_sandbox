@@ -10,6 +10,7 @@ export const FormView = React.createClass({
         form: React.PropTypes.object,
         params: React.PropTypes.object,
         onStore: React.PropTypes.func,
+        onRead: React.PropTypes.func,
         initialfocus: React.PropTypes.string,
         onChange: React.PropTypes.func,
     },
@@ -22,6 +23,9 @@ export const FormView = React.createClass({
     },
     onChange(event) {
         this.props.onChange(event);
+    },
+    componentDidMount() {
+        this.props.onRead(this.props.params.uuid);
     },
     widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)+1

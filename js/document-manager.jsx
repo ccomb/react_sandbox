@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {setFormData, deleteDoc, loadDoc, storeDoc, changeField} from './actions';
+import {setFormData, loadDoc, loadDocs, deleteDoc, storeDoc, changeField} from './actions';
 import {routeActions} from 'react-router-redux';
 
 const mapStateToProps = function(state) {
@@ -25,10 +25,10 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     onDelete(doc) {
         this.props.dispatch(deleteDoc(doc));
     },
-    onRead(doc) {
+    onRead(uuid) {
         const model = this.props.params.model;
-        this.props.dispatch(setFormData(doc));
-        this.props.dispatch(routeActions.push(`/bo/${model}/form/${doc.uuid}`));
+        this.props.dispatch(loadDoc(uuid));
+        this.props.dispatch(routeActions.push(`/bo/${model}/form/${uuid}`));
     },
     onStore() {
         const doc = this.props.form.data;
@@ -36,15 +36,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         const model = this.props.params.model
         this.props.dispatch(routeActions.push(`/bo/${model}/list`));
     },
+    onSearch() {
+        this.props.dispatch(loadDocs('docs'));
+    },
     onChange(event) {
         this.props.dispatch(changeField(event.target));
-    },
-    componentDidMount() {
-        console.log('componentDidMount');
-        const uuid = this.props.params.uuid;
-        if (uuid) {
-            this.props.dispatch(loadDoc(uuid));
-        }
     },
     render() {
         console.log('render: DocumentManager');
@@ -84,6 +80,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 onStore: this.onStore,
                 onDelete: this.onDelete,
                 onRead: this.onRead,
+                onSearch: this.onSearch,
                 })}
         </div>)
     }

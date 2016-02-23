@@ -1,5 +1,5 @@
 import React from "react";
-import {MD, changeURLHash, closeMenu, toggleMenu} from './actions';
+import {MD, closeMenu, toggleMenu} from './actions';
 import {connect} from 'react-redux';
 import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
@@ -21,9 +21,6 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
     },
     onRequestChange() {
         this.props.dispatch(closeMenu());
-    },
-    handleRequestChangeList: function(event, value) {
-        changeURLHash(value);
     },
     onMenuItemClick() {
         if (this.props.menu.open && window.innerWidth < MD)
