@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {deleteDoc, loadDoc, storeDoc, changeField} from './actions';
+import {setFormData, deleteDoc, loadDoc, storeDoc, changeField} from './actions';
 import {routeActions} from 'react-router-redux';
 
 const mapStateToProps = function(state) {
@@ -16,14 +16,19 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     propTypes: {
         leftoffset: React.PropTypes.bool,
         form: React.PropTypes.object,
-        docs: React.PropTypes.object,
+        docs: React.PropTypes.array,
         children: React.PropTypes.object,
         status: React.PropTypes.object,
         params: React.PropTypes.object,
         dispatch: React.PropTypes.func,
     },
     onDelete(doc) {
-        this.props.dispatch(deleteDoc(doc))
+        this.props.dispatch(deleteDoc(doc));
+    },
+    onRead(doc) {
+        const model = this.props.params.model;
+        this.props.dispatch(setFormData(doc));
+        this.props.dispatch(routeActions.push(`/bo/${model}/form/${doc.uuid}`));
     },
     onStore() {
         const doc = this.props.form.data;
@@ -31,7 +36,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         const model = this.props.params.model
         this.props.dispatch(routeActions.push(`/bo/${model}/list`));
     },
-    onChangeField(event) {
+    onChange(event) {
         this.props.dispatch(changeField(event.target));
     },
     componentDidMount() {
@@ -74,10 +79,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 form,
                 docs,
                 status,
-                onChangeField: this.onChangeField,
+                onChange: this.onChange,
                 initialfocus: 'name',
                 onStore: this.onStore,
                 onDelete: this.onDelete,
+                onRead: this.onRead,
                 })}
         </div>)
     }

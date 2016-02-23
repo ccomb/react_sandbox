@@ -33,19 +33,18 @@ export function storeDoc(doc) {
     return (dispatch) => {
         dispatch(addDoc(doc, 'saving'));
         console.log('indedexDB: opening database')
-        let openDB = window.indexedDB.open('tutodb', 1);
+        const openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = function(e) {
             console.log('indexedDB: creating transaction to store doc')
-            let db = e.target.result;
-            let transaction = db.transaction('docs', 'readwrite');
+            const db = e.target.result;
+            const transaction = db.transaction('docs', 'readwrite');
             transaction.oncomplete = () => {
                 console.log('indexedDB: transaction completed');}
             transaction.onerror = () => {
                 dispatch(docStatus(doc, 'error')); }
-            var addrequest;
             try {
                 console.log('indexedDB: adding doc in objectStore')
-                addrequest = mode=='add' ? transaction.objectStore('docs').add(doc)
+                const addrequest = mode=='add' ? transaction.objectStore('docs').add(doc)
                                          : transaction.objectStore('docs').put(doc);
                 addrequest.onsuccess = () => {
                     dispatch(docStatus(doc, 'stored'));
@@ -82,17 +81,16 @@ export function loadDoc(uuid) {
     console.log('async action: LOAD_DOC');
     return (dispatch) => {
         console.log('indexedDB: opening database');
-        var openDB = window.indexedDB.open('tutodb', 1);
+        const openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = (e) => {
             console.log('indexedDB: reading objectstore')
-            let openCursor = e.target.result.transaction('docs', 'readonly')
+            const openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').get(uuid);
             openCursor.onsuccess = (e) => {
                 console.log('indexedDB: next cursor');
-                let doc = e.target.result;
+                const doc = e.target.result;
                 if (Object.keys(doc).length) {
                     dispatch(setFormData(doc));
-                    dispatch(addDoc(doc));
                 }
             }
             openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
@@ -105,16 +103,16 @@ export function loadDocs(model) {
     console.log('async action: LOAD_DOCS');
     return (dispatch) => {
         console.log('indexedDB: opening database');
-        var openDB = window.indexedDB.open('tutodb', 1);
+        const openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = (e) => {
             console.log('indexedDB: reading objectstore');
-            let openCursor = e.target.result.transaction('docs', 'readonly')
+            const openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').openCursor();
             dispatch(listStatus('loading'));
-            var docs = [];
+            const docs = [];
             openCursor.onsuccess = (e) => {
                 console.log('indexedDB: next cursor');
-                let cursor = e.target.result;
+                const cursor = e.target.result;
                 if (cursor) {
                     docs.push(cursor.value);
                     cursor.continue();
@@ -151,7 +149,7 @@ export function deleteDoc(doc) {
         dispatch(docStatus(doc, 'deleting'));
         console.log('indexedDB: opening database');
         window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
-            let req = e.target.result
+            const req = e.target.result
                 .transaction('docs', 'readwrite')
                 .objectStore('docs').delete(doc.uuid);
             req.onsuccess = () => {

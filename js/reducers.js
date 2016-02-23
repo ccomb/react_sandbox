@@ -13,7 +13,6 @@ export const initialState = {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
     },
-    view: 'list',
     form: {
         // data of the currently displayed object
         data: {},
@@ -84,15 +83,6 @@ function form(form=initialState.form, action) {
     }
 }
 
-function view(view=initialState.view, action) {
-    switch (action.type) {
-        case 'CHANGE_VIEW':
-            return action.payload === view ? view : action.payload;
-        default:
-            return view;
-    }
-}
-
 function status(status=initialState.status, action) {
     switch (action.type) {
         case 'LIST_STATUS':
@@ -103,4 +93,4 @@ function status(status=initialState.status, action) {
     }
 }
 export const globalreducer = combineReducers(
-    {routing: routeReducer, form, menu, view, docs, status});
+    {routing: routeReducer, form, menu, docs, status});

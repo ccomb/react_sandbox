@@ -97,7 +97,7 @@ window.addEventListener('resize', function() {
 let request = window.indexedDB.open('tutodb', 1);
 request.onupgradeneeded = function(e) {
     console.log('Upgrading database...')
-    var db = e.target.result;
+    const db = e.target.result;
     try {
         db.deleteObjectStore('docs');
         console.log('Deleted the old database!')

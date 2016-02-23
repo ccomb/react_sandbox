@@ -3,7 +3,7 @@ import {Responsive as ResponsiveReactGridLayout} from 'react-grid-layout';
 import WIDGETS from './widgets';
 import {EM} from './actions';
 
-var ObjectField = React.createClass({
+const ObjectField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
@@ -15,7 +15,7 @@ var ObjectField = React.createClass({
 
     render() {
         const {schema} = this.props;
-        var self = this;
+        const self = this;
         const children = Object.keys(schema.properties).map((name) => {
             const Field = FIELDS[schema.properties[name].type];
             return (<div key={name} style={{background: '#EEE'}}>

@@ -11,7 +11,7 @@ export const FormView = React.createClass({
         params: React.PropTypes.object,
         onStore: React.PropTypes.func,
         initialfocus: React.PropTypes.string,
-        onChangeField: React.PropTypes.func,
+        onChange: React.PropTypes.func,
     },
     onSubmit(e) {
         e.preventDefault();
@@ -20,8 +20,8 @@ export const FormView = React.createClass({
     getInitialState() {
         return { shouldfocus: this.props.initialfocus }
     },
-    onChangeField(event) {
-        this.props.onChangeField(event);
+    onChange(event) {
+        this.props.onChange(event);
     },
     widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)+1
@@ -44,7 +44,7 @@ export const FormView = React.createClass({
                 schema={schema}
                 form={form}
                 layouts={layouts}
-                onChangeField={this.onChangeField}
+                onChangeField={this.onChange}
                 widgetDidMount={this.widgetDidMount}
                 />
                 <FlatButton

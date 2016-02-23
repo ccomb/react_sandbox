@@ -3,7 +3,7 @@ import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back';
 import Home from 'material-ui/lib/svg-icons/action/home';
 import Link from 'react-router/lib/Link';
 
-export var NotFound = React.createClass({
+export const NotFound = React.createClass({
     render: function(){
         const currentPath = this.props.location.pathname;
         const parentPath = currentPath.substring(0, -1).substring(0, currentPath.lastIndexOf("/"));

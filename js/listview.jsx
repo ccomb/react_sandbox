@@ -15,14 +15,16 @@ export const ListView = React.createClass({
         docs: React.PropTypes.object,
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
+        onRead: React.PropTypes.func,
     },
     onDelete(e) {
-        this.props.onDelete(this.props.docs[e.target.id.slice(3)]);
+        this.props.onDelete(this.props.docs[e.target.id.slice(1)]);
     },
-    onRowClick(row, col) {
-alert(row, col);
+    onRowClick(row) {
+        this.props.onRead(this.props.docs[row])
     },
     render() {
+        console.log('render: ListView');
         const {docs, status, params} = this.props;
         const model = params.model;
         return (
@@ -34,7 +36,7 @@ alert(row, col);
             </div>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
-                    <Table onRowClick={this.onRowClick}>
+                    <Table onCellClick={this.onRowClick}>
                         <TableBody>
                             {status.list === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             docs.map((doc, i) =>{
@@ -53,7 +55,7 @@ alert(row, col);
                                             {doc.surname}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            <IconButton iconClassName='' onClick={this.onDelete} id={'del' + i}>
+                                            <IconButton iconClassName='' onClick={this.onDelete} id={'d' + i}>
                                                 <Delete/>
                                             </IconButton>
                                         </TableRowColumn>

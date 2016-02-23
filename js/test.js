@@ -2,16 +2,16 @@ import {docs} from './reducers';
 import {addRecord} from './actions';
 import {assert} from 'chai';
 
-var docsBefore = [
+const docsBefore = [
     {name: 'foo'},
     {name: 'bar', email: 'bar@test.com'}
 ]
 
-var newRecord = {
+const newRecord = {
     name: 'baz',
     email: 'baz@test.com'
 }
-var docsAfter = [
+const docsAfter = [
     {name: 'foo'},
     {name: 'bar', email: 'bar@test.com'},
     {name: 'baz', email: 'baz@test.com', status: 'saving'},
