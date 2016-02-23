@@ -6,6 +6,7 @@ import {MD} from './actions';
 export const initialState = {
     // The list of active docs indexed with their uuid
     docs: [],
+    selectedRows: [],
     status: {
         list: null,
     },
@@ -25,10 +26,8 @@ function docs(docs=initialState.docs, action) {
     const doc = action.payload;
     switch(action.type){
         case 'ADD_DOC':
-            console.log('reduce: ' + action.type);
             return [...docs, {...doc, status: action.meta.status}];
         case 'LOAD_DOCS':
-            console.log('reduce: ' + action.type);
             return action.payload !== docs ? [...action.payload] : docs;
         case 'DOC_STATUS':
            const newdoc = {...doc, status: action.meta.status};
@@ -42,19 +41,25 @@ function docs(docs=initialState.docs, action) {
     }
 }
 
+function selectedRows(selectedRows=initialState.selectedRows, action) {
+    switch (action.type) {
+        case 'SELECTED_ROWS':
+            return action.payload !== selectedRows ? action.payload : selectedRows;
+        default:
+            return selectedRows;
+    }
+}
+
 function menu(menu=initialState.menu, action) {
     switch (action.type) {
         case 'OPEN_MENU':
-            console.log('reduce: ' + action.type)
             return menu.open ? menu : {
                 ...menu,
                 open: true,
                 floating: action.payload.innerWidth<MD};
         case 'CLOSE_MENU':
-            console.log('reduce: ' + action.type)
             return menu.open ? {...menu, open: false, floating: false} : menu;
         case 'TOGGLE_MENU':
-            console.log('reduce: ' + action.type);
             return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD && !menu.open};
         default:
             return menu;
@@ -64,18 +69,14 @@ function menu(menu=initialState.menu, action) {
 function form(form=initialState.form, action) {
     switch (action.type) {
         case 'CHANGE_FIELD':
-            console.log('reduce: ' + action.type);
             return {...form ,
                     data:{...form.data,
                     [action.payload.name]: action.payload.value}};
         case 'SET_FORM_DATA':
-            console.log('reduce: ' + action.type);
             return action.payload !== form.data ? {...form , data: action.payload} : form;
         case 'CLEAR_FORM':
-            console.log('reduce: ' + action.type);
             return Object.keys(form).length ? {...initialState.form} : form;
         case 'FOCUS_FIELD':
-            console.log('reduce: ' + action.type);
             return action.payload != form.focus ?
                 {...form, focus: action.payload} : form;
         default:
@@ -93,4 +94,4 @@ function status(status=initialState.status, action) {
     }
 }
 export const globalreducer = combineReducers(
-    {routing: routeReducer, form, menu, docs, status});
+    {routing: routeReducer, form, menu, docs, selectedRows, status});

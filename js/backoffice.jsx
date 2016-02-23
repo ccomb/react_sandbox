@@ -35,11 +35,11 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
         const s = menu.floating ? '10' : '1';
         const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
         const floating = menu.floating;
-        return (<div>
+        return (<div style={{paddingTop: '51px'}}>
                 <AppBar
                     title="Contacts"
                     className="row"
-                    style={{margin: 0, zIndex: 2000, height: '50px', background: '#666'}}
+                    style={{margin: 0, zIndex: 1100, height: '50px', background: '#666', position: 'fixed', top: 0}}
                     zDepth={0}
                     onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap} />
                 <LeftNav

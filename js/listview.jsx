@@ -1,12 +1,8 @@
 import React from 'react';
-import IconButton from 'material-ui/lib/icon-button';
 import Table from 'material-ui/lib/table/table';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import FlatButton from 'material-ui/lib/flat-button';
-import Delete from 'material-ui/lib/svg-icons/action/delete';
-import Link from 'react-router/lib/Link';
 
 export const ListView = React.createClass({
     propTypes: {
@@ -16,38 +12,36 @@ export const ListView = React.createClass({
         params: React.PropTypes.object,
         onDelete: React.PropTypes.func,
         onChangeView: React.PropTypes.func,
+        onRowSelection: React.PropTypes.func,
+        selectedRows: React.PropTypes.array,
         onSearch: React.PropTypes.func,
-    },
-    onDelete(e) {
-        this.props.onDelete(this.props.docs[e.target.id.slice(1)]);
     },
     componentDidMount() {
         this.props.onSearch();
     },
-    onRowClick(row) {
-        this.props.onChangeView(this.props.params.model,
-                                'form',
-                                this.props.docs[row].uuid);
+    onCellClick(row, col) {
+        console.log('onCellClick', row, col)
+        if (col != 0) {
+            this.props.onChangeView(this.props.params.model, 'form',
+                                    this.props.docs[row].uuid);
+        }
     },
     render() {
         console.log('render: ListView');
-        const {docs, status, params} = this.props;
-        const model = params.model;
+        const {docs, status} = this.props;
         return (
-        <div>
-            <div className="row start" style={{margin: 0}}>
-                <div className="col" style={{padding: 0}}>
-                    <Link to={`/bo/${model}/new`}><FlatButton label="Create" primary={true}/></Link>
-                </div>
-            </div>
+        <div style={{position: 'fixed', top: '150px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
-                    <Table onCellClick={this.onRowClick}>
-                        <TableBody>
+                    <Table
+                        onCellClick={this.onCellClick}
+                        multiSelectable={true}
+                        onRowSelection={this.props.onRowSelection}>
+                        <TableBody deselectOnClickaway={false}>
                             {status.list === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             docs.map((doc, i) =>{
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[doc.status] || 'red';
-                            return (<TableRow style={{border: "solid 1px #EEE"}} key={doc.uuid}>
+                            return (<TableRow style={{border: "solid 1px #EEE"}} key={doc.uuid} selected={this.props.selectedRows.indexOf(i)+1 ? true : false}>
                                         <TableRowColumn>
                                             Status: <span style={{background: color, color: 'white'}}>{doc.status}</span>
                                         </TableRowColumn>
@@ -59,11 +53,6 @@ export const ListView = React.createClass({
                                         </TableRowColumn>
                                         <TableRowColumn>
                                             {doc.surname}
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            <IconButton iconClassName='' onClick={this.onDelete} id={'d' + i}>
-                                                <Delete/>
-                                            </IconButton>
                                         </TableRowColumn>
                                     </TableRow>);
                             })}

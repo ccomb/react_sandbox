@@ -215,3 +215,10 @@ export function setFormData(doc) {
     }
 }
 
+export function selectedRows(rows) {
+    console.log('action: selectedRows');
+    return {
+        type: 'SELECTED_ROWS',
+        payload: rows,
+    }
+}
