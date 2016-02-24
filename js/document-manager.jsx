@@ -1,35 +1,35 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {loadDoc, loadDocs, deleteDoc, storeDoc, changeField, selectedRows} from './actions';
+import {loadDoc, loadDocs, deleteDoc, storeDoc, changeField, selectRows} from './actions';
 import {routeActions} from 'react-router-redux';
 import {ActionButtons} from './action-buttons';
 
 const mapStateToProps = function(state) {
     // Here we can apply filters to the list if needed
     return {
-        form: state.form,
-        docs: state.docs,
-        status: state.status,
-        selectedRows: state.selectedRows,
+        formview: state.formview,
+        docs: state.listview.docs,
+        listStatus: state.listview.listStatus,
+        docStatus: state.listview.docStatus,
+        selectedRows: state.listview.selectedRows,
     }
 }
 
 export const DocumentManager = connect(mapStateToProps)(React.createClass({
     propTypes: {
         leftoffset: React.PropTypes.bool,
-        form: React.PropTypes.object,
+        formview: React.PropTypes.object,
         docs: React.PropTypes.array,
         selectedRows: React.PropTypes.array,
         children: React.PropTypes.object,
-        status: React.PropTypes.object,
+        listStatus: React.PropTypes.string,
+        docStatus: React.PropTypes.object,
         params: React.PropTypes.object,
         dispatch: React.PropTypes.func,
         onDelete: React.PropTypes.func,
     },
     onDelete() {
-        const doc = this.props.docs[this.props.selectedRows];
-        this.props.dispatch(deleteDoc(doc));
-        this.props.dispatch(selectedRows([]));
+        this.props.selectedRows.forEach(uuid=>this.props.dispatch(deleteDoc(uuid)));
     },
     onChangeView(model, view, uuid='') {
         console.log('onChangeView', model, view, uuid);
@@ -39,7 +39,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         this.props.dispatch(loadDoc(uuid));
     },
     onStore() {
-        const doc = this.props.form.data;
+        const doc = this.props.formview.data;
         this.props.dispatch(storeDoc(doc));
         const model = this.props.params.model;
         this.props.dispatch(routeActions.push(`/bo/${model}/list`));
@@ -51,11 +51,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         this.props.dispatch(changeField(event.target));
     },
     onRowSelection(rows) {
-        this.props.dispatch(selectedRows(rows));
+        this.props.dispatch(selectRows(rows));
     },
     render() {
-        console.log('render: DocumentManager', this.props.selectedRows); //FIXME
-        const {form, docs, status, leftoffset, params} = this.props;
+        console.log('render: DocumentManager', this.props.selectedRows); //FIXME REMOVE
+        const {formview, docs, listStatus, leftoffset, docStatus, params} = this.props;
         return (
         <div style={{
                 paddingLeft: leftoffset ? '256px' : '0',
@@ -68,9 +68,10 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                     createLink={`/bo/${params.model}/new`}/>
             </div>
             {React.cloneElement(this.props.children, {
-                form,
+                formview,
                 docs,
-                status,
+                listStatus,
+                docStatus,
                 onChangeField: this.onChangeField,
                 initialfocus: 'name',
                 onStore: this.onStore,

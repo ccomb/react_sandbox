@@ -4,17 +4,19 @@ import {MD} from './actions';
 
 // Doc and initial value of the global redux state, which correspond to the working space in memory
 export const initialState = {
-    // The list of active docs indexed with their uuid
-    docs: [],
-    selectedRows: [],
-    status: {
-        list: null,
+    listview: {
+        // displayed docs
+        docs: [],
+        // selected docs (list of uuid)
+        selectedRows: [],
+        docStatus: {}, // keys are uuids
+        listStatus: '',
     },
     menu: {
         open: (()=> window.innerWidth <= MD ? false : true)(),
         floating: (()=> window.innerWidth < MD ? true : false)()
     },
-    form: {
+    formview: {
         // data of the currently displayed object
         data: {},
         // layout of the fields and widgets
@@ -22,31 +24,31 @@ export const initialState = {
     }
 }
 
-function docs(docs=initialState.docs, action) {
-    const doc = action.payload;
+function listview(listview=initialState.listview, action) {
+    const {payload, meta} = action;
     switch(action.type){
         case 'ADD_DOC':
-            return [...docs, {...doc, status: action.meta.status}];
+            if (listview.docs.some(d=>d.uuid===payload.uuid)) return listview;
+            return {...listview,
+                    docs: [payload, ...listview.docs],
+                    docStatus: {...listview.docStatus, [payload.uuid]: meta}};
         case 'LOAD_DOCS':
-            return action.payload !== docs ? [...action.payload] : docs;
+            return payload !== listview.docs ? {...listview, docs: [...payload]} : listview;
         case 'DOC_STATUS':
-           const newdoc = {...doc, status: action.meta.status};
-           return [...docs.map((d) => d.uuid===newdoc.uuid ? newdoc : d)];
+            if (listview.docStatus[payload] === meta) return listview;
+            return {...listview, docStatus: {...listview.docStatus, [payload]: meta}}
         case 'CLEAR_DOCS':
-            return docs.length ? [...initialState.docs] : docs;
+            return listview.docs.length ? {...listview, docs: [...initialState.listview.docs]} : listview;
         case 'REMOVE_DOC':
-            return [...docs.filter((d) => d.uuid!==doc.uuid)];
+            if (listview.docs.every(d=>d.uuid!==payload)) return listview;
+            return {...listview, docs: [...listview.docs.filter(d=>d.uuid!==payload)]};
+        case 'SELECT_ROWS':
+            if (payload === listview.selectedRows) return listview;
+            return {...listview, selectedRows: payload.map(r=>listview.docs[r].uuid)};
+        case 'LIST_STATUS':
+            return payload === listview.listStatus ? payload : {...listview, payload}
         default:
-            return docs;
-    }
-}
-
-function selectedRows(selectedRows=initialState.selectedRows, action) {
-    switch (action.type) {
-        case 'SELECTED_ROWS':
-            return action.payload !== selectedRows ? action.payload : selectedRows;
-        default:
-            return selectedRows;
+            return listview;
     }
 }
 
@@ -66,32 +68,25 @@ function menu(menu=initialState.menu, action) {
     }
 }
 
-function form(form=initialState.form, action) {
+function formview(formview=initialState.formview, action) {
     switch (action.type) {
         case 'CHANGE_FIELD':
-            return {...form ,
-                    data:{...form.data,
+            return {...formview ,
+                    data:{...formview.data,
                     [action.payload.name]: action.payload.value}};
         case 'SET_FORM_DATA':
-            return action.payload !== form.data ? {...form , data: action.payload} : form;
-        case 'CLEAR_FORM':
-            return Object.keys(form).length ? {...initialState.form} : form;
+            return action.payload !== formview.data ?
+                   {...formview , data: {...action.payload}} : formview;
+        case 'CLEAR_FORM_DATA':
+            return Object.keys(formview.data).length ?
+                   {...formview, data:{...initialState.formview.data}} : formview;
         case 'FOCUS_FIELD':
-            return action.payload != form.focus ?
-                {...form, focus: action.payload} : form;
+            return action.payload != formview.focus ?
+                {...formview, focus: action.payload} : formview;
         default:
-            return form;
+            return formview;
     }
 }
 
-function status(status=initialState.status, action) {
-    switch (action.type) {
-        case 'LIST_STATUS':
-            return action.payload === status.list ?
-                status : {...status, list: action.payload};
-        default:
-            return status;
-    }
-}
 export const globalreducer = combineReducers(
-    {routing: routeReducer, form, menu, docs, selectedRows, status});
+    {routing: routeReducer, formview, menu, listview});

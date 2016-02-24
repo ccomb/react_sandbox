@@ -8,7 +8,7 @@ const ObjectField = React.createClass({
     propTypes: {
         name: React.PropTypes.string,
         schema: React.PropTypes.object,
-        form: React.PropTypes.object,
+        formview: React.PropTypes.object,
         layouts: React.PropTypes.object,
         required: React.PropTypes.bool,
     },
@@ -41,7 +41,7 @@ const StringField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
-        form: React.PropTypes.object,
+        formview: React.PropTypes.object,
         schema: React.PropTypes.object,
         required: React.PropTypes.bool,
     },

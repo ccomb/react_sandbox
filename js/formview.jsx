@@ -6,7 +6,7 @@ import FIELDS from './fields';
 
 export const FormView = React.createClass({
     propTypes: {
-        form: React.PropTypes.object,
+        formview: React.PropTypes.object,
         params: React.PropTypes.object,
         onStore: React.PropTypes.func,
         onRead: React.PropTypes.func,
@@ -28,7 +28,8 @@ export const FormView = React.createClass({
         this.props.onChangeField(event);
     },
     componentDidMount() {
-        this.props.onRead(this.props.params.uuid);
+        const uuid = this.props.params.uuid;
+        if (uuid) this.props.onRead(uuid);
     },
     widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)+1
@@ -40,7 +41,7 @@ export const FormView = React.createClass({
     render() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {form} = this.props;
+        const {formview} = this.props;
         return (
       <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
@@ -49,7 +50,7 @@ export const FormView = React.createClass({
             <Field
                 onSubmit={this.onSubmit}
                 schema={schema}
-                form={form}
+                formview={formview}
                 layouts={layouts}
                 onChangeField={this.onChangeField}
                 widgetDidMount={this.widgetDidMount}

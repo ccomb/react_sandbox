@@ -13,12 +13,13 @@ export function addDoc(doc, status=undefined) {
     return {
         type: 'ADD_DOC',
         payload: doc,
-        meta: {status}
+        meta: status
     }
 }
 
-export function storeDoc(doc) {
+export function storeDoc(_doc) {
     console.log('action: STORE_DOC');
+    const doc = {..._doc};
     const mode = doc.uuid ? 'put' : 'add';
     if (mode == 'add') doc.uuid = uuid();
     console.log('async action: storing document')
@@ -33,32 +34,32 @@ export function storeDoc(doc) {
             transaction.oncomplete = () => {
                 console.log('indexedDB: transaction completed');}
             transaction.onerror = () => {
-                dispatch(docStatus(doc, 'error')); }
+                dispatch(docStatus(doc.uuid, 'error')); }
             try {
                 console.log('indexedDB: adding doc in objectStore')
                 const addrequest = mode=='add' ? transaction.objectStore('docs').add(doc)
                                          : transaction.objectStore('docs').put(doc);
                 addrequest.onsuccess = () => {
-                    dispatch(docStatus(doc, 'stored'));
-                    dispatch(clearForm()); }
+                    dispatch(docStatus(doc.uuid, 'stored'));
+                    dispatch(clearFormData()); }
                 addrequest.onerror = () => {
                     console.log('indexedDB: error adding doc');
-                    dispatch(docStatus(doc, 'error')); }
+                    dispatch(docStatus(doc.uuid, 'error')); }
             } catch(e) {
                 console.log('indexedDB: catched exception');
-                dispatch(docStatus(doc, 'error'));
+                dispatch(docStatus(doc.uuid, 'error'));
             }
         }
-        openDB.onerror = () => { dispatch(docStatus(doc, 'error')); }
+        openDB.onerror = () => { dispatch(docStatus(doc.uuid, 'error')); }
     }
 }
 
-export function docStatus(doc, status) {
+export function docStatus(uuid, status) {
     console.log('action: DOC_STATUS ' + status);
     return {
             type: 'DOC_STATUS',
-            payload: doc,
-            meta: {status}
+            payload: uuid,
+            meta: status
     }
 }
 
@@ -85,9 +86,9 @@ export function loadDoc(uuid) {
                     dispatch(setFormData(doc));
                 }
             }
-            openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
+            openCursor.onerror = () => { dispatch(docStatus(null, 'error')); }
         }
-        openDB.onerror = () => { dispatch(docStatus({}, 'error'));  }
+        openDB.onerror = () => { dispatch(docStatus(null, 'error'));  }
     }
 }
 
@@ -116,9 +117,9 @@ export function loadDocs(model) {
                     })
                 }
             }
-            openCursor.onerror = () => { dispatch(docStatus({}, 'error')); }
+            openCursor.onerror = () => { dispatch(docStatus(null, 'error')); }
         }
-        openDB.onerror = () => { dispatch(docStatus({}, 'error'));  }
+        openDB.onerror = () => { dispatch(docStatus(null, 'error'));  }
     }
 }
 
@@ -138,20 +139,21 @@ export function removeDoc(doc) {
     }
 }
 
-export function deleteDoc(doc) {
-    console.log('async action: DELETE_DOC', doc);
+export function deleteDoc(uuid) {
+    console.log('async action: DELETE_DOC', uuid);
     return (dispatch) => {
-        dispatch(docStatus(doc, 'deleting'));
+        dispatch(docStatus(uuid, 'deleting'));
         console.log('indexedDB: opening database');
         window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
             const req = e.target.result
                 .transaction('docs', 'readwrite')
-                .objectStore('docs').delete(doc.uuid);
+                .objectStore('docs').delete(uuid);
             req.onsuccess = () => {
-                dispatch(removeDoc(doc));
+                dispatch(removeDoc(uuid));
+                dispatch(selectRows([]));
             }
             req.onerror = () => {
-                dispatch(docStatus(doc, 'error'))
+                dispatch(docStatus(uuid, 'error'))
             }
         }
     }
@@ -201,9 +203,11 @@ export function focusField(fieldname) {
     }
 }
 
-export function clearForm() {
+export function clearFormData() {
+    console.log('action: CLEAR_FORM_DATA');
     return {
-        type: 'CLEAR_FORM'
+        type: 'CLEAR_FORM_DATA',
+        payload: null,
     }
 }
 
@@ -215,10 +219,10 @@ export function setFormData(doc) {
     }
 }
 
-export function selectedRows(rows) {
-    console.log('action: selectedRows');
+export function selectRows(rows) {
+    console.log('action: selectRows');
     return {
-        type: 'SELECTED_ROWS',
+        type: 'SELECT_ROWS',
         payload: rows,
     }
 }
