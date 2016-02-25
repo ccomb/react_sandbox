@@ -24,7 +24,7 @@ export const ListView = React.createClass({
         console.log('onCellClick', row, col)
         if (col != 0) {
             this.props.onChangeView(this.props.params.model, 'form',
-                                    this.props.selectedRows[row]);
+                                    this.props.docs[row].uuid);
         }
     },
     render() {
