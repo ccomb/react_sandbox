@@ -31,7 +31,7 @@ export const ListView = React.createClass({
         console.log('render: ListView');
         const {docs, listStatus, docStatus} = this.props;
         return (
-        <div style={{position: 'fixed', top: '150px', bottom: 0, overflowY: 'auto'}}>
+        <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
                     <Table
