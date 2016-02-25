@@ -41,9 +41,9 @@ console.log(this.props.params)
                         onRowSelection={this.props.onRowSelection}>
                         <TableBody deselectOnClickaway={false}>
                             {listStatus === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
-                            docs.map(doc=>{
+                            docs.map((doc, i)=>{
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docStatus[doc.uuid]] || 'red';
-                            return (<TableRow style={{border: "solid 1px #EEE"}} key={doc.uuid} selected={this.props.selectedRows.indexOf(doc.uuid)+1 ? true : false}>
+                            return (<TableRow style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE"}} key={doc.uuid} selected={this.props.selectedRows.indexOf(doc.uuid)+1 ? true : false}>
                                         <TableRowColumn>
                                             Status: <span style={{background: color, color: 'white'}}>{docStatus[doc.uuid]}</span>
                                         </TableRowColumn>
