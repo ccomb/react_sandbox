@@ -61,7 +61,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 paddingLeft: leftoffset ? '256px' : '0',
                 transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
             <div className="row bottom-xs between-lg"
-                 style={{height: '100px', margin: '0', zIndex: -5}}>
+                 style={{height: '60px', margin: '0', zIndex: -5}}>
                 <ActionButtons
                     onDelete={this.onDelete}
                     selectedRows={this.props.selectedRows}
