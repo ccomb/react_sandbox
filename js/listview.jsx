@@ -30,6 +30,7 @@ export const ListView = React.createClass({
     render() {
         console.log('render: ListView');
         const {docs, listStatus, docStatus} = this.props;
+console.log(this.props.params)
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>

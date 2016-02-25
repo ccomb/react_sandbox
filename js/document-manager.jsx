@@ -25,6 +25,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         listStatus: React.PropTypes.string,
         docStatus: React.PropTypes.object,
         params: React.PropTypes.object,
+        location: React.PropTypes.object,
         dispatch: React.PropTypes.func,
         onDelete: React.PropTypes.func,
     },
@@ -65,6 +66,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 <ActionButtons
                     onDelete={this.onDelete}
                     selectedRows={this.props.selectedRows}
+                    view={this.props.location.pathname.split('/')[3]}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
             {React.cloneElement(this.props.children, {

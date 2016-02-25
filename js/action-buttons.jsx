@@ -10,32 +10,32 @@ export const ActionButtons = React.createClass({
         selectedRows: React.PropTypes.array,
         createLink: React.PropTypes.string,
         onDelete: React.PropTypes.func,
+        view: React.PropTypes.string,
     },
     render() {
         const hasSelection = this.props.selectedRows.length>0;
         const mobile = window.innerWidth < MD;
+        const {view} = this.props;
         return (
             <div className="row start">
                 {[(!mobile) ?
-                 <div
-                    key="createbutton"
-                    className="col"
-                    style={{padding: 0, margin: '0.5em'}}>
+                 <div key="createbutton"
+                      className="col"
+                      style={{padding: 0, margin: '0.5em'}}>
                   <Link to={this.props.createLink}>
                       <FlatButton label="Create"/>
                   </Link>
                  </div> : undefined,
                  (hasSelection && !mobile) ?
-                 <div
-                    key="deletebutton"
-                    className="col"
-                    style={{padding: 0, margin: '0.5em'}}>
+                 <div key="deletebutton"
+                      className="col"
+                      style={{padding: 0, margin: '0.5em'}}>
                   <FlatButton
                     label="Delete"
                     onClick={this.props.onDelete}
                     primary={true}/>
                  </div>: undefined,
-                (!hasSelection && mobile) ?
+                (!hasSelection && mobile && view == 'list') ?
                 <Link to={this.props.createLink}
                       key="floatingcreatebutton">
                     <FloatingActionButton
