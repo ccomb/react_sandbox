@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {loadDoc, loadDocs, deleteDoc, storeDoc, changeField, selectRows} from './actions';
+import {loadDoc, loadDocs, deleteDocs, storeDoc, changeField, selectRows} from './actions';
 import {routeActions} from 'react-router-redux';
 import {ActionButtons} from './action-buttons';
 
@@ -29,7 +29,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         onDelete: React.PropTypes.func,
     },
     onDelete() {
-        this.props.selectedRows.forEach(uuid=>this.props.dispatch(deleteDoc(uuid)));
+        this.props.dispatch(deleteDocs(this.props.selectedRows));
     },
     onChangeView(model, view, uuid='') {
         console.log('onChangeView', model, view, uuid);

@@ -139,22 +139,22 @@ export function removeDoc(doc) {
     }
 }
 
-export function deleteDoc(uuid) {
-    console.log('async action: DELETE_DOC', uuid);
+export function deleteDocs(uuids) {
+    console.log('async action: DELETE_DOC', uuids);
     return (dispatch) => {
-        dispatch(docStatus(uuid, 'deleting'));
+        uuids.forEach(uuid=>dispatch(docStatus(uuid, 'deleting')));
         console.log('indexedDB: opening database');
         window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
-            const req = e.target.result
-                .transaction('docs', 'readwrite')
-                .objectStore('docs').delete(uuid);
-            req.onsuccess = () => {
-                dispatch(removeDoc(uuid));
-                dispatch(selectRows([]));
-            }
-            req.onerror = () => {
-                dispatch(docStatus(uuid, 'error'))
-            }
+            uuids.forEach(uuid=>{
+                const req = e.target.result.transaction('docs', 'readwrite').objectStore('docs').delete(uuid);
+                req.onsuccess = () => {
+                    dispatch(removeDoc(uuid));
+                    dispatch(selectRows([]));
+                }
+                req.onerror = () => {
+                    dispatch(docStatus(uuid, 'error'))
+                }
+            })
         }
     }
 }
