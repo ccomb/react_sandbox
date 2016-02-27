@@ -14,6 +14,13 @@ export const FormView = React.createClass({
         initialfocus: React.PropTypes.string,
         onChangeField: React.PropTypes.func,
     },
+    onKeyDown(e) {
+        if (e.nativeEvent.keyCode === 13) {
+            this.onSubmit(e);
+            e.preventDefault();
+            this.props.onStore();
+        }
+    },
     onSubmit(e) {
         e.preventDefault();
         this.props.onStore();
@@ -22,7 +29,7 @@ export const FormView = React.createClass({
         this.props.onChangeView(this.props.params.model, 'list');
     },
     getInitialState() {
-        return { shouldfocus: this.props.initialfocus }
+        return {shouldfocus: this.props.initialfocus};
     },
     onChangeField(event) {
         this.props.onChangeField(event);
@@ -32,7 +39,7 @@ export const FormView = React.createClass({
         if (uuid) this.props.onRead(uuid);
     },
     widgetDidMount(input) {
-        if (input != null && ['text', 'password'].indexOf(input.props.type)+1
+        if (input != null && ['text', 'password'].indexOf(input.props.type)>=0
             && this.state.shouldfocus == input.props.name){
           this.setState({shouldfocus: undefined})
           input.focus()
@@ -48,7 +55,7 @@ export const FormView = React.createClass({
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
             <Field
-                onSubmit={this.onSubmit}
+                onKeyDown={this.onKeyDown}
                 schema={schema}
                 formview={formview}
                 layouts={layouts}

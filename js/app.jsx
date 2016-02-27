@@ -15,16 +15,16 @@ import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 import IndexRedirect from 'react-router/lib/IndexRedirect';
 import hashHistory from 'react-router/lib/hashHistory';
-import {syncHistory} from 'react-router-redux';
+import {syncHistoryWithStore} from 'react-router-redux'
 import {Home} from './home';
 
 // needed for MUI. remove as of react 15.0.0 ??
 import injectTapEventPlugin from 'react-tap-event-plugin'; injectTapEventPlugin();
 
 // stack middlewares for routing and redux async actions
-const routerMiddleware = syncHistory(hashHistory)
-const store = createStore(globalreducer, applyMiddleware(routerMiddleware, thunk));
-routerMiddleware.listenForReplays(store) // for devtools
+const store = createStore(globalreducer, applyMiddleware(thunk));
+const history = syncHistoryWithStore(hashHistory, store)
+//routerMiddleware.listenForReplays(store) // for devtools
 
 /**** indexedDB ****/
 let request = window.indexedDB.open('tutodb', 1);
@@ -54,7 +54,7 @@ const Root = connect(state=>(state))((props)=>props.children);
 console.log('First render')
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={hashHistory}>
+        <Router history={history}>
             <Route path='/' component={Root}>
                 <IndexRoute component={Home}/>
                 <Route path='bo' component={BackOffice}>

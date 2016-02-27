@@ -7,13 +7,13 @@ import {MD} from './actions';
 
 export const ActionButtons = React.createClass({
     propTypes: {
-        selectedRows: React.PropTypes.array,
+        selectedUuids: React.PropTypes.array,
         createLink: React.PropTypes.string,
         onDelete: React.PropTypes.func,
         view: React.PropTypes.string,
     },
     render() {
-        const hasSelection = this.props.selectedRows.length>0;
+        const hasSelection = this.props.selectedUuids.length>0;
         const mobile = window.innerWidth < MD;
         const {view} = this.props;
         return (
@@ -35,7 +35,7 @@ export const ActionButtons = React.createClass({
                     onClick={this.props.onDelete}
                     primary={true}/>
                  </div>: undefined,
-                (!hasSelection && mobile && view == 'list') ?
+                (mobile && view == 'list') ?
                 <Link to={this.props.createLink}
                       key="floatingcreatebutton">
                     <FloatingActionButton

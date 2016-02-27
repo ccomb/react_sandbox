@@ -14,15 +14,19 @@ export const ListView = React.createClass({
         onDelete: React.PropTypes.func,
         onChangeView: React.PropTypes.func,
         onRowSelection: React.PropTypes.func,
-        selectedRows: React.PropTypes.array,
+        selectedUuids: React.PropTypes.array,
         onSearch: React.PropTypes.func,
     },
     componentDidMount() {
         this.props.onSearch();
     },
-    onCellClick(row, col) {
-        console.log('onCellClick', row, col)
-        if (col != 0) {
+    onCellClick(row, col, event) {
+        console.log('onCellClick', row, col, event)
+        if (col === -1) {
+            // 1st cell click (checkbox)
+            this.props.onRowSelection(row);
+        } else {
+            // enter the record on row click
             this.props.onChangeView(this.props.params.model, 'form',
                                     this.props.docs[row].uuid);
         }
@@ -30,20 +34,19 @@ export const ListView = React.createClass({
     render() {
         console.log('render: ListView');
         const {docs, listStatus, docStatus} = this.props;
-console.log(this.props.params)
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
-                    <Table
-                        onCellClick={this.onCellClick}
-                        multiSelectable={true}
-                        onRowSelection={this.props.onRowSelection}>
-                        <TableBody deselectOnClickaway={false}>
+                    <Table multiselectable={true}
+                        onCellClick={this.onCellClick}>
+                        <TableBody deselectOnClickaway={false} preScanRows={false}>
                             {listStatus === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             docs.map((doc, i)=>{
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docStatus[doc.uuid]] || 'red';
-                            return (<TableRow style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE"}} key={doc.uuid} selected={this.props.selectedRows.indexOf(doc.uuid)+1 ? true : false}>
+                            return (<TableRow onRowClick={undefined} style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE"}}
+                                              key={doc.uuid}
+                                              selected={this.props.selectedUuids.indexOf(doc.uuid)>=0}>
                                         <TableRowColumn>
                                             Status: <span style={{background: color, color: 'white'}}>{docStatus[doc.uuid]}</span>
                                         </TableRowColumn>

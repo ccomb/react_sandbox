@@ -1,8 +1,8 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {loadDoc, loadDocs, deleteDocs, storeDoc, changeField, selectRows} from './actions';
-import {routeActions} from 'react-router-redux';
+import {loadDoc, loadDocs, deleteDocs, storeDoc, changeField, selectRow} from './actions';
 import {ActionButtons} from './action-buttons';
+import hashHistory from 'react-router/lib/hashHistory';
 
 const mapStateToProps = function(state) {
     // Here we can apply filters to the list if needed
@@ -11,7 +11,7 @@ const mapStateToProps = function(state) {
         docs: state.listview.docs,
         listStatus: state.listview.listStatus,
         docStatus: state.listview.docStatus,
-        selectedRows: state.listview.selectedRows,
+        selectedUuids: state.listview.selectedUuids,
     }
 }
 
@@ -20,7 +20,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         leftoffset: React.PropTypes.bool,
         formview: React.PropTypes.object,
         docs: React.PropTypes.array,
-        selectedRows: React.PropTypes.array,
+        selectedUuids: React.PropTypes.array,
         children: React.PropTypes.object,
         listStatus: React.PropTypes.string,
         docStatus: React.PropTypes.object,
@@ -30,11 +30,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         onDelete: React.PropTypes.func,
     },
     onDelete() {
-        this.props.dispatch(deleteDocs(this.props.selectedRows));
+        this.props.dispatch(deleteDocs(this.props.selectedUuids));
     },
     onChangeView(model, view, uuid='') {
         console.log('onChangeView', model, view, uuid);
-        this.props.dispatch(routeActions.push(`/bo/${model}/${view}/${uuid}`));
+        hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
     onRead(uuid) {
         this.props.dispatch(loadDoc(uuid));
@@ -43,7 +43,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
         const doc = this.props.formview.data;
         this.props.dispatch(storeDoc(doc));
         const model = this.props.params.model;
-        this.props.dispatch(routeActions.push(`/bo/${model}/list`));
+        hashHistory.push(`/bo/${model}/list`);
     },
     onSearch() {
         if (!this.props.docs.length) this.props.dispatch(loadDocs('docs'));
@@ -51,11 +51,11 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
     onChangeField(event) {
         this.props.dispatch(changeField(event.target));
     },
-    onRowSelection(rows) {
-        this.props.dispatch(selectRows(rows));
+    onRowSelection(row) {
+        this.props.dispatch(selectRow(row));
     },
     render() {
-        console.log('render: DocumentManager', this.props.selectedRows); //FIXME REMOVE
+        console.log('render: DocumentManager');
         const {formview, docs, listStatus, leftoffset, docStatus, params} = this.props;
         return (
         <div style={{
@@ -65,7 +65,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                  style={{height: '60px', margin: '0', zIndex: -5}}>
                 <ActionButtons
                     onDelete={this.onDelete}
-                    selectedRows={this.props.selectedRows}
+                    selectedUuids={this.props.selectedUuids}
                     view={this.props.location.pathname.split('/')[3]}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
@@ -81,7 +81,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 onRead: this.onRead,
                 onChangeView: this.onChangeView,
                 onRowSelection: this.onRowSelection,
-                selectedRows: this.props.selectedRows,
+                selectedUuids: this.props.selectedUuids,
                 onSearch: this.onSearch,
                 })}
         </div>)

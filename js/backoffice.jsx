@@ -5,7 +5,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
-import {routeActions} from 'react-router-redux';
+import hashHistory from 'react-router/lib/hashHistory';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -27,13 +27,12 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
             this.props.dispatch(closeMenu());
     },
     onClick() {
-        this.props.dispatch(routeActions.push('/bo/contact/list'));
+        hashHistory.push('/bo/contact/list');
     },
     render() {
         console.log('render: BackOffice');
         const {menu} = this.props;
-        const s = menu.floating ? '10' : '1';
-        const menushadow = `0px 3px ${s}px rgba(0, 0, 0, 0.16), 0px 3px ${s}px rgba(0, 0, 0, 0.23)`;
+        const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         const floating = menu.floating;
         return (<div style={{paddingTop: '51px'}}>
                 <AppBar
@@ -47,10 +46,10 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
                     open={menu.open}
                     docked={floating?false:true}
                     onRequestChange={this.onRequestChange}
-                    style={{
-                        marginTop: '64px',
-                        boxShadow: menushadow,
-                        zIndex: floating?3000:0}}>
+                    zDepth={menu.floating ? 3 : 0}
+                    containerStyle={{
+                        boxShadow: menu.floating ? undefined : menushadow,
+                        marginTop: '64px'}}>
                     <SelectableList
                         subheader="Logo"
                         valueLink={{

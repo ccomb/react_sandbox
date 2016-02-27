@@ -23,7 +23,7 @@ const ObjectField = React.createClass({
                         {...self.props}
                         name={name}
                         schema={schema.properties[name]}
-                        required={schema.required.indexOf(name)+1 ? true : false}/>
+                        required={schema.required.indexOf(name)>=0 ? true : false}/>
                     </div>
             )
         });

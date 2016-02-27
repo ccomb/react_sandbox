@@ -9,7 +9,7 @@ const StringWidget = (props) => {
         name={props.name}
         value={props.formview.data[props.name]}
         ref={props.widgetDidMount}
-        onEnterKeyDown={props.onSubmit}
+        onKeyDown={props.onKeyDown}
         onChange={props.onChangeField}
         floatingLabelText={props.name}
         underlineStyle={{borderColor: props.required ? 'red' : undefined}}
@@ -19,7 +19,7 @@ const StringWidget = (props) => {
         />;}
 
 const TextWidget = (props) => {
-    const {onSubmit, ...other} = props;
+    const {onKeyDown, ...other} = props;
     return <StringWidget {...other} multiLine={true} />
 }
 

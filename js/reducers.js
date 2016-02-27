@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import {routeReducer} from 'react-router-redux';
+import {routerReducer} from 'react-router-redux';
 import {MD} from './actions';
 
 // Doc and initial value of the global redux state, which correspond to the working space in memory
@@ -7,8 +7,7 @@ export const initialState = {
     listview: {
         // displayed docs
         docs: [],
-        // selected docs (list of uuid)
-        selectedRows: [],
+        selectedUuids: [],
         docStatus: {}, // keys are uuids
         listStatus: '',
     },
@@ -41,10 +40,17 @@ function listview(listview=initialState.listview, action) {
             return listview.docs.length ? {...listview, docs: [...initialState.listview.docs]} : listview;
         case 'REMOVE_DOC':
             if (listview.docs.every(d=>d.uuid!==payload)) return listview;
-            return {...listview, docs: [...listview.docs.filter(d=>d.uuid!==payload)]};
-        case 'SELECT_ROWS':
-            if (payload === listview.selectedRows) return listview;
-            return {...listview, selectedRows: payload.map(r=>listview.docs[r].uuid)};
+            return {...listview,
+                    docs: [...listview.docs.filter(d=>d.uuid!==payload)],
+                    selectedUuids: listview.selectedUuids.filter(u=>u!==payload.uuid),
+                   };
+        case 'SELECT_ROW':
+            const selectedUuid = listview.docs[payload].uuid
+            if (listview.selectedUuids.indexOf(selectedUuid)>=0) {
+                return {...listview, selectedUuids: listview.selectedUuids.filter(u=>u!==selectedUuid)};
+            } else {
+                return {...listview, selectedUuids: [...listview.selectedUuids, selectedUuid]};
+            }
         case 'LIST_STATUS':
             return payload === listview.listStatus ? payload : {...listview, payload}
         default:
@@ -89,4 +95,4 @@ function formview(formview=initialState.formview, action) {
 }
 
 export const globalreducer = combineReducers(
-    {routing: routeReducer, formview, menu, listview});
+    {routing: routerReducer, formview, menu, listview});

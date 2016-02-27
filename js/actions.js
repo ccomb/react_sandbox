@@ -149,7 +149,6 @@ export function deleteDocs(uuids) {
                 const req = e.target.result.transaction('docs', 'readwrite').objectStore('docs').delete(uuid);
                 req.onsuccess = () => {
                     dispatch(removeDoc(uuid));
-                    dispatch(selectRows([]));
                 }
                 req.onerror = () => {
                     dispatch(docStatus(uuid, 'error'))
@@ -219,10 +218,10 @@ export function setFormData(doc) {
     }
 }
 
-export function selectRows(rows) {
-    console.log('action: selectRows');
+export function selectRow(row) {
+    console.log('action: selectRow');
     return {
-        type: 'SELECT_ROWS',
-        payload: rows,
+        type: 'SELECT_ROW',
+        payload: row,
     }
 }

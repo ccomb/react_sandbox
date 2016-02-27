@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "flexboxgrid": "*",
-    "material-ui": "*",
+    "material-ui": "file:material-ui",
     "react": "*",
     "react-dom": "*",
     "react-grid-layout": "*",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "babel": "*",
+    "babel-cli": "*",
     "babel-core": "*",
     "babel-loader": "*",
     "babel-preset-es2015": "*",
