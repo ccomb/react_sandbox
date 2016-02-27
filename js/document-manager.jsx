@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from 'react-redux';
 import {loadDoc, loadDocs, deleteDocs, storeDoc, changeField, selectRow} from './actions';
-import {ActionButtons} from './action-buttons';
+import {HeaderActions} from './action-buttons';
 import hashHistory from 'react-router/lib/hashHistory';
 
 const mapStateToProps = function(state) {
@@ -63,7 +63,7 @@ export const DocumentManager = connect(mapStateToProps)(React.createClass({
                 transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
             <div className="row bottom-xs between-lg"
                  style={{height: '60px', margin: '0', zIndex: -5}}>
-                <ActionButtons
+                <HeaderActions
                     onDelete={this.onDelete}
                     selectedUuids={this.props.selectedUuids}
                     view={this.props.location.pathname.split('/')[3]}

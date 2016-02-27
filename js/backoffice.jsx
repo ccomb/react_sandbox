@@ -6,6 +6,7 @@ import LeftNav from 'material-ui/lib/left-nav';
 import List from 'material-ui/lib/lists/list';
 import ListItem from 'material-ui/lib/lists/list-item';
 import hashHistory from 'react-router/lib/hashHistory';
+import {AppbarActions} from './action-buttons';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 
@@ -40,7 +41,9 @@ export const BackOffice = connect(state=>({menu: state.menu}))(React.createClass
                     className="row"
                     style={{margin: 0, zIndex: 1100, height: '50px', background: '#666', position: 'fixed', top: 0}}
                     zDepth={0}
-                    onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap} />
+                    onLeftIconButtonTouchTap={this.onLeftIconButtonTouchTap} 
+                    iconElementRight={<AppbarActions/>}
+                />
                 <LeftNav
                     ref="leftnav"
                     open={menu.open}

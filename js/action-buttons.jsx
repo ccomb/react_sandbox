@@ -3,9 +3,14 @@ import FlatButton from 'material-ui/lib/flat-button';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Link from 'react-router/lib/Link';
 import Add from 'material-ui/lib/svg-icons/content/add';
+import IconMenu from 'material-ui/lib/menus/icon-menu';
+import IconButton from 'material-ui/lib/icon-button';
+import MenuItem from 'material-ui/lib/menus/menu-item';
+import Delete from 'material-ui/lib/svg-icons/action/delete';
+import MoreVert from 'material-ui/lib/svg-icons/navigation/more-vert';
 import {MD} from './actions';
 
-export const ActionButtons = React.createClass({
+export const HeaderActions = React.createClass({
     propTypes: {
         selectedUuids: React.PropTypes.array,
         createLink: React.PropTypes.string,
@@ -45,5 +50,20 @@ export const ActionButtons = React.createClass({
                     </FloatingActionButton>
                 </Link> : undefined]}
             </div>);
+    }
+})
+
+export const AppbarActions = React.createClass({
+    render() {
+        return (
+            <IconMenu
+                iconButtonElement={<IconButton><MoreVert color='white'/></IconButton>}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
+                <MenuItem
+                    primaryText="Delete"
+                    leftIcon={<Delete/>}
+                    onTouchTap={e=>alert(e)}/>
+            </IconMenu>);
     }
 })
