@@ -4,9 +4,9 @@ import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Link from 'react-router/lib/Link';
 import Add from 'material-ui/lib/svg-icons/content/add';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
-import IconButton from 'material-ui/lib/icon-button';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
+import IconButton from 'material-ui/lib/icon-button';
 import MoreVert from 'material-ui/lib/svg-icons/navigation/more-vert';
 import {MD} from './actions';
 
@@ -54,16 +54,26 @@ export const HeaderActions = React.createClass({
 })
 
 export const AppbarActions = React.createClass({
+    propTypes: {
+        onDelete: React.PropTypes.func,
+        selectedUuids: React.PropTypes.bool,
+        view: React.PropTypes.object,
+    },
     render() {
-        return (
+        const {view, selectedUuids, onDelete} = this.props;
+        const hasSelection = selectedUuids.length>0;
+        const mobile = window.innerWidth < MD;
+        return (mobile ?
             <IconMenu
                 iconButtonElement={<IconButton><MoreVert color='white'/></IconButton>}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-                <MenuItem
-                    primaryText="Delete"
-                    leftIcon={<Delete/>}
-                    onTouchTap={e=>alert(e)}/>
-            </IconMenu>);
+            {view == 'form' || selectedUuids.length>0 ?
+            <MenuItem
+                id={(view == 'form' || hasSelection) ? 'delete' : undefined}
+                primaryText="Delete"
+                leftIcon={<Delete/>}
+                onTouchTap={onDelete}/> : undefined}
+            </IconMenu> : <div/>);
     }
 })

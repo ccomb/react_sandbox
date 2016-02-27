@@ -1,89 +1,107 @@
 import React from "react";
 import {connect} from 'react-redux';
-import {loadDoc, loadDocs, deleteDocs, storeDoc, changeField, selectRow} from './actions';
-import {HeaderActions} from './action-buttons';
 import hashHistory from 'react-router/lib/hashHistory';
+import AppBar from 'material-ui/lib/app-bar';
+import LeftNav from 'material-ui/lib/left-nav';
+import ListItem from 'material-ui/lib/lists/list-item';
+import List from 'material-ui/lib/lists/list';
+import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
+const SelectableList = SelectableContainerEnhance(List);
+import {MD, closeMenu, toggleMenu, loadDoc, loadDocs, deleteDocs,
+        storeDoc, changeField, selectRow} from './actions';
+import {HeaderActions, AppbarActions} from './action-buttons';
 
-const mapStateToProps = function(state) {
-    // Here we can apply filters to the list if needed
-    return {
-        formview: state.formview,
-        docs: state.listview.docs,
-        listStatus: state.listview.listStatus,
-        docStatus: state.listview.docStatus,
-        selectedUuids: state.listview.selectedUuids,
-    }
-}
-
-export const DocumentManager = connect(mapStateToProps)(React.createClass({
+export const DocumentManager = connect(s=>s)(React.createClass({
     propTypes: {
-        leftoffset: React.PropTypes.bool,
         formview: React.PropTypes.object,
-        docs: React.PropTypes.array,
-        selectedUuids: React.PropTypes.array,
+        listview: React.PropTypes.object,
+        menu: React.PropTypes.object,
         children: React.PropTypes.object,
-        listStatus: React.PropTypes.string,
-        docStatus: React.PropTypes.object,
         params: React.PropTypes.object,
         location: React.PropTypes.object,
         dispatch: React.PropTypes.func,
-        onDelete: React.PropTypes.func,
+    },
+    onMenuItemClick() {
+        if (this.props.menu.open && window.innerWidth < MD)
+            this.props.dispatch(closeMenu());
+        hashHistory.push('/bo/contact/list'); //FIXME contact
     },
     onDelete() {
-        this.props.dispatch(deleteDocs(this.props.selectedUuids));
+        this.props.dispatch(deleteDocs(this.props.listview.selectedUuids));
     },
     onChangeView(model, view, uuid='') {
-        console.log('onChangeView', model, view, uuid);
         hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
     onRead(uuid) {
         this.props.dispatch(loadDoc(uuid));
     },
     onStore() {
-        const doc = this.props.formview.data;
-        this.props.dispatch(storeDoc(doc));
+        this.props.dispatch(storeDoc(this.props.formview.data));
         const model = this.props.params.model;
         hashHistory.push(`/bo/${model}/list`);
     },
     onSearch() {
-        if (!this.props.docs.length) this.props.dispatch(loadDocs('docs'));
-    },
-    onChangeField(event) {
-        this.props.dispatch(changeField(event.target));
-    },
-    onRowSelection(row) {
-        this.props.dispatch(selectRow(row));
+        if (!this.props.listview.docs.length) this.props.dispatch(loadDocs('docs'));
     },
     render() {
         console.log('render: DocumentManager');
-        const {formview, docs, listStatus, leftoffset, docStatus, params} = this.props;
-        return (
-        <div style={{
-                paddingLeft: leftoffset ? '256px' : '0',
-                transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
+        const {formview, listview, params, menu} = this.props;
+        const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
+        return (<div style={{paddingTop: '51px'}}>
+            <AppBar
+                title="Contacts"
+                className="row"
+                style={{margin: 0, zIndex: 1100, height: '50px', background: '#666', position: 'fixed', top: 0}}
+                zDepth={0}
+                onLeftIconButtonTouchTap={()=>this.props.dispatch(toggleMenu())} 
+                iconElementRight={
+                    <AppbarActions
+                        view={this.props.location.pathname.split('/')[3]}
+                        selectedUuids={this.props.listview.selectedUuids}
+                        onDelete={this.onDelete}/>}
+            />
+            <LeftNav
+                ref="leftnav"
+                open={menu.open}
+                docked={menu.floating?false:true}
+                onRequestChange={()=>this.props.dispatch(closeMenu())}
+                zDepth={menu.floating ? 3 : 0}
+                containerStyle={{
+                    boxShadow: menu.floating ? undefined : menushadow,
+                    marginTop: '64px'}}>
+                <SelectableList
+                    subheader="Logo"
+                    valueLink={{
+                        value: this.props.location.pathname,
+                        requestChange: this.handleRequestChangeList,
+                    }}
+                >
+                <ListItem primaryText="Contacts" value="/bo/contact/list" onClick={this.onMenuItemClick}/>
+                </SelectableList>
+            </LeftNav>
+            <div style={{
+                    paddingLeft: (window.innerWidth > MD && menu.open) ? '256px' : '0',
+                    transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
             <div className="row bottom-xs between-lg"
                  style={{height: '60px', margin: '0', zIndex: -5}}>
                 <HeaderActions
                     onDelete={this.onDelete}
-                    selectedUuids={this.props.selectedUuids}
+                    selectedUuids={this.props.listview.selectedUuids}
                     view={this.props.location.pathname.split('/')[3]}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
             {React.cloneElement(this.props.children, {
                 formview,
-                docs,
-                listStatus,
-                docStatus,
-                onChangeField: this.onChangeField,
-                initialfocus: 'name',
+                listview,
+                onChangeField: ()=>this.props.dispatch(changeField(event.target)),
+                initialfocus: 'name', // FIXME
                 onStore: this.onStore,
-                onDelete: this.onDelete,
                 onRead: this.onRead,
                 onChangeView: this.onChangeView,
-                onRowSelection: this.onRowSelection,
-                selectedUuids: this.props.selectedUuids,
+                onRowSelection: (row)=>this.props.dispatch(selectRow(row)),
                 onSearch: this.onSearch,
                 })}
-        </div>)
+            </div>
+        </div>);
     }
 }));

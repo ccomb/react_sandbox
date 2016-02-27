@@ -6,11 +6,11 @@ import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
 import thunk from 'redux-thunk';
 import {NotFound} from './notfound';
-import {BackOffice} from './backoffice';
 import {DocumentManager} from './document-manager';
 import {FormView} from './formview';
 import {ListView} from './listview';
 import Router from 'react-router/lib/Router';
+import Redirect from 'react-router/lib/Redirect';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
 import IndexRedirect from 'react-router/lib/IndexRedirect';
@@ -57,15 +57,14 @@ ReactDOM.render(
         <Router history={history}>
             <Route path='/' component={Root}>
                 <IndexRoute component={Home}/>
-                <Route path='bo' component={BackOffice}>
-                    <Route path=':model' component={DocumentManager}>
-                        <IndexRedirect to='list'/>
-                        <Route path='list' component={ListView}/>
-                        <Route path='new' component={FormView}/>
-                        <Route path='form/:uuid' component={FormView}/>
-                        <Route path='*' component={NotFound}/>
-                    </Route>
+                <Route path='bo/:model' component={DocumentManager}>
+                    <IndexRedirect to='list'/>
+                    <Route path='list' component={ListView}/>
+                    <Route path='new' component={FormView}/>
+                    <Route path='form/:uuid' component={FormView}/>
+                    <Route path='*' component={NotFound}/>
                 </Route>
+                <Redirect from='bo/*' to='bo/contact'/>
                 <Route path='*' component={NotFound}/>
             </Route>
         </Router>

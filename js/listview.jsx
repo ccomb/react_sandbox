@@ -6,15 +6,12 @@ import TableRowColumn from 'material-ui/lib/table/table-row-column';
 
 export const ListView = React.createClass({
     propTypes: {
-        listStatus: React.PropTypes.string,
-        docStatus: React.PropTypes.object,
+        listview: React.PropTypes.object,
+        formview: React.PropTypes.object,
         route: React.PropTypes.object,
-        docs: React.PropTypes.array,
         params: React.PropTypes.object,
-        onDelete: React.PropTypes.func,
         onChangeView: React.PropTypes.func,
         onRowSelection: React.PropTypes.func,
-        selectedUuids: React.PropTypes.array,
         onSearch: React.PropTypes.func,
     },
     componentDidMount() {
@@ -28,12 +25,12 @@ export const ListView = React.createClass({
         } else {
             // enter the record on row click
             this.props.onChangeView(this.props.params.model, 'form',
-                                    this.props.docs[row].uuid);
+                                    this.props.listview.docs[row].uuid);
         }
     },
     render() {
         console.log('render: ListView');
-        const {docs, listStatus, docStatus} = this.props;
+        const {docs, listStatus, docStatus, selectedUuids} = this.props.listview;
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
@@ -46,7 +43,7 @@ export const ListView = React.createClass({
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docStatus[doc.uuid]] || 'red';
                             return (<TableRow onRowClick={undefined} style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE"}}
                                               key={doc.uuid}
-                                              selected={this.props.selectedUuids.indexOf(doc.uuid)>=0}>
+                                              selected={selectedUuids.indexOf(doc.uuid)>=0}>
                                         <TableRowColumn>
                                             Status: <span style={{background: color, color: 'white'}}>{docStatus[doc.uuid]}</span>
                                         </TableRowColumn>
