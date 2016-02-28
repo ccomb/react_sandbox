@@ -5,6 +5,7 @@ import AppBar from 'material-ui/lib/app-bar';
 import LeftNav from 'material-ui/lib/left-nav';
 import ListItem from 'material-ui/lib/lists/list-item';
 import List from 'material-ui/lib/lists/list';
+import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 import {MD, closeMenu, toggleMenu, loadDoc, loadDocs, deleteDocs,
@@ -51,7 +52,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
             <AppBar
                 title="Contacts"
                 className="row"
-                style={{margin: 0, zIndex: 1100, height: '50px', background: '#666', position: 'fixed', top: 0}}
+                style={{margin: 0, zIndex: 1100, height: '64px', background: '#666', position: 'fixed', top: 0}}
                 zDepth={0}
                 onLeftIconButtonTouchTap={()=>this.props.dispatch(toggleMenu())} 
                 iconElementRight={
@@ -70,12 +71,11 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     boxShadow: menu.floating ? undefined : menushadow,
                     marginTop: '64px'}}>
                 <SelectableList
-                    subheader="Logo"
                     valueLink={{
                         value: this.props.location.pathname,
                         requestChange: this.handleRequestChangeList,
-                    }}
-                >
+                        }}>
+                <Subheader><span>Logo</span></Subheader>
                 <ListItem primaryText="Contacts" value="/bo/contact/list" onClick={this.onMenuItemClick}/>
                 </SelectableList>
             </LeftNav>

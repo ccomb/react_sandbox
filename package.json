@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "dev": "node_modules/.bin/webpack-dev-server --config webpack.dev.js --host=0.0.0.0 --port=3000 --progress",
+    "mui": "rm -rf node_modules/material-ui && npm install",
     "sw": "node_modules/.bin/webpack-dev-server --config webpack.sw.js --host=0.0.0.0 --port=3000 --progress",
     "build": "rm -rf build && mkdir build && cp -r index.html js/sw.js css fonts img build/ && node_modules/.bin/webpack --config webpack.prod.js -p --progress",
     "test": "mocha --compilers js:babel-core/register ./js/test.js",
