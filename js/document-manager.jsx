@@ -9,7 +9,7 @@ import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 import {MD, closeMenu, toggleMenu, loadDoc, loadDocs, deleteDocs,
-        storeDoc, changeField, selectRow} from './actions';
+        storeDoc, changeField, selectRow, toggleSelectColumn} from './actions';
 import {HeaderActions, AppbarActions} from './action-buttons';
 
 export const DocumentManager = connect(s=>s)(React.createClass({
@@ -46,7 +46,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     },
     render() {
         console.log('render: DocumentManager');
-        const {formview, listview, params, menu} = this.props;
+        const {formview, dispatch, listview, params, menu, location, children} = this.props;
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         return (<div style={{paddingTop: '51px'}}>
             <AppBar
@@ -54,29 +54,34 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 className="row"
                 style={{margin: 0, zIndex: 1100, height: '64px', background: '#666', position: 'fixed', top: 0}}
                 zDepth={0}
-                onLeftIconButtonTouchTap={()=>this.props.dispatch(toggleMenu())} 
+                onLeftIconButtonTouchTap={()=>dispatch(toggleMenu())} 
                 iconElementRight={
                     <AppbarActions
-                        view={this.props.location.pathname.split('/')[3]}
-                        selectedUuids={this.props.listview.selectedUuids}
+                        view={location.pathname.split('/')[3]}
+                        selectedUuids={listview.selectedUuids}
+                        selectColumn={listview.selectColumn}
+                        onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
                         onDelete={this.onDelete}/>}
             />
             <LeftNav
                 ref="leftnav"
                 open={menu.open}
                 docked={menu.floating?false:true}
-                onRequestChange={()=>this.props.dispatch(closeMenu())}
+                onRequestChange={()=>dispatch(closeMenu())}
                 zDepth={menu.floating ? 3 : 0}
                 containerStyle={{
                     boxShadow: menu.floating ? undefined : menushadow,
                     marginTop: '64px'}}>
                 <SelectableList
                     valueLink={{
-                        value: this.props.location.pathname,
+                        value: location.pathname,
                         requestChange: this.handleRequestChangeList,
                         }}>
                 <Subheader><span>Logo</span></Subheader>
-                <ListItem primaryText="Contacts" value="/bo/contact/list" onClick={this.onMenuItemClick}/>
+                <ListItem
+                    primaryText="Contacts"
+                    value="/bo/contact/list"
+                    onClick={this.onMenuItemClick}/>
                 </SelectableList>
             </LeftNav>
             <div style={{
@@ -86,19 +91,19 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                  style={{height: '60px', margin: '0', zIndex: -5}}>
                 <HeaderActions
                     onDelete={this.onDelete}
-                    selectedUuids={this.props.listview.selectedUuids}
-                    view={this.props.location.pathname.split('/')[3]}
+                    selectedUuids={listview.selectedUuids}
+                    view={location.pathname.split('/')[3]}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
-            {React.cloneElement(this.props.children, {
+            {React.cloneElement(children, {
                 formview,
                 listview,
-                onChangeField: (e)=>this.props.dispatch(changeField(e.target)),
+                onChangeField: (e)=>dispatch(changeField(e.target)),
                 initialfocus: 'name', // FIXME
                 onStore: this.onStore,
                 onRead: this.onRead,
                 onChangeView: this.onChangeView,
-                onRowSelection: (row)=>this.props.dispatch(selectRow(row)),
+                onRowSelection: (row)=>dispatch(selectRow(row)),
                 onSearch: this.onSearch,
                 })}
             </div>

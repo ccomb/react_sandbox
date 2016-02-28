@@ -10,6 +10,7 @@ export const initialState = {
         selectedUuids: [],
         docStatus: {}, // keys are uuids
         listStatus: '',
+        selectColumn: (()=> window.innerWidth >= MD ? true : false)(),
     },
     menu: {
         open: (()=> window.innerWidth <= MD ? false : true)(),
@@ -37,12 +38,14 @@ function listview(listview=initialState.listview, action) {
             if (listview.docStatus[payload] === meta) return listview;
             return {...listview, docStatus: {...listview.docStatus, [payload]: meta}}
         case 'CLEAR_DOCS':
-            return listview.docs.length ? {...listview, docs: [...initialState.listview.docs]} : listview;
+            return listview.docs.length ?
+                {...listview, docs: [...initialState.listview.docs], selectColumn: false} : listview;
         case 'REMOVE_DOC':
             if (listview.docs.every(d=>d.uuid!==payload)) return listview;
             return {...listview,
                     docs: [...listview.docs.filter(d=>d.uuid!==payload)],
                     selectedUuids: listview.selectedUuids.filter(u=>u!==payload.uuid),
+                    selectColumn: false,
                    };
         case 'SELECT_ROW':
             const selectedUuid = listview.docs[payload].uuid
@@ -53,6 +56,8 @@ function listview(listview=initialState.listview, action) {
             }
         case 'LIST_STATUS':
             return payload === listview.listStatus ? payload : {...listview, payload}
+        case 'TOGGLE_SELECT_COLUMN':
+            return {...listview, selectColumn: !listview.selectColumn};
         default:
             return listview;
     }

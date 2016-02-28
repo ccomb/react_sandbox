@@ -225,3 +225,10 @@ export function selectRow(row) {
         payload: row,
     }
 }
+
+export function toggleSelectColumn() {
+    console.log('action: toggleSelectColumn');
+    return {
+        type: 'TOGGLE_SELECT_COLUMN'
+    }
+}

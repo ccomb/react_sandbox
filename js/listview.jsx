@@ -3,6 +3,7 @@ import Table from 'material-ui/lib/table/table';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import {MD} from './actions';
 
 export const ListView = React.createClass({
     propTypes: {
@@ -30,18 +31,23 @@ export const ListView = React.createClass({
     },
     render() {
         console.log('render: ListView');
-        const {docs, listStatus, docStatus, selectedUuids} = this.props.listview;
+        const {docs, listStatus, docStatus, selectedUuids, selectColumn} = this.props.listview;
+        const mobile = window.innerWidth < MD;
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
                 <div className="col" style={{padding: 0}}>
                     <Table multiselectable={true}
                         onCellClick={this.onCellClick}>
-                        <TableBody deselectOnClickaway={false} preScanRows={false}>
+                        <TableBody
+                            deselectOnClickaway={false}
+                            preScanRows={false}
+                            displayRowCheckbox={!mobile || selectColumn}>
                             {listStatus === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
                             docs.map((doc, i)=>{
                             const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docStatus[doc.uuid]] || 'red';
-                            return (<TableRow onRowClick={undefined} style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE"}}
+                            return (<TableRow onRowClick={undefined}
+                                              style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE", cursor: 'pointer'}}
                                               key={doc.uuid}
                                               selected={selectedUuids.indexOf(doc.uuid)>=0}>
                                         <TableRowColumn>
