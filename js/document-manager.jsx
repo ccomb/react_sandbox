@@ -93,7 +93,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
             {React.cloneElement(this.props.children, {
                 formview,
                 listview,
-                onChangeField: ()=>this.props.dispatch(changeField(event.target)),
+                onChangeField: (e)=>this.props.dispatch(changeField(e.target)),
                 initialfocus: 'name', // FIXME
                 onStore: this.onStore,
                 onRead: this.onRead,
