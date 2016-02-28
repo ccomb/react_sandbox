@@ -17,8 +17,6 @@ export const FormView = React.createClass({
     onKeyDown(e) {
         if (e.nativeEvent.keyCode === 13) {
             this.onSubmit(e);
-            e.preventDefault();
-            this.props.onStore();
         }
     },
     onSubmit(e) {
