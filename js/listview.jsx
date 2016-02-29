@@ -18,8 +18,7 @@ export const ListView = React.createClass({
     componentDidMount() {
         this.props.onSearch();
     },
-    onCellClick(row, col, event) {
-        console.log('onCellClick', row, col, event)
+    onCellClick(row, col) {
         if (col === -1) {
             // 1st cell click (checkbox)
             this.props.onRowSelection(row);
