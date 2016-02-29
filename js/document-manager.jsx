@@ -8,9 +8,9 @@ import List from 'material-ui/lib/lists/list';
 import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
-import {MD, closeMenu, toggleMenu, loadDoc, loadDocs, deleteDocs,
+import {MD, closeMenu, loadDoc, loadDocs, deleteDocs,
         storeDoc, changeField, selectRow, toggleSelectColumn} from './actions';
-import {HeaderActions, AppbarActions} from './action-buttons';
+import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
 export const DocumentManager = connect(s=>s)(React.createClass({
     propTypes: {
@@ -61,9 +61,15 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 className="row"
                 style={{margin: 0, zIndex: 1100, height: '64px', background: '#666', position: 'fixed', top: 0}}
                 zDepth={0}
-                onLeftIconButtonTouchTap={()=>dispatch(toggleMenu())} 
+                iconElementLeft={
+                    <AppBarLeftElement
+                        dispatch={dispatch}
+                        menuOpen={menu.open}
+                        view={location.pathname.split('/')[3]}
+                        onCancel={this.onCancel}/>
+                }
                 iconElementRight={
-                    <AppbarActions
+                    <AppBarRightElement
                         view={location.pathname.split('/')[3]}
                         selectedUuids={listview.selectedUuids}
                         selectColumn={listview.selectColumn}
@@ -78,6 +84,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 docked={menu.floating?false:true}
                 onRequestChange={()=>dispatch(closeMenu())}
                 zDepth={menu.floating ? 3 : 0}
+                overlayStyle={{marginTop: '64px'}}
                 containerStyle={{
                     boxShadow: menu.floating ? undefined : menushadow,
                     marginTop: '64px'}}>

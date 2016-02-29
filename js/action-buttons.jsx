@@ -1,4 +1,5 @@
 import React from 'react';
+import NavigationMenu from 'material-ui/lib/svg-icons/navigation/menu';
 import FlatButton from 'material-ui/lib/flat-button';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import Link from 'react-router/lib/Link';
@@ -6,11 +7,13 @@ import Add from 'material-ui/lib/svg-icons/content/add';
 import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
-import Done from 'material-ui/lib/svg-icons/action/done';
+import Check from 'material-ui/lib/svg-icons/navigation/check';
+import Close from 'material-ui/lib/svg-icons/navigation/close';
+import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVert from 'material-ui/lib/svg-icons/navigation/more-vert';
 import Checkbox from 'material-ui/lib/checkbox'
-import {MD} from './actions';
+import {MD, toggleMenu} from './actions';
 
 export const HeaderActions = React.createClass({
     propTypes: {
@@ -59,8 +62,7 @@ export const HeaderActions = React.createClass({
     }
 })
 
-export const AppbarActions = React.createClass({
-    displayName: 'IconMenu',
+export const AppBarRightElement = React.createClass({
     propTypes: {
         onDelete: React.PropTypes.func,
         onSubmit: React.PropTypes.func,
@@ -71,7 +73,7 @@ export const AppbarActions = React.createClass({
         view: React.PropTypes.string,
     },
     render() {
-        const {view, selectedUuids, onSubmit, onCancel, onDelete,
+        const {view, selectedUuids, onSubmit, onDelete,
                selectColumn, onToggleSelectColumn} = this.props;
         const hasSelection = selectedUuids.length>0;
         const mobile = window.innerWidth < MD;
@@ -94,8 +96,33 @@ export const AppbarActions = React.createClass({
             </IconMenu>
             : mobile && ['form', 'new'].indexOf(view)>=0 ?
             <IconButton onClick={onSubmit}>
-                <Done color="white"/>
+                <Check color="white"/>
             </IconButton>
             : <div/>);
+    }
+})
+
+export const AppBarLeftElement = React.createClass({
+    propTypes: {
+        dispatch: React.PropTypes.func,
+        onCancel: React.PropTypes.func,
+        menuOpen: React.PropTypes.bool,
+        view: React.PropTypes.string,
+    },
+    render() {
+        const {dispatch, onCancel, menuOpen, view} = this.props;
+        return (
+            ['form', 'new'].indexOf(view)>=0 ?
+            <IconButton onClick={onCancel}>
+                <ArrowBack color="white"/>
+            </IconButton>
+            : menuOpen ?
+            <IconButton onClick={()=>dispatch(toggleMenu())}>
+                <Close color="white"/>
+            </IconButton>
+            : <IconButton onClick={()=>dispatch(toggleMenu())}>
+                <NavigationMenu color="white"/>
+            </IconButton>
+        );
     }
 })
