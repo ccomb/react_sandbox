@@ -1,7 +1,10 @@
 import React from "react";
 import {connect} from 'react-redux';
 import hashHistory from 'react-router/lib/hashHistory';
+import Link from 'react-router/lib/Link';
 import AppBar from 'material-ui/lib/app-bar';
+import IconButton from 'material-ui/lib/icon-button';
+import NavigationApps from 'material-ui/lib/svg-icons/navigation/apps';
 import LeftNav from 'material-ui/lib/left-nav';
 import ListItem from 'material-ui/lib/lists/list-item';
 import List from 'material-ui/lib/lists/list';
@@ -54,8 +57,16 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     render() {
         console.log('render: DocumentManager');
         const {formview, dispatch, listview, params, menu, location, children} = this.props;
+        const view=location.pathname.split('/')[3];
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         return (<div style={{paddingTop: '51px'}}>
+            {view === 'list' ?
+            <Link style={{position: 'fixed', bottom: '1em', left: '1em', zIndex: 5000}}
+                  to="/">
+                <IconButton>
+                    <NavigationApps/>
+                </IconButton>
+            </Link> : undefined}
             <AppBar
                 title="Contacts"
                 className="row"
@@ -65,12 +76,12 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     <AppBarLeftElement
                         dispatch={dispatch}
                         menuOpen={menu.open}
-                        view={location.pathname.split('/')[3]}
+                        view={view}
                         onCancel={this.onCancel}/>
                 }
                 iconElementRight={
                     <AppBarRightElement
-                        view={location.pathname.split('/')[3]}
+                        view={view}
                         selectedUuids={listview.selectedUuids}
                         selectColumn={listview.selectColumn}
                         onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
@@ -93,7 +104,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         value: location.pathname,
                         requestChange: this.handleRequestChangeList,
                         }}>
-                <Subheader><span>Logo</span></Subheader>
+                <Subheader style={{textAlign: 'center'}}>Logo</Subheader>
                 <ListItem
                     primaryText="Contacts"
                     value="/bo/contact/list"
@@ -110,7 +121,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     onSubmit={this.onStore}
                     onCancel={this.onCancel}
                     selectedUuids={listview.selectedUuids}
-                    view={location.pathname.split('/')[3]}
+                    view={view}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
             {React.cloneElement(children, {
