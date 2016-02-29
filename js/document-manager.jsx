@@ -11,7 +11,7 @@ import List from 'material-ui/lib/lists/list';
 import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
-import {MD, closeMenu, loadDoc, loadDocs, deleteDocs,
+import {MD, openMenu, closeMenu, loadDoc, loadDocs, deleteDocs,
         storeDoc, changeField, selectRow, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
@@ -54,6 +54,10 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     onCancel() {
         this.onChangeView(this.props.params.model, 'list');
     },
+    onLeftNavChange(open) {
+        if (open) this.props.dispatch(openMenu())
+        else this.props.dispatch(closeMenu());
+    },
     render() {
         console.log('render: DocumentManager');
         const {formview, dispatch, listview, params, menu, location, children} = this.props;
@@ -70,7 +74,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
             <AppBar
                 title="Contacts"
                 className="row"
-                style={{margin: 0, zIndex: 1100, height: '64px', background: '#666', position: 'fixed', top: 0}}
+                style={{margin: 0, height: '64px', background: '#666', position: 'fixed', top: 0}}
                 zDepth={0}
                 iconElementLeft={
                     <AppBarLeftElement
@@ -93,7 +97,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 ref="leftnav"
                 open={menu.open}
                 docked={menu.floating?false:true}
-                onRequestChange={()=>dispatch(closeMenu())}
+                onRequestChange={this.onLeftNavChange}
                 zDepth={menu.floating ? 3 : 0}
                 overlayStyle={{marginTop: '64px'}}
                 containerStyle={{
