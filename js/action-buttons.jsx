@@ -111,12 +111,13 @@ export const AppBarLeftElement = React.createClass({
     },
     render() {
         const {dispatch, onCancel, menuOpen, view} = this.props;
+        const mobile = window.innerWidth < MD;
         return (
             ['form', 'new'].indexOf(view)>=0 ?
             <IconButton onClick={onCancel}>
                 <ArrowBack color="white"/>
             </IconButton>
-            : menuOpen ?
+            : menuOpen && mobile ?
             <IconButton onClick={()=>dispatch(toggleMenu())}>
                 <Close color="white"/>
             </IconButton>

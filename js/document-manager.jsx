@@ -119,6 +119,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 onChangeField: (e)=>dispatch(changeField(e.target)),
                 initialfocus: 'name', // FIXME
                 onRead: this.onRead,
+                onChangeView: this.onChangeView,
                 onRowSelection: (row)=>dispatch(selectRow(row)),
                 onSearch: this.onSearch,
                 })}
