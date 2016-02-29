@@ -16,9 +16,6 @@ module.exports = {
                 loader:'babel-loader',
                 test: /.jsx?$/,
                 exclude: /node_modules/,
-                query: {
-                    presets: ['es2015', 'stage-0', 'react']
-                }
             }
         ],
         noParse: /node_modules\/quill\/dist/
