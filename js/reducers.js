@@ -72,7 +72,7 @@ function menu(menu=initialState.menu, action) {
         case 'CLOSE_MENU':
             return menu.open ? {...menu, open: false} : menu;
         case 'TOGGLE_MENU':
-            return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD && !menu.open};
+            return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD};
         default:
             return menu;
     }
