@@ -55,11 +55,13 @@ export const HeaderActions = React.createClass({
 })
 
 export const AppbarActions = React.createClass({
+    displayName: 'IconMenu',
     propTypes: {
         onDelete: React.PropTypes.func,
         onToggleSelectColumn: React.PropTypes.func,
-        selectedUuids: React.PropTypes.bool,
-        view: React.PropTypes.object,
+        selectedUuids: React.PropTypes.array,
+        selectColumn: React.PropTypes.bool,
+        view: React.PropTypes.string,
     },
     render() {
         const {view, selectedUuids, onDelete, selectColumn, onToggleSelectColumn} = this.props;
@@ -70,16 +72,16 @@ export const AppbarActions = React.createClass({
                 iconButtonElement={<IconButton><MoreVert color='white'/></IconButton>}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-            {view == 'list' ?
-            <MenuItem
-                primaryText="Select"
-                leftIcon={<Checkbox checked={selectColumn}/>}
-                onTouchTap={onToggleSelectColumn}/> : undefined}
-            {view == 'form' || hasSelection ?
-            <MenuItem
-                primaryText="Delete"
-                leftIcon={<Delete/>}
-                onTouchTap={onDelete}/> : undefined}
+                {view == 'list' ?
+                <MenuItem
+                    primaryText="Select"
+                    leftIcon={<Checkbox checked={selectColumn}/>}
+                    onTouchTap={onToggleSelectColumn}/> : undefined}
+                {view == 'form' || hasSelection ?
+                <MenuItem
+                    primaryText="Delete"
+                    leftIcon={<Delete/>}
+                    onTouchTap={onDelete}/> : undefined}
             </IconMenu> : <div/>);
     }
 })
