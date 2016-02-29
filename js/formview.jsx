@@ -1,5 +1,4 @@
 import React from 'react';
-import FlatButton from 'material-ui/lib/flat-button';
 import {schema, layouts} from "./schema";
 import Paper from 'material-ui/lib/paper';
 import FIELDS from './fields';
@@ -8,9 +7,7 @@ export const FormView = React.createClass({
     propTypes: {
         formview: React.PropTypes.object,
         params: React.PropTypes.object,
-        onStore: React.PropTypes.func,
         onRead: React.PropTypes.func,
-        onChangeView: React.PropTypes.func,
         initialfocus: React.PropTypes.string,
         onChangeField: React.PropTypes.func,
     },
@@ -18,13 +15,6 @@ export const FormView = React.createClass({
         if (e.nativeEvent.keyCode === 13) {
             this.onSubmit(e);
         }
-    },
-    onSubmit(e) {
-        e.preventDefault();
-        this.props.onStore();
-    },
-    onCancel() {
-        this.props.onChangeView(this.props.params.model, 'list');
     },
     getInitialState() {
         return {shouldfocus: this.props.initialfocus};
@@ -52,22 +42,14 @@ export const FormView = React.createClass({
         <div className="col-xs">
           <Paper style={{padding: '1em', minWidth: '20em', minHeight: '20em'}} className="box">
             <form>
-            <Field
-                onKeyDown={this.onKeyDown}
-                schema={schema}
-                formview={formview}
-                layouts={layouts}
-                onChangeField={this.onChangeField}
-                widgetDidMount={this.widgetDidMount}
+                <Field
+                    onKeyDown={this.onKeyDown}
+                    schema={schema}
+                    formview={formview}
+                    layouts={layouts}
+                    onChangeField={this.onChangeField}
+                    widgetDidMount={this.widgetDidMount}
                 />
-                <FlatButton
-                    label="Save"
-                    onClick={this.onSubmit}
-                    primary={true}/>
-                <FlatButton
-                    label="Cancel"
-                    onClick={this.onCancel}
-                    cancel={true}/>
             </form>
           </Paper>
         </div>

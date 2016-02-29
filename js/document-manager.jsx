@@ -44,6 +44,13 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     onSearch() {
         if (!this.props.listview.docs.length) this.props.dispatch(loadDocs('docs'));
     },
+    onSubmit(e) {
+        e.preventDefault();
+        this.onStore();
+    },
+    onCancel() {
+        this.onChangeView(this.props.params.model, 'list');
+    },
     render() {
         console.log('render: DocumentManager');
         const {formview, dispatch, listview, params, menu, location, children} = this.props;
@@ -61,6 +68,8 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         selectedUuids={listview.selectedUuids}
                         selectColumn={listview.selectColumn}
                         onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
+                        onSubmit={this.onSubmit}
+                        onCancel={this.onCancel}
                         onDelete={this.onDelete}/>}
             />
             <LeftNav
@@ -91,6 +100,8 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                  style={{height: '60px', margin: '0', zIndex: -5}}>
                 <HeaderActions
                     onDelete={this.onDelete}
+                    onSubmit={this.onStore}
+                    onCancel={this.onCancel}
                     selectedUuids={listview.selectedUuids}
                     view={location.pathname.split('/')[3]}
                     createLink={`/bo/${params.model}/new`}/>
@@ -100,9 +111,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 listview,
                 onChangeField: (e)=>dispatch(changeField(e.target)),
                 initialfocus: 'name', // FIXME
-                onStore: this.onStore,
                 onRead: this.onRead,
-                onChangeView: this.onChangeView,
                 onRowSelection: (row)=>dispatch(selectRow(row)),
                 onSearch: this.onSearch,
                 })}
