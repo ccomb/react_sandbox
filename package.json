@@ -12,7 +12,7 @@
     "deploy": "npm run build && ssh cody rm -r /srv/web/sandbox/* && rsync -Pr build/* cody:/srv/web/sandbox/"
   },
   "author": "ccomb",
-  "license": "ISC",
+  "license": "GPLv3",
   "dependencies": {
     "flexboxgrid": "*",
     "material-ui": "file:material-ui",
