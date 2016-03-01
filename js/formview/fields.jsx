@@ -1,20 +1,21 @@
 import React from 'react';
-import {Responsive as ResponsiveReactGridLayout} from 'react-grid-layout';
+import {Responsive as Grid} from 'react-grid-layout';
 import WIDGETS from './widgets';
-import {EM} from './actions';
+import {EM} from '../actions';
 
 const ObjectField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
         schema: React.PropTypes.object,
-        formview: React.PropTypes.object,
+        data: React.PropTypes.object,
         layouts: React.PropTypes.object,
+        onLayoutChange: React.PropTypes.func,
         required: React.PropTypes.bool,
     },
 
     render() {
-        const {schema} = this.props;
+        const {schema, onLayoutChange} = this.props;
         const self = this;
         const children = Object.keys(schema.properties).map((name) => {
             const Field = FIELDS[schema.properties[name].type];
@@ -28,11 +29,16 @@ const ObjectField = React.createClass({
             )
         });
         return (
-            <ResponsiveReactGridLayout className="layout" rowHeight={4.5*EM} width={1500} margin={[10,0]}
-                                       layouts={this.props.layouts}
-                                       cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}}>
+            <Grid
+                className="layout"
+                rowHeight={4.5*EM}
+                width={1500}
+                margin={[10,0]}
+                layouts={this.props.layouts}
+                cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}}
+                onLayoutChange={onLayoutChange}>
             {children}
-            </ResponsiveReactGridLayout>
+            </Grid>
         )
     }
 });
@@ -41,7 +47,7 @@ const StringField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
-        formview: React.PropTypes.object,
+        data: React.PropTypes.object,
         schema: React.PropTypes.object,
         required: React.PropTypes.bool,
     },

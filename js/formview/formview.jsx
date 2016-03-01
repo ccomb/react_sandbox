@@ -1,30 +1,31 @@
 import React from 'react';
-import {schema, layouts} from "./schema";
+import {schema, layouts} from "../schema";
 import Paper from 'material-ui/lib/paper';
+import {clearFormData, changeField} from './actions';
 import FIELDS from './fields';
 
 export const FormView = React.createClass({
     propTypes: {
-        formview: React.PropTypes.object,
+        data: React.PropTypes.object,
+        layout: React.PropTypes.object,
+        initialFocus: React.PropTypes.string, // TODO compute in mapstatetoprops
+        onSubmit: React.PropTypes.func,
+        onLayoutChange: React.PropTypes.func,
+        dispatch: React.PropTypes.func,
         params: React.PropTypes.object,
-        onRead: React.PropTypes.func,
-        initialfocus: React.PropTypes.string,
-        onChangeField: React.PropTypes.func,
+        onLoad: React.PropTypes.func,
     },
-    onKeyDown(e) {
-        if (e.nativeEvent.keyCode === 13) {
-            this.onSubmit(e);
+    onKeyDown(event) {
+        if (event.nativeEvent.keyCode === 13) {
+            event.preventDefault();
+            this.props.onSubmit(event);
         }
     },
     getInitialState() {
-        return {shouldfocus: this.props.initialfocus};
+        return {shouldfocus: this.props.initialFocus};
     },
     onChangeField(event) {
-        this.props.onChangeField(event);
-    },
-    componentDidMount() {
-        const uuid = this.props.params.uuid;
-        if (uuid) this.props.onRead(uuid);
+        this.props.dispatch(changeField(event.target));
     },
     widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)>=0
@@ -33,10 +34,16 @@ export const FormView = React.createClass({
           input.focus()
         }
     },
+    componentWillUnmount() {
+        this.props.dispatch(clearFormData());
+    },
+    componentDidMount() {
+        this.props.onLoad();
+    },
     render() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {formview} = this.props;
+        const {data} = this.props;
         return (
       <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
@@ -45,9 +52,10 @@ export const FormView = React.createClass({
                 <Field
                     onKeyDown={this.onKeyDown}
                     schema={schema}
-                    formview={formview}
+                    data={data}
                     layouts={layouts}
                     onChangeField={this.onChangeField}
+                    onLayoutChange={this.props.onLayoutChange}
                     widgetDidMount={this.widgetDidMount}
                 />
             </form>

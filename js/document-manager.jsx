@@ -9,11 +9,20 @@ import LeftNav from 'material-ui/lib/left-nav';
 import ListItem from 'material-ui/lib/lists/list-item';
 import List from 'material-ui/lib/lists/list';
 import Subheader from 'material-ui/lib/Subheader/Subheader';
+import {ListView} from './listview/listview';
+import {selectRow} from './listview/actions';
+import {FormView} from './formview/formview';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 import {MD, openMenu, closeMenu, loadDoc, loadDocs, deleteDocs,
-        storeDoc, changeField, selectRow, toggleSelectColumn} from './actions';
+        storeDoc, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
+
+const VIEWS = {
+    'list': connect(state=>state.listview)(ListView),
+    'form': connect(state=>state.formview)(FormView),
+    'new': connect(state=>({...state.formview, data: {payload: {}}}))(FormView),
+}
 
 export const DocumentManager = connect(s=>s)(React.createClass({
     propTypes: {
@@ -24,45 +33,67 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         params: React.PropTypes.object,
         location: React.PropTypes.object,
         dispatch: React.PropTypes.func,
+        onRowClick: React.PropTypes.func,
     },
     onMenuItemClick() {
         if (this.props.menu.open && window.innerWidth < MD)
             this.props.dispatch(closeMenu());
-        hashHistory.push('/bo/contact/list'); //FIXME contact
+        const {model} = this.props.params;
+        hashHistory.push(`/bo/${model}/list`);
     },
     onDelete() {
         this.props.dispatch(deleteDocs(this.props.listview.selectedUuids));
     },
-    onChangeView(model, view, uuid='') {
+    changeView(model, view, uuid='') {
         hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
-    onRead(uuid) {
-        this.props.dispatch(loadDoc(uuid));
-    },
     onStore() {
-        this.props.dispatch(storeDoc(this.props.formview.data));
         const model = this.props.params.model;
+        this.props.dispatch(storeDoc(model, this.props.formview.data));
         hashHistory.push(`/bo/${model}/list`);
     },
     onSearch() {
-        if (!this.props.listview.docs.length) this.props.dispatch(loadDocs('docs'));
-    },
-    onSubmit(e) {
-        e.preventDefault();
-        this.onStore();
+        const {model} = this.props.params;
+        if (!this.props.listview.docs.length) this.props.dispatch(loadDocs(model));
     },
     onCancel() {
-        this.onChangeView(this.props.params.model, 'list');
+        this.changeView(this.props.params.model, 'list');
     },
     onLeftNavChange(open) {
         if (open) this.props.dispatch(openMenu())
         else this.props.dispatch(closeMenu());
     },
+    onLayoutChange(layout, layouts) {
+        //this.onStore('layouts', layouts);
+        console.log('onLayoutChange')
+    },
+    onRowClick(row) {
+            // enter the record on row click
+            this.changeView(this.props.params.model, 'form',
+                            this.props.listview.docs[row].uuid);
+    },
+    onRowSelection(row) {
+        this.props.dispatch(selectRow(row))
+    },
+    loadDoc() {
+        const {uuid} = this.props.params;
+        if (uuid) this.props.dispatch(loadDoc(uuid));
+    },
     render() {
         console.log('render: DocumentManager');
-        const {formview, dispatch, listview, params, menu, location, children} = this.props;
-        const view=location.pathname.split('/')[3];
+        const {dispatch, listview, params, menu, location} = this.props;
+        const {model, view} = params;
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
+        const viewprops =
+            view === 'list' ?
+            {onRowClick: this.onRowClick, onRowSelection: this.onRowSelection, onSearch: this.onSearch}
+            : view === 'form' ?
+            {onLoad: this.loadDoc, onSubmit: this.onStore, onChangeField: this.onChangeField,
+             onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
+            : view === 'new' ?
+            {onSubmit: this.onStore, onChangeField: this.onChangeField,
+             onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
+            : {};
         return (<div style={{paddingTop: '51px'}}>
             {view === 'list' ?
             <Link style={{position: 'fixed', bottom: '1em', left: '1em', zIndex: 5000}}
@@ -89,7 +120,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         selectedUuids={listview.selectedUuids}
                         selectColumn={listview.selectColumn}
                         onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
-                        onSubmit={this.onSubmit}
+                        onSubmit={this.onStore}
                         onCancel={this.onCancel}
                         onDelete={this.onDelete}/>}
             />
@@ -111,7 +142,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 <Subheader style={{textAlign: 'center'}}>Logo</Subheader>
                 <ListItem
                     primaryText="Contacts"
-                    value="/bo/contact/list"
+                    value={`/bo/${model}/list`}
                     onClick={this.onMenuItemClick}/>
                 </SelectableList>
             </LeftNav>
@@ -128,16 +159,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     view={view}
                     createLink={`/bo/${params.model}/new`}/>
             </div>
-            {React.cloneElement(children, {
-                formview,
-                listview,
-                onChangeField: (e)=>dispatch(changeField(e.target)),
-                initialfocus: 'name', // FIXME
-                onRead: this.onRead,
-                onChangeView: this.onChangeView,
-                onRowSelection: (row)=>dispatch(selectRow(row)),
-                onSearch: this.onSearch,
-                })}
+            {React.createElement(VIEWS[view], viewprops)}
             </div>
         </div>);
     }

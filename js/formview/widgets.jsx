@@ -7,7 +7,7 @@ const StringWidget = (props) => {
     return <TextField
         {...props}
         name={props.name}
-        value={props.formview.data[props.name]}
+        value={props.data.payload[props.name]}
         ref={props.widgetDidMount}
         onKeyDown={props.onKeyDown}
         onChange={props.onChangeField}

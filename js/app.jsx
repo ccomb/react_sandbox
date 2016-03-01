@@ -7,8 +7,8 @@ import {globalreducer} from './reducers';
 import thunk from 'redux-thunk';
 import {NotFound} from './notfound';
 import {DocumentManager} from './document-manager';
-import {FormView} from './formview';
-import {ListView} from './listview';
+import {FormView} from './formview/formview';
+import {ListView} from './listview/listview';
 import Router from 'react-router/lib/Router';
 import Redirect from 'react-router/lib/Redirect';
 import IndexRoute from 'react-router/lib/IndexRoute';
@@ -57,14 +57,8 @@ ReactDOM.render(
         <Router history={history}>
             <Route path='/' component={Root}>
                 <IndexRoute component={Home}/>
-                <Route path='bo/:model' component={DocumentManager}>
-                    <IndexRedirect to='list'/>
-                    <Route path='list' component={ListView}/>
-                    <Route path='new' component={FormView}/>
-                    <Route path='form/:uuid' component={FormView}/>
-                    <Route path='*' component={NotFound}/>
-                </Route>
-                <Redirect from='bo/*' to='bo/contact'/>
+                <Route path='bo/:model/:view(/:uuid)' component={DocumentManager}/>
+                <Redirect from='bo/' to='bo/contact/list'/>
                 <Route path='*' component={NotFound}/>
             </Route>
         </Router>

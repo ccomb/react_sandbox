@@ -3,15 +3,16 @@ import Table from 'material-ui/lib/table/table';
 import TableBody from 'material-ui/lib/table/table-body';
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import {MD} from './actions';
+import {MD} from '../actions';
 
 export const ListView = React.createClass({
     propTypes: {
-        listview: React.PropTypes.object,
-        formview: React.PropTypes.object,
-        route: React.PropTypes.object,
-        params: React.PropTypes.object,
-        onChangeView: React.PropTypes.func,
+        docs: React.PropTypes.object,
+        docStatus: React.PropTypes.object,
+        listStatus: React.PropTypes.string,
+        selectedUuids: React.PropTypes.array,
+        selectColumn: React.PropTypes.bool,
+        onRowClick: React.PropTypes.func,
         onRowSelection: React.PropTypes.func,
         onSearch: React.PropTypes.func,
     },
@@ -23,14 +24,13 @@ export const ListView = React.createClass({
             // 1st cell click (checkbox)
             this.props.onRowSelection(row);
         } else {
-            // enter the record on row click
-            this.props.onChangeView(this.props.params.model, 'form',
-                                    this.props.listview.docs[row].uuid);
+            // transmit the clicked item upstream
+            this.props.onRowClick(row);
         }
     },
     render() {
         console.log('render: ListView');
-        const {docs, listStatus, docStatus, selectedUuids, selectColumn} = this.props.listview;
+        const {docs, listStatus, docStatus, selectedUuids, selectColumn} = this.props;
         const mobile = window.innerWidth < MD;
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
@@ -56,10 +56,10 @@ export const ListView = React.createClass({
                                             {doc.uuid}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            {doc.name}
+                                            {doc.payload.name}
                                         </TableRowColumn>
                                         <TableRowColumn>
-                                            {doc.surname}
+                                            {doc.payload.surname}
                                         </TableRowColumn>
                                     </TableRow>);
                             })}
