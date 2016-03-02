@@ -47,3 +47,53 @@ export function selectRow(row) {
         payload: row,
     }
 }
+
+export function loadDocs(model) {
+    console.log('async action: LOAD_DOCS');
+    return (dispatch) => {
+        const openDB = window.indexedDB.open('tutodb', 1);
+        openDB.onsuccess = (e) => {
+            const openCursor = e.target.result.transaction('docs', 'readonly')
+                          .objectStore('docs').openCursor();
+            dispatch(listStatus('loading'));
+            const docs = [];
+            openCursor.onsuccess = (e) => {
+                const cursor = e.target.result;
+                if (cursor) {
+                    if (cursor.value.model === model) {
+                        docs.push(cursor.value); // FIXME slow?
+                    }
+                    cursor.continue();
+                } else {
+                    dispatch(listStatus('loaded'));
+                    dispatch({
+                        type: 'LOAD_DOCS',
+                        payload: docs
+                    })
+                }
+            }
+            openCursor.onerror = () => { dispatch(docStatus(null, 'error')); }
+        }
+        openDB.onerror = () => { dispatch(docStatus(null, 'error'));  }
+    }
+}
+
+export function deleteDocs(uuids) {
+    console.log('async action: DELETE_DOC');
+    return (dispatch) => {
+        uuids.forEach(uuid=>dispatch(docStatus(uuid, 'deleting')));
+        console.log('indexedDB: opening database');
+        window.indexedDB.open('tutodb', 1).onsuccess = (e) => {
+            uuids.forEach(uuid=>{
+                const req = e.target.result.transaction('docs', 'readwrite').objectStore('docs').delete(uuid);
+                req.onsuccess = () => {
+                    dispatch(removeDoc(uuid));
+                }
+                req.onerror = () => {
+                    dispatch(docStatus(uuid, 'error'))
+                }
+            })
+        }
+    }
+}
+

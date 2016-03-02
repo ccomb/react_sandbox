@@ -10,12 +10,12 @@ import ListItem from 'material-ui/lib/lists/list-item';
 import List from 'material-ui/lib/lists/list';
 import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {ListView} from './listview/listview';
-import {selectRow} from './listview/actions';
+import {selectRow, loadDocs, deleteDocs} from './listview/actions';
 import {FormView} from './formview/formview';
+import {loadDoc, storeDoc} from './formview/actions';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
-import {MD, openMenu, closeMenu, loadDoc, loadDocs, deleteDocs,
-        storeDoc, toggleSelectColumn} from './actions';
+import {MD, openMenu, closeMenu, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
 const VIEWS = {
@@ -47,8 +47,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     changeView(model, view, uuid='') {
         hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
-    onStore() {
-        const model = this.props.params.model;
+    storeDoc(model=this.props.params.model) {
         this.props.dispatch(storeDoc(model, this.props.formview.data));
         hashHistory.push(`/bo/${model}/list`);
     },
@@ -64,7 +63,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         else this.props.dispatch(closeMenu());
     },
     onLayoutChange(layout, layouts) {
-        //this.onStore('layouts', layouts);
+        //this.storeDoc('layouts', layouts);
         console.log('onLayoutChange')
     },
     onRowClick(row) {
@@ -88,10 +87,10 @@ export const DocumentManager = connect(s=>s)(React.createClass({
             view === 'list' ?
             {onRowClick: this.onRowClick, onRowSelection: this.onRowSelection, onSearch: this.onSearch}
             : view === 'form' ?
-            {onLoad: this.loadDoc, onSubmit: this.onStore, onChangeField: this.onChangeField,
+            {onLoad: this.loadDoc, onSubmit: this.storeDoc, onChangeField: this.onChangeField,
              onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
             : view === 'new' ?
-            {onSubmit: this.onStore, onChangeField: this.onChangeField,
+            {onSubmit: this.storeDoc, onChangeField: this.onChangeField,
              onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
             : {};
         return (<div style={{paddingTop: '51px'}}>
@@ -120,7 +119,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         selectedUuids={listview.selectedUuids}
                         selectColumn={listview.selectColumn}
                         onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
-                        onSubmit={this.onStore}
+                        onSubmit={this.storeDoc}
                         onCancel={this.onCancel}
                         onDelete={this.onDelete}/>}
             />
@@ -153,7 +152,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                  style={{height: '60px', margin: '0', zIndex: -5}}>
                 <HeaderActions
                     onDelete={this.onDelete}
-                    onSubmit={this.onStore}
+                    onSubmit={this.storeDoc}
                     onCancel={this.onCancel}
                     selectedUuids={listview.selectedUuids}
                     view={view}
