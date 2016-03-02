@@ -7,11 +7,12 @@ import {MD} from '../actions';
 
 export const ListView = React.createClass({
     propTypes: {
+        model: React.PropTypes.string,
+        view: React.PropTypes.string,
         docs: React.PropTypes.object,
-        docStatus: React.PropTypes.object,
-        listStatus: React.PropTypes.string,
-        selectedUuids: React.PropTypes.array,
-        selectColumn: React.PropTypes.bool,
+        loading: React.PropTypes.string,
+        selection: React.PropTypes.array,
+        allowSelection: React.PropTypes.bool,
         onRowClick: React.PropTypes.func,
         onRowSelection: React.PropTypes.func,
         onSearch: React.PropTypes.func,
@@ -19,18 +20,50 @@ export const ListView = React.createClass({
     componentDidMount() {
         this.props.onSearch();
     },
-    onCellClick(row, col) {
+    firstNonEmptyParentId(node) {
+        if (!node) return '';
+        if (node.id) return node.id;
+        return this.firstNonEmptyParentId(node.parentNode);
+    },
+    onCellClick(row, col, event) {
+        const uuid = this.firstNonEmptyParentId(event.target.parentNode);
         if (col === -1) {
             // 1st cell click (checkbox)
-            this.props.onRowSelection(row);
+            this.props.onRowSelection(uuid);
         } else {
             // transmit the clicked item upstream
-            this.props.onRowClick(row);
+            this.props.onRowClick(uuid);
         }
+    },
+    createRows(docs, selection) {
+        let rows = [], i = 1;
+        docs.forEach((doc, uuid)=>{
+            const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[doc.status] || 'red';
+            i += 1;
+            rows.push(
+                <TableRow onRowClick={undefined} id={uuid}
+                          style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE", cursor: 'pointer'}}
+                          key={uuid}
+                          selected={selection.indexOf(uuid)>=0}>
+                    <TableRowColumn>
+                        Status: <span style={{background: color, color: 'white'}}>{doc.status}</span>                    </TableRowColumn>
+                    <TableRowColumn>
+                        {uuid}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {doc.payload.name}
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        {doc.payload.surname}
+                    </TableRowColumn>
+                </TableRow>
+            );
+        })
+        return rows;
     },
     render() {
         console.log('render: ListView');
-        const {docs, listStatus, docStatus, selectedUuids, selectColumn} = this.props;
+        const {docs, loading, selection, allowSelection} = this.props;
         const mobile = window.innerWidth < MD;
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
@@ -41,28 +74,10 @@ export const ListView = React.createClass({
                         <TableBody
                             deselectOnClickaway={false}
                             preScanRows={false}
-                            displayRowCheckbox={!mobile || selectColumn}>
-                            {listStatus === 'loading' ? <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow> :
-                            docs.map((doc, i)=>{
-                            const color = {'saving': 'orange', 'deleting': 'orange', 'stored': 'green'}[docStatus[doc.uuid]] || 'red';
-                            return (<TableRow onRowClick={undefined}
-                                              style={{background: i%2 ? '#FFF' : '#FAFAFA', border: "solid 1px #EEE", cursor: 'pointer'}}
-                                              key={doc.uuid}
-                                              selected={selectedUuids.indexOf(doc.uuid)>=0}>
-                                        <TableRowColumn>
-                                            Status: <span style={{background: color, color: 'white'}}>{docStatus[doc.uuid]}</span>
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            {doc.uuid}
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            {doc.payload.name}
-                                        </TableRowColumn>
-                                        <TableRowColumn>
-                                            {doc.payload.surname}
-                                        </TableRowColumn>
-                                    </TableRow>);
-                            })}
+                            displayRowCheckbox={!mobile || allowSelection}>
+                            {loading === 'loading' ?
+                            <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow>
+                            : this.createRows(docs, selection)}
                         </TableBody>
                     </Table>
                 </div>

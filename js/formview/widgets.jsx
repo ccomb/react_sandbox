@@ -7,7 +7,7 @@ const StringWidget = (props) => {
     return <TextField
         {...props}
         name={props.name}
-        value={props.data.payload[props.name]}
+        value={props.doc !== undefined ? props.doc.payload !== undefined ? props.doc.payload[props.name] : undefined : undefined}
         ref={props.widgetDidMount}
         onKeyDown={props.onKeyDown}
         onChange={props.onChangeField}

@@ -1,10 +1,9 @@
 
-export function addDoc(doc, status=undefined) {
+export function addDoc(doc) {
     console.log('action: ADD_DOC');
     return {
         type: 'ADD_DOC',
         payload: doc,
-        meta: status
     }
 }
 
@@ -12,8 +11,7 @@ export function docStatus(uuid, status) {
     console.log('action: DOC_STATUS ');
     return {
             type: 'DOC_STATUS',
-            payload: uuid,
-            meta: status
+            payload: {uuid, status},
     }
 }
 
@@ -28,7 +26,7 @@ export function listStatus(status) {
     console.log('action: LIST_STATUS');
     return {
         type: 'LIST_STATUS',
-        payload: status
+        payload: status,
     }
 }
 
@@ -40,28 +38,29 @@ export function removeDoc(doc) {
     }
 }
 
-export function selectRow(row) {
-    console.log('action: selectRow');
+export function toggleSelectRow(row) {
+    console.log('action: toggleSelectRow');
     return {
-        type: 'SELECT_ROW',
+        type: 'TOGGLE_SELECT_ROW',
         payload: row,
     }
 }
 
 export function loadDocs(model) {
-    console.log('async action: LOAD_DOCS');
+    console.log('async action: LOAD_DOCS', model);
     return (dispatch) => {
         const openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = (e) => {
             const openCursor = e.target.result.transaction('docs', 'readonly')
                           .objectStore('docs').openCursor();
             dispatch(listStatus('loading'));
-            const docs = [];
+            const docs = new Map();
             openCursor.onsuccess = (e) => {
                 const cursor = e.target.result;
                 if (cursor) {
-                    if (cursor.value.model === model) {
-                        docs.push(cursor.value); // FIXME slow?
+                    const doc = cursor.value;
+                    if (doc.model === model && doc.payload) {
+                        docs.set(doc.uuid, doc);
                     }
                     cursor.continue();
                 } else {
@@ -72,9 +71,9 @@ export function loadDocs(model) {
                     })
                 }
             }
-            openCursor.onerror = () => { dispatch(docStatus(null, 'error')); }
+            openCursor.onerror = () => { console.log('ERROR'); }
         }
-        openDB.onerror = () => { dispatch(docStatus(null, 'error'));  }
+        openDB.onerror = () => { console.log('ERROR');  }
     }
 }
 

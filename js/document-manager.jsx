@@ -10,7 +10,7 @@ import ListItem from 'material-ui/lib/lists/list-item';
 import List from 'material-ui/lib/lists/list';
 import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {ListView} from './listview/listview';
-import {selectRow, loadDocs, deleteDocs} from './listview/actions';
+import {toggleSelectRow, loadDocs, deleteDocs} from './listview/actions';
 import {FormView} from './formview/formview';
 import {loadDoc, storeDoc} from './formview/actions';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
@@ -19,15 +19,26 @@ import {MD, openMenu, closeMenu, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
 const VIEWS = {
-    'list': connect(state=>state.listview)(ListView),
-    'form': connect(state=>state.formview)(FormView),
-    'new': connect(state=>({...state.formview, data: {payload: {}}}))(FormView),
+    'list': connect(state=>({
+        docs: state.docs,
+        loading: state.loading,
+        selection: state.selection,
+        allowSelection: state.allowSelection
+    }))(ListView),
+    'form': connect((state, ownProps)=>({
+        doc: state.doc,
+        layout: state.layouts[ownProps.uuid],
+    }))(FormView),
+    'new': connect(()=>({
+    }))(FormView),
 }
 
 export const DocumentManager = connect(s=>s)(React.createClass({
     propTypes: {
-        formview: React.PropTypes.object,
-        listview: React.PropTypes.object,
+        doc: React.PropTypes.object,
+        docs: React.PropTypes.object,
+        selection: React.PropTypes.array,
+        allowSelection: React.PropTypes.bool,
         menu: React.PropTypes.object,
         children: React.PropTypes.object,
         params: React.PropTypes.object,
@@ -42,18 +53,20 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         hashHistory.push(`/bo/${model}/list`);
     },
     onDelete() {
-        this.props.dispatch(deleteDocs(this.props.listview.selectedUuids));
+        this.props.dispatch(deleteDocs(this.props.selection));
+        this.props.selection.forEach(u=>this.props.dispatch(toggleSelectColumn(u)));
     },
     changeView(model, view, uuid='') {
         hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
-    storeDoc(model=this.props.params.model) {
-        this.props.dispatch(storeDoc(model, this.props.formview.data));
+    storeDoc() {
+        const {model} = this.props.params;
+        this.props.dispatch(storeDoc(model, this.props.doc));
         hashHistory.push(`/bo/${model}/list`);
     },
     onSearch() {
         const {model} = this.props.params;
-        if (!this.props.listview.docs.length) this.props.dispatch(loadDocs(model));
+        if (!this.props.docs.size) this.props.dispatch(loadDocs(model));
     },
     onCancel() {
         this.changeView(this.props.params.model, 'list');
@@ -62,17 +75,12 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         if (open) this.props.dispatch(openMenu())
         else this.props.dispatch(closeMenu());
     },
-    onLayoutChange(layout, layouts) {
-        //this.storeDoc('layouts', layouts);
-        console.log('onLayoutChange')
-    },
-    onRowClick(row) {
+    onRowClick(uuid) {
             // enter the record on row click
-            this.changeView(this.props.params.model, 'form',
-                            this.props.listview.docs[row].uuid);
+            this.changeView(this.props.params.model, 'form', uuid);
     },
-    onRowSelection(row) {
-        this.props.dispatch(selectRow(row))
+    onRowSelection(uuid) {
+        this.props.dispatch(toggleSelectRow(uuid))
     },
     loadDoc() {
         const {uuid} = this.props.params;
@@ -80,8 +88,8 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     },
     render() {
         console.log('render: DocumentManager');
-        const {dispatch, listview, params, menu, location} = this.props;
-        const {model, view} = params;
+        const {dispatch, selection, allowSelection, params, menu, location} = this.props;
+        const {model, view, uuid} = params;
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         const viewprops =
             view === 'list' ?
@@ -116,8 +124,8 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 iconElementRight={
                     <AppBarRightElement
                         view={view}
-                        selectedUuids={listview.selectedUuids}
-                        selectColumn={listview.selectColumn}
+                        selection={selection}
+                        selectColumn={allowSelection}
                         onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
                         onSubmit={this.storeDoc}
                         onCancel={this.onCancel}
@@ -154,11 +162,11 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     onDelete={this.onDelete}
                     onSubmit={this.storeDoc}
                     onCancel={this.onCancel}
-                    selectedUuids={listview.selectedUuids}
+                    selection={selection}
                     view={view}
-                    createLink={`/bo/${params.model}/new`}/>
+                    createLink={`/bo/${model}/new`}/>
             </div>
-            {React.createElement(VIEWS[view], viewprops)}
+            {React.createElement(VIEWS[view], {...viewprops, model, view, uuid})}
             </div>
         </div>);
     }

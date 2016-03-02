@@ -17,7 +17,7 @@ import {MD, toggleMenu} from './actions';
 
 export const HeaderActions = React.createClass({
     propTypes: {
-        selectedUuids: React.PropTypes.array,
+        selection: React.PropTypes.array,
         createLink: React.PropTypes.string,
         onDelete: React.PropTypes.func,
         onSubmit: React.PropTypes.func,
@@ -25,7 +25,7 @@ export const HeaderActions = React.createClass({
         view: React.PropTypes.string,
     },
     render() {
-        const hasSelection = this.props.selectedUuids.length>0;
+        const hasSelection = this.props.selection.length>0;
         const mobile = window.innerWidth < MD;
         const {view, onDelete, onCancel, onSubmit, createLink} = this.props;
         return (
@@ -43,7 +43,7 @@ export const HeaderActions = React.createClass({
                             <Add/>
                         </FloatingActionButton>
                     </Link> : undefined}
-                {hasSelection && !mobile && view !== 'new' ?
+                {hasSelection && !mobile && ['form', 'new'].indexOf(view)<0 ?
                     <FlatButton className="col" style={{padding: 0, margin: '0.5em'}}
                         label="Delete"
                         onClick={onDelete}
@@ -68,14 +68,14 @@ export const AppBarRightElement = React.createClass({
         onSubmit: React.PropTypes.func,
         onCancel: React.PropTypes.func,
         onToggleSelectColumn: React.PropTypes.func,
-        selectedUuids: React.PropTypes.array,
+        selection: React.PropTypes.array,
         selectColumn: React.PropTypes.bool,
         view: React.PropTypes.string,
     },
     render() {
-        const {view, selectedUuids, onSubmit, onDelete,
+        const {view, selection, onSubmit, onDelete,
                selectColumn, onToggleSelectColumn} = this.props;
-        const hasSelection = selectedUuids.length>0;
+        const hasSelection = selection.length>0;
         const mobile = window.innerWidth < MD;
         return (
             mobile && view === 'list' ?

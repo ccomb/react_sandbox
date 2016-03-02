@@ -1,18 +1,20 @@
 import React from 'react';
 import {schema, layouts} from "../schema";
 import Paper from 'material-ui/lib/paper';
-import {clearFormData, changeField} from './actions';
+import {clearFormData, changeField, changeLayout} from './actions';
 import FIELDS from './fields';
 
 export const FormView = React.createClass({
     propTypes: {
-        data: React.PropTypes.object,
+        uuid: React.PropTypes.string,
+        model: React.PropTypes.string,
+        view: React.PropTypes.string,
+        doc: React.PropTypes.object,
         layout: React.PropTypes.object,
         initialFocus: React.PropTypes.string, // TODO compute in mapstatetoprops
         onSubmit: React.PropTypes.func,
         onLayoutChange: React.PropTypes.func,
         dispatch: React.PropTypes.func,
-        params: React.PropTypes.object,
         onLoad: React.PropTypes.func,
     },
     onKeyDown(event) {
@@ -25,7 +27,7 @@ export const FormView = React.createClass({
         return {shouldfocus: this.props.initialFocus};
     },
     onChangeField(event) {
-        this.props.dispatch(changeField(event.target));
+        this.props.dispatch(changeField(this.props.uuid, event.target));
     },
     widgetDidMount(input) {
         if (input != null && ['text', 'password'].indexOf(input.props.type)>=0
@@ -38,12 +40,15 @@ export const FormView = React.createClass({
         this.props.dispatch(clearFormData());
     },
     componentDidMount() {
-        this.props.onLoad();
+        this.props.onLoad && this.props.onLoad();
+    },
+    changeLayout(layout, layouts) {
+        //this.props.dispatch(changeLayout(layout, layouts));
     },
     render() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {data} = this.props;
+        const {doc} = this.props;
         return (
       <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
@@ -52,10 +57,10 @@ export const FormView = React.createClass({
                 <Field
                     onKeyDown={this.onKeyDown}
                     schema={schema}
-                    data={data}
+                    doc={doc}
                     layouts={layouts}
                     onChangeField={this.onChangeField}
-                    onLayoutChange={this.props.onLayoutChange}
+                    onLayoutChange={this.changeLayout}
                     widgetDidMount={this.widgetDidMount}
                 />
             </form>

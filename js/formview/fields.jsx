@@ -8,7 +8,7 @@ const ObjectField = React.createClass({
     propTypes: {
         name: React.PropTypes.string,
         schema: React.PropTypes.object,
-        data: React.PropTypes.object,
+        doc: React.PropTypes.object,
         layouts: React.PropTypes.object,
         onLayoutChange: React.PropTypes.func,
         required: React.PropTypes.bool,
@@ -16,12 +16,11 @@ const ObjectField = React.createClass({
 
     render() {
         const {schema, onLayoutChange} = this.props;
-        const self = this;
         const children = Object.keys(schema.properties).map((name) => {
             const Field = FIELDS[schema.properties[name].type];
             return (<div key={name} style={{background: '#EEE'}}>
                     <Field
-                        {...self.props}
+                        {...this.props}
                         name={name}
                         schema={schema.properties[name]}
                         required={schema.required.indexOf(name)>=0 ? true : false}/>
@@ -47,7 +46,7 @@ const StringField = React.createClass({
 
     propTypes: {
         name: React.PropTypes.string,
-        data: React.PropTypes.object,
+        doc: React.PropTypes.object,
         schema: React.PropTypes.object,
         required: React.PropTypes.bool,
     },

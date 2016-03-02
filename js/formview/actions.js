@@ -1,10 +1,11 @@
 import {v4 as uuid} from 'uuid';
 import {docStatus, addDoc, removeDoc} from '../listview/actions';
 
-export function changeField(field) {
+export function changeField(uuid, field) {
     return {
         type: 'CHANGE_FIELD',
         payload: {
+            uuid: uuid,
             name: field.name,
             value: field.value
         }
@@ -15,12 +16,11 @@ export function clearFormData() {
     console.log('action: CLEAR_FORM_DATA');
     return {
         type: 'CLEAR_FORM_DATA',
-        payload: null,
     }
 }
 
 export function setFormData(doc) {
-    console.log('action: SET_FORM_DATA', doc);
+    console.log('action: SET_FORM_DATA');
     return {
         type: 'SET_FORM_DATA',
         payload: doc,
@@ -33,7 +33,8 @@ export function storeDoc(model, _doc) {
     const mode = doc.uuid ? 'put' : 'add';
     if (mode == 'add') doc.uuid = uuid();
     return (dispatch) => {
-        dispatch(addDoc(doc, 'saving'));
+        dispatch(addDoc(doc));
+        dispatch(docStatus(doc.uuid, 'saving'));
         const openDB = window.indexedDB.open('tutodb', 1);
         openDB.onsuccess = function(e) {
             const db = e.target.result;
@@ -44,10 +45,9 @@ export function storeDoc(model, _doc) {
                 addrequest.onsuccess = () => {
                     if (mode === 'put') {
                         dispatch(removeDoc(doc));
-                        dispatch(addDoc(doc), 'stored');
-                    } else {
-                        dispatch(docStatus(doc.uuid, 'stored'));
                     }
+                    dispatch(addDoc(doc));
+                    dispatch(docStatus(doc.uuid, 'stored'));
                     dispatch(clearFormData()); }
                 addrequest.onerror = () => {
                     dispatch(docStatus(doc.uuid, 'error')); }
@@ -68,12 +68,16 @@ export function loadDoc(uuid) {
                           .objectStore('docs').get(uuid);
             openCursor.onsuccess = (e) => {
                 const doc = e.target.result;
-                if (Object.keys(doc).length) {
+                if (doc && Object.keys(doc).length) {
                     dispatch(setFormData(doc));
                 }
             }
-            openCursor.onerror = () => { dispatch(docStatus(null, 'error')); }
+            openCursor.onerror = () => { console.log('ERROR'); }
         }
-        openDB.onerror = () => { dispatch(docStatus(null, 'error'));  }
+        openDB.onerror = () => { console.log('ERROR'); }
     }
+}
+
+export function changeLayout(layout, layouts) {
+    console.log('async action: CHANGE_LAYOUT', layout, layouts);
 }
