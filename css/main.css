@@ -54,14 +54,6 @@ background: #FFF;
 
 .react-grid-layout {
   position: relative;
-  transition: height 200ms ease;
-}
-.react-grid-item {
-  transition: all 200ms ease;
-  transition-property: left, top;
-}
-.react-grid-item.cssTransforms {
-  transition-property: transform;
 }
 .react-grid-item.resizing {
   z-index: 1;
@@ -73,9 +65,9 @@ background: #FFF;
 }
 
 .react-grid-item.react-grid-placeholder {
-  background: red;
+  background: #DDD;
   opacity: 0.2;
-  transition-duration: 100ms;
+  transition-duration: 200ms;
   z-index: 2;
   -webkit-user-select: none;
   -moz-user-select: none;

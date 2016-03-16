@@ -12,7 +12,7 @@ import Subheader from 'material-ui/lib/Subheader/Subheader';
 import {ListView} from './listview/listview';
 import {toggleSelectRow, loadDocs, deleteDocs} from './listview/actions';
 import {FormView} from './formview/formview';
-import {loadDoc, storeDoc} from './formview/actions';
+import {loadDoc, storeDoc, loadLayouts} from './formview/actions';
 import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
 const SelectableList = SelectableContainerEnhance(List);
 import {MD, openMenu, closeMenu, toggleSelectColumn} from './actions';
@@ -27,9 +27,10 @@ const VIEWS = {
     }))(ListView),
     'form': connect((state, ownProps)=>({
         doc: state.doc,
-        layout: state.layouts[ownProps.uuid],
+        layouts: state.layouts[ownProps.model],
     }))(FormView),
-    'new': connect(()=>({
+    'new': connect((state, ownProps)=>({
+        layouts: state.layouts[ownProps.model],
     }))(FormView),
 }
 
@@ -40,6 +41,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         selection: React.PropTypes.array,
         allowSelection: React.PropTypes.bool,
         menu: React.PropTypes.object,
+        layouts: React.PropTypes.object,
         children: React.PropTypes.object,
         params: React.PropTypes.object,
         location: React.PropTypes.object,
@@ -50,6 +52,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         if (this.props.menu.open && window.innerWidth < MD)
             this.props.dispatch(closeMenu());
         const {model} = this.props.params;
+        this.loadLayouts(); // might be better to have a changeHash action with loadLayouts inside
         hashHistory.push(`/bo/${model}/list`);
     },
     onDelete() {
@@ -57,6 +60,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         this.props.selection.forEach(u=>this.props.dispatch(toggleSelectColumn(u)));
     },
     changeView(model, view, uuid='') {
+        if (['form', 'new'].indexOf(view)>=0) this.loadLayouts();
         hashHistory.push(`/bo/${model}/${view}/${uuid}`);
     },
     storeDoc() {
@@ -82,24 +86,28 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     onRowSelection(uuid) {
         this.props.dispatch(toggleSelectRow(uuid))
     },
+    loadLayouts() {
+        const {model} = this.props.params;
+        this.props.dispatch(loadLayouts(model));
+    },
     loadDoc() {
         const {uuid} = this.props.params;
         if (uuid) this.props.dispatch(loadDoc(uuid));
     },
     render() {
         console.log('render: DocumentManager');
-        const {dispatch, selection, allowSelection, params, menu, location} = this.props;
+        const {dispatch, selection, allowSelection, params, menu, location, layouts} = this.props;
         const {model, view, uuid} = params;
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         const viewprops =
             view === 'list' ?
             {onRowClick: this.onRowClick, onRowSelection: this.onRowSelection, onSearch: this.onSearch}
             : view === 'form' ?
-            {onLoad: this.loadDoc, onSubmit: this.storeDoc, onChangeField: this.onChangeField,
-             onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
+            {loadDoc: this.loadDoc, onSubmit: this.storeDoc, onChangeField: this.onChangeField, layouts: layouts,
+             loadLayouts: this.loadLayouts, onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
             : view === 'new' ?
-            {onSubmit: this.storeDoc, onChangeField: this.onChangeField,
-             onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
+            {onSubmit: this.storeDoc, onChangeField: this.onChangeField, loadLayouts: this.loadLayouts,
+             layouts: layouts, onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
             : {};
         return (<div style={{paddingTop: '51px'}}>
             {view === 'list' ?

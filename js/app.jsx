@@ -37,6 +37,7 @@ request.onupgradeneeded = function(e) {
     } catch(e) {}
     let idbstore = db.createObjectStore('docs', {keyPath: 'uuid'});
     idbstore.createIndex('uuid', 'uuid', { unique: true });
+    idbstore.createIndex('layouts', ['model', 'rel']);
     console.log('Database upgraded')
 };
 

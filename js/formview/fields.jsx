@@ -1,7 +1,10 @@
 import React from 'react';
-import {Responsive as Grid} from 'react-grid-layout';
+import ResponsiveReactGridLayout from 'react-grid-layout/build/ResponsiveReactGridLayout';
+import WidthProvider from 'react-grid-layout/build/components/WidthProvider';
 import WIDGETS from './widgets';
 import {EM} from '../actions';
+const Grid = WidthProvider(ResponsiveReactGridLayout);
+
 
 const ObjectField = React.createClass({
 
@@ -18,7 +21,7 @@ const ObjectField = React.createClass({
         const {schema, onLayoutChange} = this.props;
         const children = Object.keys(schema.properties).map((name) => {
             const Field = FIELDS[schema.properties[name].type];
-            return (<div key={name} style={{background: '#EEE'}}>
+            return (<div key={name} >
                     <Field
                         {...this.props}
                         name={name}
@@ -31,9 +34,9 @@ const ObjectField = React.createClass({
             <Grid
                 className="layout"
                 rowHeight={4.5*EM}
-                width={1500}
                 margin={[10,0]}
                 layouts={this.props.layouts}
+                breakpoints={{lg: 1200, md: 996, sm: 768, xs: 480}}
                 cols={{lg: 12, md: 8, sm: 6, xs: 4, xxs: 2}}
                 onLayoutChange={onLayoutChange}>
             {children}

@@ -26,6 +26,13 @@ export const schema = {
 };
 
 export const layouts = {
+     xs: [{i: "name",       x: 0, y: 0, w: 2, h: 1},
+          {i: "surname",    x: 0, y: 1, w: 2, h: 1},
+          {i: "password",   x: 0, y: 2, w: 2, h: 1},
+          {i: "comments",   x: 0, y: 3, w: 4, h: 1},
+          {i: "date",       x: 0, y: 4, w: 2, h: 1},
+          {i: "description",x: 0, y: 5, w: 4, h: 4},
+          {i: "customer",   x: 0, y: 6, w: 2, h: 1}],
      lg: [{i: "name",       x: 0, y: 0, w: 2, h: 1},
           {i: "surname",    x: 2, y: 0, w: 2, h: 1},
           {i: "password",   x: 4, y: 0, w: 2, h: 1},

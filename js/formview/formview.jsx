@@ -1,5 +1,5 @@
 import React from 'react';
-import {schema, layouts} from "../schema";
+import {schema} from "../schema";
 import Paper from 'material-ui/lib/paper';
 import {clearFormData, changeField, changeLayout} from './actions';
 import FIELDS from './fields';
@@ -10,12 +10,13 @@ export const FormView = React.createClass({
         model: React.PropTypes.string,
         view: React.PropTypes.string,
         doc: React.PropTypes.object,
-        layout: React.PropTypes.object,
+        layouts: React.PropTypes.object,
         initialFocus: React.PropTypes.string, // TODO compute in mapstatetoprops
         onSubmit: React.PropTypes.func,
         onLayoutChange: React.PropTypes.func,
+        loadLayouts: React.PropTypes.func,
         dispatch: React.PropTypes.func,
-        onLoad: React.PropTypes.func,
+        loadDoc: React.PropTypes.func,
     },
     onKeyDown(event) {
         if (event.nativeEvent.keyCode === 13) {
@@ -39,16 +40,20 @@ export const FormView = React.createClass({
     componentWillUnmount() {
         this.props.dispatch(clearFormData());
     },
-    componentDidMount() {
-        this.props.onLoad && this.props.onLoad();
+    componentWillMount() {
+    if (!this.props.layouts)
+        this.props.loadLayouts();
     },
-    changeLayout(layout, layouts) {
-        //this.props.dispatch(changeLayout(layout, layouts));
+    componentDidMount() {
+        if (this.props.loadDoc) this.props.loadDoc();
+    },
+    onLayoutChange(layout, layouts) {
+        this.props.dispatch(changeLayout(this.props.model, layouts));
     },
     render() {
         console.log('render: FormView');
         const Field = FIELDS[schema.type];
-        const {doc} = this.props;
+        const {doc, layouts} = this.props;
         return (
       <div className="row center-xs" style={{margin: '1%'}}>
         <div className="col-xs">
@@ -60,7 +65,7 @@ export const FormView = React.createClass({
                     doc={doc}
                     layouts={layouts}
                     onChangeField={this.onChangeField}
-                    onLayoutChange={this.changeLayout}
+                    onLayoutChange={this.onLayoutChange}
                     widgetDidMount={this.widgetDidMount}
                 />
             </form>

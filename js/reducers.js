@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
 import {MD} from './actions';
+import {layouts as initialLayouts} from "./schema";
 
 // Doc and initial value of the global redux state, which correspond to the working space in memory
 export const initialState = ()=>({
@@ -13,7 +14,7 @@ export const initialState = ()=>({
         open: window.innerWidth >= MD,
         docked: window.innerWidth >= MD,
     },
-    layouts: {}, // maps model to layouts
+    layouts: {...initialLayouts}, // model: layouts
 });
 
 export function doc(doc=initialState().doc, action) {
@@ -101,14 +102,13 @@ export function selection(selection=initialState().selection, action) {
 }
 
 export function layouts(layouts=initialState().layouts, action) {
+    const {payload} = action;
     switch(action.type) {
         case 'CHANGE_LAYOUT':
-            if (action.payload === layouts) return layouts;
-            
-            if (selection.indexOf(action.payload)>=0) return selection;
-            return [...selection, action.payload]
+            if (payload.layouts === layouts[payload.model]) return layouts;
+            return {...layouts, [payload.model]: payload.layouts}
         default:
-            return selection;
+            return layouts;
     }
 }
 
