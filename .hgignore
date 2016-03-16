@@ -3,3 +3,4 @@ node_modules/
 \.log$
 build/
 material-ui/
+redux-devtools/
