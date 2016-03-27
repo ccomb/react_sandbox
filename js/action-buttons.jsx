@@ -13,7 +13,7 @@ import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back';
 import IconButton from 'material-ui/lib/IconButton';
 import MoreVert from 'material-ui/lib/svg-icons/navigation/more-vert';
 import Checkbox from 'material-ui/lib/Checkbox'
-import {MD, toggleMenu} from './actions';
+import {toggleMenu} from './actions';
 
 export const HeaderActions = React.createClass({
     propTypes: {
@@ -23,19 +23,19 @@ export const HeaderActions = React.createClass({
         onSubmit: React.PropTypes.func,
         onCancel: React.PropTypes.func,
         view: React.PropTypes.string,
+        device: React.PropTypes.string,
     },
     render() {
         const hasSelection = this.props.selection.length>0;
-        const mobile = window.innerWidth < MD;
-        const {view, onDelete, onCancel, onSubmit, createLink} = this.props;
+        const {device, view, onDelete, onCancel, onSubmit, createLink} = this.props;
         return (
             <div className="row start">
-                {view === 'list' && !mobile ?
+                {view === 'list' && device !== 'mobile' ?
                     <Link to={createLink}
                           style={{padding: 0, margin: '0.5em'}}>
                         <FlatButton label="Create"/>
                     </Link> : undefined}
-                {view === 'list' && mobile ?
+                {view === 'list' && device === 'mobile' ?
                     <Link to={createLink}
                           key="floatingcreatebutton">
                         <FloatingActionButton
@@ -43,17 +43,17 @@ export const HeaderActions = React.createClass({
                             <Add/>
                         </FloatingActionButton>
                     </Link> : undefined}
-                {hasSelection && !mobile && ['form', 'new'].indexOf(view)<0 ?
+                {hasSelection && device !== 'mobile' && ['form', 'new'].indexOf(view)<0 ?
                     <FlatButton className="col" style={{padding: 0, margin: '0.5em'}}
                         label="Delete"
                         onClick={onDelete}
                         primary={true}/> : undefined}
-                {['form', 'new'].indexOf(view)>=0 && !mobile ?
+                {['form', 'new'].indexOf(view)>=0 && device !== 'mobile' ?
                     <FlatButton className="col" style={{padding: 0, margin: '0.5em'}}
                         label="Save"
                         onClick={onSubmit}
                         primary={true}/> : undefined}
-                {['form', 'new'].indexOf(view)>=0 && !mobile ?
+                {['form', 'new'].indexOf(view)>=0 && device !== 'mobile' ?
                     <FlatButton className="col" style={{padding: 0, margin: '0.5em'}}
                         label="Cancel"
                         onClick={onCancel}
@@ -71,14 +71,14 @@ export const AppBarRightElement = React.createClass({
         selection: React.PropTypes.array,
         selectColumn: React.PropTypes.bool,
         view: React.PropTypes.string,
+        device: React.PropTypes.string,
     },
     render() {
-        const {view, selection, onSubmit, onDelete,
+        const {device, view, selection, onSubmit, onDelete,
                selectColumn, onToggleSelectColumn} = this.props;
         const hasSelection = selection.length>0;
-        const mobile = window.innerWidth < MD;
         return (
-            mobile && view === 'list' ?
+            device === 'mobile' && view === 'list' ?
             <IconMenu
                 iconButtonElement={<IconButton><MoreVert color='white'/></IconButton>}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -94,7 +94,7 @@ export const AppBarRightElement = React.createClass({
                     leftIcon={<Delete/>}
                     onTouchTap={onDelete}/> : undefined}
             </IconMenu>
-            : mobile && ['form', 'new'].indexOf(view)>=0 ?
+            : device == 'mobile' && ['form', 'new'].indexOf(view)>=0 ?
             <IconButton onClick={onSubmit}>
                 <Check color="white"/>
             </IconButton>
@@ -108,16 +108,16 @@ export const AppBarLeftElement = React.createClass({
         onCancel: React.PropTypes.func,
         menuOpen: React.PropTypes.bool,
         view: React.PropTypes.string,
+        device: React.PropTypes.string,
     },
     render() {
-        const {dispatch, onCancel, menuOpen, view} = this.props;
-        const mobile = window.innerWidth < MD;
+        const {device, dispatch, onCancel, menuOpen, view} = this.props;
         return (
-            mobile && ['form', 'new'].indexOf(view)>=0 ?
+            device === 'mobile' && ['form', 'new'].indexOf(view)>=0 ?
             <IconButton onClick={onCancel}>
                 <ArrowBack color="white"/>
             </IconButton>
-            : menuOpen && mobile ?
+            : menuOpen && device === 'mobile' ?
             <IconButton onClick={()=>dispatch(toggleMenu())}>
                 <Close color="white"/>
             </IconButton>

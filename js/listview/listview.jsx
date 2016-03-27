@@ -3,12 +3,12 @@ import Table from 'material-ui/lib/Table';
 import TableBody from 'material-ui/lib/Table/TableBody';
 import TableRow from 'material-ui/lib/Table/TableRow';
 import TableRowColumn from 'material-ui/lib/Table/TableRowColumn';
-import {MD} from '../actions';
 
 export const ListView = React.createClass({
     propTypes: {
         model: React.PropTypes.string,
         view: React.PropTypes.string,
+        device: React.PropTypes.string,
         docs: React.PropTypes.object,
         loading: React.PropTypes.string,
         selection: React.PropTypes.array,
@@ -63,8 +63,7 @@ export const ListView = React.createClass({
     },
     render() {
         console.log('render: ListView');
-        const {docs, loading, selection, allowSelection} = this.props;
-        const mobile = window.innerWidth < MD;
+        const {device, docs, loading, selection, allowSelection} = this.props;
         return (
         <div style={{position: 'fixed', top: '110px', bottom: 0, overflowY: 'auto'}}>
             <div className="row" style={{margin: 0}}>
@@ -74,7 +73,7 @@ export const ListView = React.createClass({
                         <TableBody
                             deselectOnClickaway={false}
                             preScanRows={false}
-                            displayRowCheckbox={!mobile || allowSelection}>
+                            displayRowCheckbox={device !== 'mobile' || allowSelection}>
                             {loading === 'loading' ?
                             <TableRow selectable={false}><TableRowColumn>Loading...</TableRowColumn></TableRow>
                             : this.createRows(docs, selection)}

@@ -15,7 +15,7 @@ import {FormView} from './formview/formview';
 import {loadDoc, storeDoc, loadLayouts} from './formview/actions';
 import {MakeSelectable} from 'material-ui/lib/List/MakeSelectable';
 const SelectableList = MakeSelectable(List);
-import {MD, openMenu, closeMenu, toggleSelectColumn} from './actions';
+import {openMenu, closeMenu, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
 const VIEWS = {
@@ -47,9 +47,10 @@ export const DocumentManager = connect(s=>s)(React.createClass({
         location: React.PropTypes.object,
         dispatch: React.PropTypes.func,
         onRowClick: React.PropTypes.func,
+        device: React.PropTypes.string,
     },
     onMenuItemClick() {
-        if (this.props.menu.open && window.innerWidth < MD)
+        if (this.props.menu.open && device !== 'laptop')
             this.props.dispatch(closeMenu());
         const {model} = this.props.params;
         this.loadLayouts(); // might be better to have a changeHash action with loadLayouts inside
@@ -96,7 +97,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
     },
     render() {
         console.log('render: DocumentManager');
-        const {dispatch, selection, allowSelection, params, menu, location, layouts} = this.props;
+        const {device, dispatch, selection, allowSelection, params, menu, location, layouts} = this.props;
         const {model, view, uuid} = params;
         const menushadow = `0px 3px 1px rgba(0, 0, 0, 0.16), 0px 3px 1px rgba(0, 0, 0, 0.23)`;
         const viewprops =
@@ -124,6 +125,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 zDepth={0}
                 iconElementLeft={
                     <AppBarLeftElement
+                        device={device}
                         dispatch={dispatch}
                         menuOpen={menu.open}
                         view={view}
@@ -131,6 +133,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 }
                 iconElementRight={
                     <AppBarRightElement
+                        device={device}
                         view={view}
                         selection={selection}
                         selectColumn={allowSelection}
@@ -162,7 +165,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                 </SelectableList>
             </Drawer>
             <div style={{
-                    paddingLeft: (window.innerWidth > MD && menu.open) ? '256px' : '0',
+                    paddingLeft: (device === 'laptop' && menu.open) ? '256px' : '0',
                     transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
             <div className="row bottom-xs between-lg"
                  style={{height: '60px', margin: '0', zIndex: -5}}>
@@ -172,9 +175,10 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     onCancel={this.onCancel}
                     selection={selection}
                     view={view}
+                    device={device}
                     createLink={`/bo/${model}/new`}/>
             </div>
-            {React.createElement(VIEWS[view], {...viewprops, model, view, uuid})}
+            {React.createElement(VIEWS[view], {...viewprops, device, model, view, uuid})}
             </div>
         </div>);
     }

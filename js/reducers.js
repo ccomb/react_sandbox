@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {routerReducer} from 'react-router-redux';
-import {MD} from './actions';
+import {isMobile, isLaptop, getDevice} from './actions';
 import {layouts as initialLayouts} from "./schema";
 
 // Doc and initial value of the global redux state, which correspond to the working space in memory
@@ -9,11 +9,12 @@ export const initialState = ()=>({
     doc: {payload: {}}, // current doc (in the URL or form view)
     selection: [], // uuids
     loading: '', // main data is loading
-    allowSelection: window.innerWidth >= MD,
+    allowSelection: !isMobile(),
     menu: {
-        open: window.innerWidth >= MD,
-        docked: window.innerWidth >= MD,
+        open: isLaptop(),
+        docked: !isMobile(),
     },
+    device: getDevice(), // 'mobile', 'tablet' or 'laptop'
     layouts: {...initialLayouts}, // model: layouts
 });
 
@@ -38,7 +39,7 @@ function menu(menu=initialState().menu, action) {
         case 'CLOSE_MENU':
             return menu.open ? {...menu, open: false} : menu;
         case 'TOGGLE_MENU':
-            return {...menu, open: !menu.open, floating: action.payload.innerWidth<MD};
+            return {...menu, open: !menu.open, floating: !isLaptop(action.payload.innerWidth)};
         default:
             return menu;
     }
@@ -112,5 +113,14 @@ export function layouts(layouts=initialState().layouts, action) {
     }
 }
 
+export function device(device=initialState().device, action) {
+    switch (action.type) {
+        case 'CHANGE_DEVICE':
+            return action.payload;
+        default:
+            return device;
+    }
+}
+
 export const globalreducer = combineReducers(
-    {routing: routerReducer, doc, docs, selection, menu, loading, allowSelection, layouts});
+    {device, routing: routerReducer, doc, docs, selection, menu, loading, allowSelection, layouts});

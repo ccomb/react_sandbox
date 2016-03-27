@@ -1,9 +1,9 @@
-// XS media width is 48 * 'em' size in pixels // typeof is for mocha
-export const EM = typeof window !== 'undefined' ? 
+export const EM = typeof window !== 'undefined' ? /* typeof is for mocha */
     Number(getComputedStyle(document.body, "").fontSize.match(/(\d*(\.\d*)?)px/)[1]) : 768;
-export const XS = 48*EM;
-export const MD = 62*EM;
-
+export const isMobile = (width=window.innerWidth) => width < 48*EM;
+export const isTablet = (width=window.innerWidth) => width >= 48*EM && width < 75*EM;
+export const isLaptop = (width=window.innerWidth) => width >= 75*EM;
+export const getDevice = () => isMobile() ? 'mobile' : isLaptop() ? 'laptop': 'tablet';
 
 export function openMenu() {
     return {
@@ -36,5 +36,13 @@ export function toggleSelectColumn() {
     console.log('action: toggleSelectColumn');
     return {
         type: 'TOGGLE_SELECT_COLUMN'
+    }
+}
+
+export function changeDevice (device) {
+    console.log('action: CHANGE_DEVICE', device);
+    return {
+        type: 'CHANGE_DEVICE',
+        payload: device
     }
 }

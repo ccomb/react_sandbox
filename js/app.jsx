@@ -1,19 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {MD, openMenu, closeMenu} from './actions';
+import {isLaptop, openMenu, closeMenu, changeDevice, getDevice} from './actions';
 import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {globalreducer} from './reducers';
 import thunk from 'redux-thunk';
 import {NotFound} from './notfound';
 import {DocumentManager} from './document-manager';
-import {FormView} from './formview/formview';
-import {ListView} from './listview/listview';
 import Router from 'react-router/lib/Router';
 import Redirect from 'react-router/lib/Redirect';
 import IndexRoute from 'react-router/lib/IndexRoute';
 import Route from 'react-router/lib/Route';
-import IndexRedirect from 'react-router/lib/IndexRedirect';
 import hashHistory from 'react-router/lib/hashHistory';
 import {syncHistoryWithStore} from 'react-router-redux'
 import {Home} from './home';
@@ -68,9 +65,10 @@ ReactDOM.render(
 
 
 window.addEventListener('resize', function() {
-    if (store.getState().menu.open && window.innerWidth <= MD) {
+    store.dispatch(changeDevice(getDevice()));
+    if (store.getState().menu.open && !isLaptop()) {
         store.dispatch(closeMenu());
-    } else if (!store.getState().menu.open && window.innerWidth >= MD) {
+    } else if (!store.getState().menu.open && isLaptop()) {
         store.dispatch(openMenu());
     }
 }, false)
