@@ -40,7 +40,7 @@ export function toggleSelectColumn() {
 }
 
 export function changeDevice (device) {
-    console.log('action: CHANGE_DEVICE', device);
+    console.log('action: CHANGE_DEVICE');
     return {
         type: 'CHANGE_DEVICE',
         payload: device
