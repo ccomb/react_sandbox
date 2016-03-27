@@ -1,8 +1,8 @@
 import React from 'react';
-import Table from 'material-ui/lib/table/table';
-import TableBody from 'material-ui/lib/table/table-body';
-import TableRow from 'material-ui/lib/table/table-row';
-import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import Table from 'material-ui/lib/Table';
+import TableBody from 'material-ui/lib/Table/TableBody';
+import TableRow from 'material-ui/lib/Table/TableRow';
+import TableRowColumn from 'material-ui/lib/Table/TableRowColumn';
 import {MD} from '../actions';
 
 export const ListView = React.createClass({

@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactQuill from 'react-quill';
-import TextField from 'material-ui/lib/text-field';
-import DatePicker from 'material-ui/lib/date-picker/date-picker';
+import TextField from 'material-ui/lib/TextField';
+import DatePicker from 'material-ui/lib/DatePicker';
 
 const StringWidget = (props) => {
     return <TextField

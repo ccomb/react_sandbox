@@ -1,18 +1,18 @@
 import React from 'react';
 import NavigationMenu from 'material-ui/lib/svg-icons/navigation/menu';
-import FlatButton from 'material-ui/lib/flat-button';
-import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import FlatButton from 'material-ui/lib/FlatButton';
+import FloatingActionButton from 'material-ui/lib/FloatingActionButton';
 import Link from 'react-router/lib/Link';
 import Add from 'material-ui/lib/svg-icons/content/add';
-import IconMenu from 'material-ui/lib/menus/icon-menu';
-import MenuItem from 'material-ui/lib/menus/menu-item';
+import IconMenu from 'material-ui/lib/IconMenu';
+import MenuItem from 'material-ui/lib/MenuItem';
 import Delete from 'material-ui/lib/svg-icons/action/delete';
 import Check from 'material-ui/lib/svg-icons/navigation/check';
 import Close from 'material-ui/lib/svg-icons/navigation/close';
 import ArrowBack from 'material-ui/lib/svg-icons/navigation/arrow-back';
-import IconButton from 'material-ui/lib/icon-button';
+import IconButton from 'material-ui/lib/IconButton';
 import MoreVert from 'material-ui/lib/svg-icons/navigation/more-vert';
-import Checkbox from 'material-ui/lib/checkbox'
+import Checkbox from 'material-ui/lib/Checkbox'
 import {MD, toggleMenu} from './actions';
 
 export const HeaderActions = React.createClass({

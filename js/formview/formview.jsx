@@ -1,6 +1,6 @@
 import React from 'react';
 import {schema} from "../schema";
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/lib/Paper';
 import {clearFormData, changeField, changeLayout} from './actions';
 import FIELDS from './fields';
 

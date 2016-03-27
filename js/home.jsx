@@ -1,8 +1,8 @@
 import React from "react";
 import {connect} from 'react-redux';
-import Card from 'material-ui/lib/card/card';
-import CardTitle from 'material-ui/lib/card/card-title';
-import CardMedia from 'material-ui/lib/card/card-media';
+import Card from 'material-ui/lib/Card';
+import CardTitle from 'material-ui/lib/Card/CardTitle';
+import CardMedia from 'material-ui/lib/Card/CardMedia';
 
 const APPS = [
     {url: 'bo', title: 'Back Office', desc: 'Stunning offline-first and mobile-first back office'},

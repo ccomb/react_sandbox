@@ -2,19 +2,19 @@ import React from "react";
 import {connect} from 'react-redux';
 import hashHistory from 'react-router/lib/hashHistory';
 import Link from 'react-router/lib/Link';
-import AppBar from 'material-ui/lib/app-bar';
-import IconButton from 'material-ui/lib/icon-button';
+import AppBar from 'material-ui/lib/AppBar';
+import IconButton from 'material-ui/lib/IconButton';
 import NavigationApps from 'material-ui/lib/svg-icons/navigation/apps';
-import LeftNav from 'material-ui/lib/left-nav';
-import ListItem from 'material-ui/lib/lists/list-item';
-import List from 'material-ui/lib/lists/list';
-import Subheader from 'material-ui/lib/Subheader/Subheader';
+import Drawer from 'material-ui/lib/Drawer';
+import ListItem from 'material-ui/lib/List/ListItem';
+import List from 'material-ui/lib/List';
+import Subheader from 'material-ui/lib/Subheader';
 import {ListView} from './listview/listview';
 import {toggleSelectRow, loadDocs, deleteDocs} from './listview/actions';
 import {FormView} from './formview/formview';
 import {loadDoc, storeDoc, loadLayouts} from './formview/actions';
-import {SelectableContainerEnhance} from 'material-ui/lib/hoc/selectable-enhance';
-const SelectableList = SelectableContainerEnhance(List);
+import {MakeSelectable} from 'material-ui/lib/List/MakeSelectable';
+const SelectableList = MakeSelectable(List);
 import {MD, openMenu, closeMenu, toggleSelectColumn} from './actions';
 import {HeaderActions, AppBarRightElement, AppBarLeftElement} from './action-buttons';
 
@@ -139,7 +139,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         onCancel={this.onCancel}
                         onDelete={this.onDelete}/>}
             />
-            <LeftNav
+            <Drawer
                 ref="leftnav"
                 open={menu.open}
                 docked={menu.floating?false:true}
@@ -160,7 +160,7 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                     value={`/bo/${model}/list`}
                     onClick={this.onMenuItemClick}/>
                 </SelectableList>
-            </LeftNav>
+            </Drawer>
             <div style={{
                     paddingLeft: (window.innerWidth > MD && menu.open) ? '256px' : '0',
                     transition: 'padding-left 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'}}>
