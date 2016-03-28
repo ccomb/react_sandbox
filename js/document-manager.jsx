@@ -111,13 +111,6 @@ export const DocumentManager = connect(s=>s)(React.createClass({
              layouts: layouts, onLayoutChange: this.onLayoutChange, initialFocus: 'name'}
             : {};
         return (<div style={{paddingTop: '51px'}}>
-            {view === 'list' ?
-            <Link style={{position: 'fixed', bottom: '1em', left: '1em', zIndex: 5000}}
-                  to="/">
-                <IconButton>
-                    <NavigationApps/>
-                </IconButton>
-            </Link> : undefined}
             <AppBar
                 title="Contacts"
                 className="row"
@@ -132,15 +125,22 @@ export const DocumentManager = connect(s=>s)(React.createClass({
                         onCancel={this.onCancel}/>
                 }
                 iconElementRight={
-                    <AppBarRightElement
-                        device={device}
-                        view={view}
-                        selection={selection}
-                        selectColumn={allowSelection}
-                        onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
-                        onSubmit={this.storeDoc}
-                        onCancel={this.onCancel}
-                        onDelete={this.onDelete}/>}
+                    <div>
+                        <Link to="/">
+                            <IconButton>
+                                <NavigationApps color='white'/>
+                            </IconButton>
+                        </Link>
+                        <AppBarRightElement
+                            device={device}
+                            view={view}
+                            selection={selection}
+                            selectColumn={allowSelection}
+                            onToggleSelectColumn={()=>dispatch(toggleSelectColumn())}
+                            onSubmit={this.storeDoc}
+                            onCancel={this.onCancel}
+                            onDelete={this.onDelete}/>
+                    </div>}
             />
             <Drawer
                 ref="leftnav"
